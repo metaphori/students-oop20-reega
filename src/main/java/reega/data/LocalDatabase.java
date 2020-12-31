@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.springframework.security.crypto.bcrypt.BCrypt;
+
 import reega.users.GenericUser;
 import reega.users.NewUser;
 import reega.users.Role;
@@ -42,28 +44,30 @@ public final class LocalDatabase implements DataController {
 	}
 
 	@Override
-	public GenericUser emailLogin(String email, String hash) throws SQLException {
-		return genericLogin("email", email, hash);
+	public GenericUser emailLogin(String email, String password) throws SQLException {
+		return genericLogin("email", email, password);
 	}
 
 	@Override
-	public GenericUser fiscalCodeLogin(String fiscalCode, String hash) throws SQLException {
-		return genericLogin("fiscal_code", fiscalCode, hash);
+	public GenericUser fiscalCodeLogin(String fiscalCode, String password) throws SQLException {
+		return genericLogin("fiscal_code", fiscalCode, password);
 	}
 
-	private GenericUser genericLogin(String key, String value, String hash) throws SQLException {
-		final String sql = String.format("SELECT * FROM users WHERE \"%s\" = '%s' AND \"password\" = '%s';", key, value,
-				hash);
+	private GenericUser genericLogin(String key, String value, String password) throws SQLException {
+		final String sql = String.format("SELECT * FROM users WHERE \"%s\" = '%s';", key, value);
 		final Statement s = c.createStatement();
 		var rs = s.executeQuery(sql);
 		if (!rs.next()) {
 			return null;
 		}
-		GenericUser user = new GenericUser(Role.valueOf(rs.getString("role").toUpperCase()), rs.getString("name"),
-				rs.getString("surname"), rs.getString("email"), rs.getString("fiscal_code"));
+		final String passwordHash = rs.getString("password");
+		if (!BCrypt.checkpw(password, passwordHash)) {
+			return null;
+		}
+		GenericUser user = new GenericUser(rs.getInt("id"), Role.valueOf(rs.getString("role").toUpperCase()),
+				rs.getString("name"), rs.getString("surname"), rs.getString("email"), rs.getString("fiscal_code"));
 		rs.close();
 		s.close();
 		return user;
 	}
-
 }
