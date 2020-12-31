@@ -7,6 +7,12 @@ import reega.users.NewUser;
 
 public interface DataController {
 	
+	/**
+	 * Add user to REEGA platform
+	 * 
+	 * @param newUser
+	 * @throws SQLException
+	 */
 	public void addUser(NewUser newUser) throws SQLException;
 
 	/**
@@ -31,6 +37,4 @@ public interface DataController {
 	 * @throws SQLException 
 	 */
 	public GenericUser fiscalCodeLogin(String fiscalCode, String hash) throws SQLException;
-
-	void kill() throws SQLException;
 }

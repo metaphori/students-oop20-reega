@@ -31,23 +31,6 @@ public final class LocalDatabase implements DataController {
 	}
 
 	@Override
-	public synchronized void kill() throws SQLException {
-		SQLException exception = null;
-		try {
-			c.close();
-		} catch (SQLException e) {
-			exception = e;
-		} finally {
-			if (INSTANCE != null) {
-				INSTANCE = null;
-			}
-		}
-		if (exception != null) {
-			throw exception;
-		}
-	}
-
-	@Override
 	public void addUser(NewUser newUser) throws SQLException {
 		String sql = "INSERT INTO users(\"fiscal_code\",\"name\",\"surname\",\"email\",\"password\",\"role\")";
 		sql += String.format("VALUES('%s','%s','%s','%s','%s','%s');", newUser.getFiscalCode(), newUser.getName(),
