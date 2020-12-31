@@ -17,4 +17,8 @@ dependencies {
     
     // DB driver
     implementation 'org.postgresql:postgresql:42.2.18'
+    //Commons lang
+    implementation 'org.apache.commons:commons-lang3:3.11'
+    //Commons IO
+    implementation 'commons-io:commons-io:2.8.0'
 }
