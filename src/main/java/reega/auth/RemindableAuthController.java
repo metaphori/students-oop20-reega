@@ -18,7 +18,6 @@ import reega.data.DataController;
 import reega.logging.ExceptionHandler;
 import reega.users.GenericUser;
 import reega.users.NewUser;
-import reega.utils.AES;
 
 /**
  * @author Marco
@@ -167,61 +166,61 @@ public class RemindableAuthController implements AuthenticationController {
      */
     private Optional<GenericUser> login(final String userMethod, final String pwd, final boolean saveToken,
             final BiFunction<String, String, Optional<GenericUser>> invocationMethod) {
-        final Optional<String> optionalHash = this.encryptPassword(pwd);
-        if (optionalHash.isEmpty()) {
-            return Optional.empty();
-        }
-        final String hash = optionalHash.get();
-        final Optional<GenericUser> loggedInUser = invocationMethod.apply(userMethod, hash);
+//        final Optional<String> optionalHash = this.encryptPassword(pwd);
+//        if (optionalHash.isEmpty()) {
+//            return Optional.empty();
+//        }
+//        final String hash = optionalHash.get();
+        final Optional<GenericUser> loggedInUser = invocationMethod.apply(userMethod, pwd);
 
-        if (saveToken) {
-            loggedInUser.ifPresent(usr -> {
-                this.savePasswordAsToken(hash);
-            });
-        }
+//        if (saveToken) {
+//            loggedInUser.ifPresent(usr -> {
+//                this.savePasswordAsToken(hash);
+//            });
+//        }
 
         return loggedInUser;
     }
 
     /**
-     * Save the password as a token to disk
+     * Save the password as a token to disk: TODO
      *
      * @param hash hashed password
      */
-    private void savePasswordAsToken(final String hash) {
-        final File tokenFile = new File(RemindableAuthController.TOKEN_FILE_URI);
-        if (!tokenFile.exists()) {
-            try {
-                tokenFile.createNewFile();
-            } catch (final IOException e) {
-                this.exceptionHandler.handleException(e, "savePasswordAsToken -> Creating token file");
-                return;
-            }
-
-            try {
-                FileUtils.write(tokenFile, hash, StandardCharsets.UTF_8);
-            } catch (final IOException e) {
-                this.exceptionHandler.handleException(e, "savePasswordAsToken -> Saving the password");
-                return;
-            }
-        }
-    }
+//    private void savePasswordAsToken(final String hash) {
+//        final File tokenFile = new File(RemindableAuthController.TOKEN_FILE_URI);
+//        if (!tokenFile.exists()) {
+//            try {
+//                tokenFile.createNewFile();
+//            } catch (final IOException e) {
+//                this.exceptionHandler.handleException(e, "savePasswordAsToken -> Creating token file");
+//                return;
+//            }
+//
+//            try {
+//                FileUtils.write(tokenFile, hash, StandardCharsets.UTF_8);
+//            } catch (final IOException e) {
+//                this.exceptionHandler.handleException(e, "savePasswordAsToken -> Saving the password");
+//                return;
+//            }
+//        }
+//    }
 
     /**
-     * Encrypt {@code pwd}
+     * Encrypt {@code pwd} TODO
      *
      * @param pwd password to encrypt
      */
-    private Optional<String> encryptPassword(final String pwd) {
-        Objects.requireNonNull(pwd);
-        String hash;
-        try {
-            hash = AES.encrypt(pwd.toCharArray());
-        } catch (final Exception e) {
-            this.exceptionHandler.handleException(e, "emailLogin -> AES");
-            return Optional.empty();
-        }
-        return Optional.ofNullable(hash);
-    }
+//    private Optional<String> encryptPassword(final String pwd) {
+//        Objects.requireNonNull(pwd);
+//        String hash;
+//        try {
+//            hash = AES.encrypt(pwd.toCharArray());
+//        } catch (final Exception e) {
+//            this.exceptionHandler.handleException(e, "emailLogin -> AES");
+//            return Optional.empty();
+//        }
+//        return Optional.ofNullable(hash);
+//    }
 
 }
