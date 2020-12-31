@@ -1,6 +1,8 @@
 package reega.data;
 
+import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 import reega.users.GenericUser;
 import reega.users.NewUser;
@@ -37,5 +39,14 @@ public interface DataController {
 	 * @throws SQLException
 	 */
 	public GenericUser fiscalCodeLogin(String fiscalCode, String hash) throws SQLException;
+
+	/**
+	 * List all contracts for a specific user
+	 * @param userID
+	 * @return List<Contract>
+	 * @throws IOException
+	 * @throws SQLException
+	 */
+	List<Contract> getUserContracts(int userID) throws IOException, SQLException;
 
 }

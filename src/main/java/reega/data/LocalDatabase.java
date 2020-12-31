@@ -1,11 +1,26 @@
 package reega.data;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import reega.users.GenericUser;
 import reega.users.NewUser;
@@ -56,7 +71,7 @@ public final class LocalDatabase implements DataController {
 	private GenericUser genericLogin(String key, String value, String password) throws SQLException {
 		final String sql = String.format("SELECT * FROM users WHERE \"%s\" = '%s';", key, value);
 		final Statement s = c.createStatement();
-		var rs = s.executeQuery(sql);
+		ResultSet rs = s.executeQuery(sql);
 		if (!rs.next()) {
 			return null;
 		}
@@ -69,5 +84,30 @@ public final class LocalDatabase implements DataController {
 		rs.close();
 		s.close();
 		return user;
+	}
+
+	@Override
+	public List<Contract> getUserContracts(int userID) throws IOException, SQLException {
+		final InputStream is = getClass().getClassLoader().getResourceAsStream("queries/user_contracts.sql");
+		final String sql = String.format(IOUtils.toString(is, StandardCharsets.UTF_8.name()), userID);
+
+		final Statement s = c.createStatement();
+		ResultSet rs = s.executeQuery(sql);
+		Type pricesType = new TypeToken<Map<String, Double>>() {
+		}.getType();
+		Type servicesType = new TypeToken<List<String>>() {
+		}.getType();
+		final Calendar tzUTC = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		final List<Contract> contracts = new ArrayList<>();
+		while (rs.next()) {
+			final Map<String, Double> prices = new Gson().fromJson(rs.getString("prices"), pricesType);
+			final PriceModel pm = new PriceModel(rs.getInt("price_model_id"), rs.getString("price_model_name"), prices);
+			final List<String> services = new Gson().fromJson(rs.getString("services"), servicesType);
+			contracts.add(new Contract(rs.getInt("contract_id"), rs.getInt("user_id"), rs.getString("address"),
+					services, pm, new Date(rs.getTimestamp("start_time", tzUTC).getTime())));
+		}
+		rs.close();
+		s.close();
+		return contracts;
 	}
 }
