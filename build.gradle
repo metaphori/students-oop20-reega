@@ -5,12 +5,11 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 
 repositories {
+	mavenCentral()
     jcenter()
 }
 
 dependencies {
-    api 'org.apache.commons:commons-math3:3.6.1'
-
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
     
@@ -26,5 +25,13 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
     
     // Bcrypt library
-    compile group: 'org.springframework.security', name: 'spring-security-crypto', version: '5.4.2'
+    implementation 'org.springframework.security:spring-security-crypto:5.4.2'
+    
+    // Utilities
+    implementation 'commons-io:commons-io:2.8.0'
+    implementation 'org.apache.commons:commons-lang3:3.11'
+    implementation 'com.google.guava:guava:30.1-jre'
+    
+    // logging
+    implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.13.0'
 }

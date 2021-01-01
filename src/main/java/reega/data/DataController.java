@@ -1,7 +1,11 @@
 package reega.data;
 
+import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
+import reega.data.models.Contract;
+import reega.data.models.UserAuth;
 import reega.users.GenericUser;
 import reega.users.NewUser;
 
@@ -37,5 +41,44 @@ public interface DataController {
 	 * @throws SQLException
 	 */
 	public GenericUser fiscalCodeLogin(String fiscalCode, String hash) throws SQLException;
+
+	/**
+	 * Login using the credentials locally stored
+	 * 
+	 * @param credentials
+	 * @return
+	 */
+	public GenericUser tokenLogin(UserAuth credentials) throws SQLException;
+
+	/**
+	 * List all contracts for a specific user
+	 * 
+	 * @param userID
+	 * @return List<Contract>
+	 * @throws IOException
+	 * @throws SQLException
+	 */
+	public List<Contract> getUserContracts(int userID) throws IOException, SQLException;
+
+	/**
+	 * Store selector and validator to enable the remind-me functionality
+	 * 
+	 * @param userID    the user ID
+	 * @param selector  random aphanumrical string up to 12 characters
+	 * @param validator SHA256 encryption of a random alphanumerical string (64
+	 *                  characters)
+	 * @throws IOException
+	 * @throws SQLException
+	 */
+	public void storeUserCredentials(int userID, String selector, String validator) throws SQLException, IOException;
+
+	/**
+	 * Remove selector and validator of the user from the DB. The user must prompt
+	 * in the credentials again to login
+	 * 
+	 * @param userID
+	 * @throws SQLException
+	 */
+	public void userLogout(int userID) throws SQLException;
 
 }
