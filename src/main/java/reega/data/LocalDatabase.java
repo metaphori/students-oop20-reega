@@ -9,11 +9,16 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TimeZone;
 
 import org.apache.commons.io.IOUtils;
@@ -23,6 +28,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import reega.data.models.Contract;
+import reega.data.models.Data;
 import reega.data.models.PriceModel;
 import reega.data.models.UserAuth;
 import reega.users.GenericUser;
@@ -147,6 +153,35 @@ public final class LocalDatabase implements DataController {
 		rs.close();
 		s.close();
 		return contracts;
+	}
+
+	@Override
+	public void putUserData(Data data) throws SQLException {
+		final StringBuilder base = new StringBuilder(
+				"insert into data (\"type\",\"value\",\"contract_id\",\"timestamp\") values ");
+
+		for (Entry<Long, Double> record : data.getData().entrySet()) {
+			final ZonedDateTime d = Instant.ofEpochMilli(record.getKey()).atZone(ZoneOffset.UTC);
+			base.append(String.format(Locale.US, "(%d, %f, %d, '%tF %tT'),", data.getType().getID(), record.getValue(),
+					data.getContractID(), d, d));
+		}
+		// remove trailing ","
+		base.deleteCharAt(base.lastIndexOf(","));
+		executeStatement(base.toString());
+	}
+
+	@Override
+	public Long getLatestData(int contractID) throws SQLException {
+		String sql = String.format(
+				"select \"timestamp\" from  data where \"contract_id\" = %d order by \"timestamp\" desc limit 1;",
+				contractID);
+		final Statement s = c.createStatement();
+		final ResultSet rs = s.executeQuery(sql);
+		if (!rs.next()) {
+			return null;
+		}
+		final Calendar tzUTC = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		return new Date(rs.getTimestamp("timestamp", tzUTC).getTime()).getTime();
 	}
 
 	private synchronized void executeStatement(String sql) throws SQLException {

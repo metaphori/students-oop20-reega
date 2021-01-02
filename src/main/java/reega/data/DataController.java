@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import reega.data.models.Contract;
+import reega.data.models.Data;
 import reega.data.models.UserAuth;
 import reega.users.GenericUser;
 import reega.users.NewUser;
@@ -80,5 +81,19 @@ public interface DataController {
 	 * @throws SQLException
 	 */
 	public void userLogout(int userID) throws SQLException;
-
+	
+	/**
+	 * 
+	 * @param data
+	 * @throws SQLException 
+	 */
+	public void putUserData(Data data) throws SQLException;
+	
+	/**
+	 * 
+	 * @param contractID
+	 * @return
+	 * @throws SQLException 
+	 */
+	public Long getLatestData(int contractID) throws SQLException;
 }
