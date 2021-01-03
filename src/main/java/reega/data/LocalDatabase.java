@@ -42,7 +42,7 @@ public final class LocalDatabase implements DataController {
         LocalDatabase.c.setAutoCommit(false);
     }
 
-    public synchronized static LocalDatabase getInstance() throws ClassNotFoundException, SQLException {
+    protected synchronized static LocalDatabase getInstance() throws ClassNotFoundException, SQLException {
         if (LocalDatabase.INSTANCE == null) {
             LocalDatabase.INSTANCE = new LocalDatabase();
         }

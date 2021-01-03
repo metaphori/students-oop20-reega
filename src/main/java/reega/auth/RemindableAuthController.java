@@ -4,17 +4,24 @@
 package reega.auth;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.SystemUtils;
 
+import com.google.common.hash.Hashing;
+
 import reega.data.DataController;
+import reega.data.models.UserAuth;
 import reega.logging.ExceptionHandler;
 import reega.users.GenericUser;
 import reega.users.NewUser;
@@ -26,6 +33,8 @@ import reega.users.NewUser;
  *         without a password
  */
 public class RemindableAuthController implements AuthenticationController {
+
+//    private static final Logger LOGGER = LoggerFactory.getLogger(RemindableAuthController.class);
 
     /**
      * URI of the directory of the app
@@ -74,22 +83,19 @@ public class RemindableAuthController implements AuthenticationController {
      */
     @Override
     public Optional<GenericUser> tryLoginWithoutPassword() {
-        final File tokenFile = new File(RemindableAuthController.TOKEN_FILE_URI);
-        if (!tokenFile.exists()) {
-            // If the token file doesn't exist, then there's no token for authentication
+        final Optional<UserAuth> uAuth = this.readUserAuthentication();
+        if (uAuth.isEmpty()) {
             return Optional.empty();
         }
-
-        final String hash;
-
+        final Optional<GenericUser> loggedInUser;
         try {
-            hash = FileUtils.readFileToString(tokenFile, StandardCharsets.UTF_8);
-        } catch (final IOException e) {
-            this.exceptionHandler.handleException(e, "tryLoginWithoutPassword");
+            loggedInUser = Optional.ofNullable(this.dataController.tokenLogin(uAuth.get()));
+        } catch (final SQLException e) {
+            this.exceptionHandler.handleException(e);
             return Optional.empty();
         }
 
-        return this.login(hash);
+        return loggedInUser;
     }
 
     /**
@@ -141,19 +147,6 @@ public class RemindableAuthController implements AuthenticationController {
     }
 
     /**
-     * Login into the app with only the hash
-     *
-     * @param hash password hash
-     * @return an empty Optional if the login didn't succeed, filled in with the
-     *         logged in user otherwise
-     */
-    private Optional<GenericUser> login(final String hash) {
-        // TODO: Login with only an hash
-        // dataController.hashLogin(hash);
-        return null;
-    }
-
-    /**
      * Generic login given a {@code userMethod} that is a string and a password
      * {@code pwd}
      *
@@ -166,61 +159,79 @@ public class RemindableAuthController implements AuthenticationController {
      */
     private Optional<GenericUser> login(final String userMethod, final String pwd, final boolean saveToken,
             final BiFunction<String, String, Optional<GenericUser>> invocationMethod) {
-//        final Optional<String> optionalHash = this.encryptPassword(pwd);
-//        if (optionalHash.isEmpty()) {
-//            return Optional.empty();
-//        }
-//        final String hash = optionalHash.get();
         final Optional<GenericUser> loggedInUser = invocationMethod.apply(userMethod, pwd);
 
-//        if (saveToken) {
-//            loggedInUser.ifPresent(usr -> {
-//                this.savePasswordAsToken(hash);
-//            });
-//        }
+        if (saveToken) {
+            loggedInUser.ifPresent(usr -> {
+                final String selector = RandomStringUtils.random(12);
+                final String validator = RandomStringUtils.random(64);
+                final String hashedValidator = Hashing.sha256()
+                        .hashString(validator, StandardCharsets.UTF_8)
+                        .toString();
+                final UserAuth uAuth = new UserAuth(usr.getId(), selector, hashedValidator);
+                try {
+                    this.dataController.storeUserCredentials(uAuth.getUserID(), uAuth.getSelector(),
+                            uAuth.getValidator());
+                } catch (final SQLException | IOException e) {
+                    this.exceptionHandler.handleException(e);
+                }
+                this.storeUserAuthentication(uAuth);
+            });
+        }
 
         return loggedInUser;
     }
 
     /**
-     * Save the password as a token to disk: TODO
+     * Store the user authentication
      *
-     * @param hash hashed password
+     * @param userAuth user authentication
      */
-//    private void savePasswordAsToken(final String hash) {
-//        final File tokenFile = new File(RemindableAuthController.TOKEN_FILE_URI);
-//        if (!tokenFile.exists()) {
-//            try {
-//                tokenFile.createNewFile();
-//            } catch (final IOException e) {
-//                this.exceptionHandler.handleException(e, "savePasswordAsToken -> Creating token file");
-//                return;
-//            }
-//
-//            try {
-//                FileUtils.write(tokenFile, hash, StandardCharsets.UTF_8);
-//            } catch (final IOException e) {
-//                this.exceptionHandler.handleException(e, "savePasswordAsToken -> Saving the password");
-//                return;
-//            }
-//        }
-//    }
+    private void storeUserAuthentication(final UserAuth userAuth) {
+        final File tokenFile = new File(RemindableAuthController.TOKEN_FILE_URI);
+        if (!tokenFile.exists()) {
+            try {
+                // Create the file if it doesn't exist
+                tokenFile.createNewFile();
+            } catch (final IOException e) {
+                this.exceptionHandler.handleException(e, "savePasswordAsToken -> Creating token file");
+                return;
+            }
+
+            try (FileOutputStream stream = new FileOutputStream(tokenFile);
+                    ObjectOutputStream oos = new ObjectOutputStream(stream)) {
+                oos.writeObject(userAuth);
+            } catch (final IOException e) {
+                this.exceptionHandler.handleException(e, "readUserAuthentication -> Reading the token file");
+                return;
+            }
+        }
+    }
 
     /**
-     * Encrypt {@code pwd} TODO
+     * Read the user authentication token from the disk
      *
-     * @param pwd password to encrypt
+     * @return an empty Optional if any operation failed or the file isn't in the
+     *         correct format, a filled in Optional otherwise
      */
-//    private Optional<String> encryptPassword(final String pwd) {
-//        Objects.requireNonNull(pwd);
-//        String hash;
-//        try {
-//            hash = AES.encrypt(pwd.toCharArray());
-//        } catch (final Exception e) {
-//            this.exceptionHandler.handleException(e, "emailLogin -> AES");
-//            return Optional.empty();
-//        }
-//        return Optional.ofNullable(hash);
-//    }
+    private Optional<UserAuth> readUserAuthentication() {
+        final File tokenFile = new File(RemindableAuthController.TOKEN_FILE_URI);
+        if (!tokenFile.exists()) {
+            return Optional.empty();
+        }
+        final UserAuth userAuth;
+        try (FileInputStream stream = new FileInputStream(tokenFile);
+                ObjectInputStream oos = new ObjectInputStream(stream)) {
+            userAuth = (UserAuth) oos.readObject();
+        } catch (final IOException e) {
+            this.exceptionHandler.handleException(e, "readUserAuthentication -> Reading the token file IO");
+            return Optional.empty();
+        } catch (final ClassCastException | ClassNotFoundException e) {
+            this.exceptionHandler.handleException(e, "readUserAuthentication -> Invalid format");
+            return Optional.empty();
+        }
+
+        return Optional.of(userAuth);
+    }
 
 }

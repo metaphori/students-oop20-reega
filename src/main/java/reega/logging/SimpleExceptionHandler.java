@@ -4,6 +4,8 @@
 package reega.logging;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Marco
@@ -11,21 +13,14 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
  */
 public class SimpleExceptionHandler implements ExceptionHandler {
 
-    private final LoggerBroadcaster broadcaster;
-
-    /**
-     * @param broadcaster broadcaster used for logging
-     */
-    public SimpleExceptionHandler(final LoggerBroadcaster broadcaster) {
-        this.broadcaster = broadcaster;
-    }
+    private static final Logger LOGGER = LoggerFactory.getLogger(SimpleExceptionHandler.class);
 
     /**
      * {@inheritDoc}
      */
     @Override
     public void handleException(final Exception e, final String message) {
-        this.broadcaster.broadcastError(message + " --" + ExceptionUtils.getStackTrace(e));
+        SimpleExceptionHandler.LOGGER.error(message + " -- " + ExceptionUtils.getStackTrace(e));
     }
 
 }
