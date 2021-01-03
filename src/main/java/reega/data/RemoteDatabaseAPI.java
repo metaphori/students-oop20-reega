@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import reega.data.models.Contract;
+import reega.data.models.Data;
 import reega.data.models.UserAuth;
 import reega.users.GenericUser;
 import reega.users.NewUser;
@@ -64,6 +65,18 @@ public final class RemoteDatabaseAPI implements DataController {
 	public void userLogout(int userID) throws SQLException {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void putUserData(Data data) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Long getLatestData(int contractID) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

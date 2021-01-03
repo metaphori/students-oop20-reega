@@ -10,8 +10,8 @@ repositories {
 }
 
 dependencies {
-    // Use JUnit test framework
-    testImplementation 'junit:junit:4.12'
+    // Use JUnit 5 test framework
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     
     
     // DB driver
@@ -34,4 +34,8 @@ dependencies {
     
     // logging
     implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.13.0'
+}
+
+test {
+	useJUnitPlatform()
 }

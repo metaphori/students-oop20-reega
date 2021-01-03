@@ -2,12 +2,13 @@ package reega.data.models;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class Contract {
 	private final int id;
 	private final int userID;
 	private final String address;
-	private final List<String> services;
+	private final List<ServiceType> services;
 	private final PriceModel priceModel;
 	private final Date startDate;
 
@@ -23,7 +24,7 @@ public final class Contract {
 		return this.address;
 	}
 
-	public List<String> getServices() {
+	public List<ServiceType> getServices() {
 		return this.services;
 	}
 
@@ -40,7 +41,7 @@ public final class Contract {
 		this.id = id;
 		this.userID = userID;
 		this.address = address;
-		this.services = services;
+		this.services = services.stream().map(s -> ServiceType.valueOf(s.toUpperCase())).collect(Collectors.toList());
 		this.priceModel = priceModel;
 		this.startDate = startDate;
 	}
