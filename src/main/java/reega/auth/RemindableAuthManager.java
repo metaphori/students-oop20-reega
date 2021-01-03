@@ -9,15 +9,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
-import org.apache.commons.lang3.SystemUtils;
-
 import reega.data.AuthController;
 import reega.data.models.UserAuth;
+import reega.io.IOController;
 import reega.logging.ExceptionHandler;
 import reega.users.GenericUser;
 import reega.users.NewUser;
@@ -30,48 +31,21 @@ import reega.users.NewUser;
  */
 public class RemindableAuthManager implements AuthManager {
 
-//    private static final Logger LOGGER = LoggerFactory.getLogger(RemindableAuthController.class);
-
-    /**
-     * URI of the directory of the app
-     */
-    private static final String APP_DIRECTORY_URI;
-    /**
-     * URI of the token file
-     */
-    private static final String TOKEN_FILE_URI;
-
-    static {
-        final String baseDir = System.getProperty("user.home");
-        // For Windows, create a folder in the AppData\Local directory of the current
-        // user, for the other systems create a folder in the /home/user directory
-        if (SystemUtils.IS_OS_WINDOWS) {
-            APP_DIRECTORY_URI = baseDir + File.separator + "AppData" + File.separator + "Local" + File.separator
-                    + "Reega";
-        } else {
-            APP_DIRECTORY_URI = baseDir + File.separator + ".reega";
-        }
-
-        final File dir = new File(RemindableAuthManager.APP_DIRECTORY_URI);
-        if (!dir.exists()) {
-            // Create the directory if it doesn't exist
-            dir.mkdir();
-        }
-
-        TOKEN_FILE_URI = RemindableAuthManager.APP_DIRECTORY_URI + File.separator + "token.reega";
-    }
-
     /**
      * Data controller used for the login
      */
     private final AuthController authController;
     private final ExceptionHandler exceptionHandler;
+    private final IOController ioController;
 
-    public RemindableAuthManager(final AuthController authController, final ExceptionHandler exceptionHandler) {
+    public RemindableAuthManager(final AuthController authController, final ExceptionHandler exceptionHandler,
+            final IOController ioController) {
         Objects.requireNonNull(authController);
         Objects.requireNonNull(exceptionHandler);
+        Objects.requireNonNull(ioController);
         this.authController = authController;
         this.exceptionHandler = exceptionHandler;
+        this.ioController = ioController;
     }
 
     /**
@@ -79,7 +53,7 @@ public class RemindableAuthManager implements AuthManager {
      */
     @Override
     public Optional<GenericUser> tryLoginWithoutPassword() {
-        final Optional<UserAuth> uAuth = this.readUserAuthentication();
+        final Optional<UserAuth> uAuth = this.readUserAuthenticationFromDisk();
         if (uAuth.isEmpty()) {
             return Optional.empty();
         }
@@ -158,15 +132,17 @@ public class RemindableAuthManager implements AuthManager {
         final Optional<GenericUser> loggedInUser = invocationMethod.apply(userMethod, pwd);
 
         if (saveToken) {
+            // Save the token
             loggedInUser.ifPresent(usr -> {
                 final UserAuth uAuth = new UserAuth(usr.getId());
-                try {
-                    this.authController.storeUserCredentials(uAuth.getUserID(), uAuth.getSelector(),
-                            uAuth.getValidator());
-                } catch (final SQLException | IOException e) {
-                    this.exceptionHandler.handleException(e);
-                }
                 this.storeUserAuthentication(uAuth);
+            });
+        } else {
+            // Delete the token if it exists
+            loggedInUser.ifPresent(usr -> {
+                if (this.getExistingTokenFile().isPresent()) {
+                    this.deleteUserAuthentication(usr.getId());
+                }
             });
         }
 
@@ -174,28 +150,49 @@ public class RemindableAuthManager implements AuthManager {
     }
 
     /**
-     * Store the user authentication
+     * Store the user authentication with the {@link #authController} and in the
+     * disk
+     *
+     * @param userAuth user authentication to save
+     * @see #storeUserAuthenticationToDisk(UserAuth)
+     */
+    private void storeUserAuthentication(final UserAuth userAuth) {
+        try {
+            this.authController.storeUserCredentials(userAuth.getUserID(), userAuth.getSelector(),
+                    userAuth.getValidator());
+        } catch (final SQLException | IOException e) {
+            this.exceptionHandler.handleException(e);
+            return;
+        }
+        this.storeUserAuthenticationToDisk(userAuth);
+    }
+
+    /**
+     * Store the user authentication in the disk
      *
      * @param userAuth user authentication
      */
-    private void storeUserAuthentication(final UserAuth userAuth) {
-        final File tokenFile = new File(RemindableAuthManager.TOKEN_FILE_URI);
-        if (!tokenFile.exists()) {
-            try {
-                // Create the file if it doesn't exist
-                tokenFile.createNewFile();
-            } catch (final IOException e) {
-                this.exceptionHandler.handleException(e, "savePasswordAsToken -> Creating token file");
-                return;
-            }
+    private void storeUserAuthenticationToDisk(final UserAuth userAuth) {
+        final Optional<File> tokenFileOptional = this.getExistingTokenFile();
+        if (tokenFileOptional.isPresent()) {
+            return;
+        }
 
-            try (FileOutputStream stream = new FileOutputStream(tokenFile);
-                    ObjectOutputStream oos = new ObjectOutputStream(stream)) {
-                oos.writeObject(userAuth);
-            } catch (final IOException e) {
-                this.exceptionHandler.handleException(e, "readUserAuthentication -> Reading the token file");
-                return;
-            }
+        final File tokenFile = this.getTokenFile();
+        try {
+            // Create the file if it doesn't exist
+            tokenFile.createNewFile();
+        } catch (final IOException e) {
+            this.exceptionHandler.handleException(e, "savePasswordAsToken -> Creating token file");
+            return;
+        }
+
+        try (FileOutputStream stream = new FileOutputStream(tokenFile);
+                ObjectOutputStream oos = new ObjectOutputStream(stream)) {
+            oos.writeObject(userAuth);
+        } catch (final IOException e) {
+            this.exceptionHandler.handleException(e, "readUserAuthentication -> Reading the token file");
+            return;
         }
     }
 
@@ -205,11 +202,14 @@ public class RemindableAuthManager implements AuthManager {
      * @return an empty Optional if any operation failed or the file isn't in the
      *         correct format, a filled in Optional otherwise
      */
-    private Optional<UserAuth> readUserAuthentication() {
-        final File tokenFile = new File(RemindableAuthManager.TOKEN_FILE_URI);
-        if (!tokenFile.exists()) {
+    private Optional<UserAuth> readUserAuthenticationFromDisk() {
+        final Optional<File> tokenFileOptional = this.getExistingTokenFile();
+        if (tokenFileOptional.isEmpty()) {
             return Optional.empty();
         }
+
+        final File tokenFile = tokenFileOptional.get();
+
         final UserAuth userAuth;
         try (FileInputStream stream = new FileInputStream(tokenFile);
                 ObjectInputStream oos = new ObjectInputStream(stream)) {
@@ -223,6 +223,79 @@ public class RemindableAuthManager implements AuthManager {
         }
 
         return Optional.of(userAuth);
+    }
+
+    /**
+     * Delete user authentication from the disk
+     *
+     * @return true if the operation successfully ended, false otherwise
+     */
+    private boolean deleteUserAuthenticationFromDisk() {
+        final Optional<File> tokenFileOptional = this.getExistingTokenFile();
+        if (tokenFileOptional.isEmpty()) {
+            return true;
+        }
+
+        final File tokenFile = tokenFileOptional.get();
+        try {
+            Files.delete(Path.of(tokenFile.getAbsolutePath()));
+        } catch (final IOException e) {
+            this.exceptionHandler.handleException(e, "deleteUserAuthentication");
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Delete the user authentication with the {@link #authController} and in the
+     * disk
+     *
+     * @param userID ID of the user that needs to revoke its authentication
+     * @return true if the operation successfully ended, false otherwise
+     */
+    private boolean deleteUserAuthentication(final int userID) {
+        try {
+            this.authController.userLogout(userID);
+        } catch (final SQLException e) {
+            this.exceptionHandler.handleException(e, "logout -> db logout");
+            return false;
+        }
+        return this.deleteUserAuthenticationFromDisk();
+    }
+
+    /**
+     * Get the token file if it exists, otherwise an empty Optional
+     *
+     * @return a filled in Optional with the token file if the token file exists, an
+     *         empty Optional otherwise
+     */
+    private Optional<File> getExistingTokenFile() {
+        return Optional.of(this.getTokenFile()).filter(File::exists);
+    }
+
+    /**
+     * Get the token file
+     *
+     * @return the token file
+     */
+    private File getTokenFile() {
+        return new File(this.ioController.getTokenFilePath());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean logout(final int userID) {
+        return this.deleteUserAuthentication(userID);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean logout(final GenericUser user) {
+        return this.logout(user.getId());
     }
 
 }

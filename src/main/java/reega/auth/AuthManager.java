@@ -54,4 +54,21 @@ public interface AuthManager {
      */
     Optional<GenericUser> fiscalCodeLogin(String fiscalCode, String pwd, boolean saveToken);
 
+    /**
+     * Log out the user represented by {@code userID} from the current application,
+     * and delete token if exists
+     *
+     * @param userID ID of the user that needs to log out
+     * @return true if the user successfully logged out, false otherwise
+     */
+    boolean logout(int userID);
+
+    /**
+     * Log out {@code user} from the current application, and delete token if exists
+     *
+     * @param user user that needs to log out
+     * @return true if the user successfully logged out, false otherwise
+     */
+    boolean logout(GenericUser user);
+
 }
