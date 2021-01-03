@@ -9,18 +9,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.SystemUtils;
 
-import com.google.common.hash.Hashing;
-
-import reega.data.DataController;
+import reega.data.AuthController;
 import reega.data.models.UserAuth;
 import reega.logging.ExceptionHandler;
 import reega.users.GenericUser;
@@ -32,7 +28,7 @@ import reega.users.NewUser;
  *         Authentication controller that uses a file token to authenticate
  *         without a password
  */
-public class RemindableAuthController implements AuthenticationController {
+public class RemindableAuthManager implements AuthManager {
 
 //    private static final Logger LOGGER = LoggerFactory.getLogger(RemindableAuthController.class);
 
@@ -56,25 +52,25 @@ public class RemindableAuthController implements AuthenticationController {
             APP_DIRECTORY_URI = baseDir + File.separator + ".reega";
         }
 
-        final File dir = new File(RemindableAuthController.APP_DIRECTORY_URI);
+        final File dir = new File(RemindableAuthManager.APP_DIRECTORY_URI);
         if (!dir.exists()) {
             // Create the directory if it doesn't exist
             dir.mkdir();
         }
 
-        TOKEN_FILE_URI = RemindableAuthController.APP_DIRECTORY_URI + File.separator + "token.reega";
+        TOKEN_FILE_URI = RemindableAuthManager.APP_DIRECTORY_URI + File.separator + "token.reega";
     }
 
     /**
      * Data controller used for the login
      */
-    private final DataController dataController;
+    private final AuthController authController;
     private final ExceptionHandler exceptionHandler;
 
-    public RemindableAuthController(final DataController dataController, final ExceptionHandler exceptionHandler) {
-        Objects.requireNonNull(dataController);
+    public RemindableAuthManager(final AuthController authController, final ExceptionHandler exceptionHandler) {
+        Objects.requireNonNull(authController);
         Objects.requireNonNull(exceptionHandler);
-        this.dataController = dataController;
+        this.authController = authController;
         this.exceptionHandler = exceptionHandler;
     }
 
@@ -89,7 +85,7 @@ public class RemindableAuthController implements AuthenticationController {
         }
         final Optional<GenericUser> loggedInUser;
         try {
-            loggedInUser = Optional.ofNullable(this.dataController.tokenLogin(uAuth.get()));
+            loggedInUser = Optional.ofNullable(this.authController.tokenLogin(uAuth.get()));
         } catch (final SQLException e) {
             this.exceptionHandler.handleException(e);
             return Optional.empty();
@@ -104,7 +100,7 @@ public class RemindableAuthController implements AuthenticationController {
     @Override
     public boolean createUser(final NewUser user) {
         try {
-            this.dataController.addUser(user);
+            this.authController.addUser(user);
         } catch (final SQLException e) {
             this.exceptionHandler.handleException(e, "createUser");
             return false;
@@ -120,7 +116,7 @@ public class RemindableAuthController implements AuthenticationController {
         return this.login(email, pwd, saveToken, (userMethod, hash) -> {
             Optional<GenericUser> loggedInUser;
             try {
-                loggedInUser = Optional.ofNullable(this.dataController.emailLogin(userMethod, hash));
+                loggedInUser = Optional.ofNullable(this.authController.emailLogin(userMethod, hash));
             } catch (final SQLException e) {
                 this.exceptionHandler.handleException(e, "emailLogin -> Login call");
                 return Optional.empty();
@@ -137,7 +133,7 @@ public class RemindableAuthController implements AuthenticationController {
         return this.login(fiscalCode, pwd, saveToken, (userMethod, hash) -> {
             Optional<GenericUser> loggedInUser;
             try {
-                loggedInUser = Optional.ofNullable(this.dataController.fiscalCodeLogin(userMethod, hash));
+                loggedInUser = Optional.ofNullable(this.authController.fiscalCodeLogin(userMethod, hash));
             } catch (final SQLException e) {
                 this.exceptionHandler.handleException(e, "fiscalCodeLogin -> Login call");
                 return Optional.empty();
@@ -163,14 +159,9 @@ public class RemindableAuthController implements AuthenticationController {
 
         if (saveToken) {
             loggedInUser.ifPresent(usr -> {
-                final String selector = RandomStringUtils.random(12);
-                final String validator = RandomStringUtils.random(64);
-                final String hashedValidator = Hashing.sha256()
-                        .hashString(validator, StandardCharsets.UTF_8)
-                        .toString();
-                final UserAuth uAuth = new UserAuth(usr.getId(), selector, hashedValidator);
+                final UserAuth uAuth = new UserAuth(usr.getId());
                 try {
-                    this.dataController.storeUserCredentials(uAuth.getUserID(), uAuth.getSelector(),
+                    this.authController.storeUserCredentials(uAuth.getUserID(), uAuth.getSelector(),
                             uAuth.getValidator());
                 } catch (final SQLException | IOException e) {
                     this.exceptionHandler.handleException(e);
@@ -188,7 +179,7 @@ public class RemindableAuthController implements AuthenticationController {
      * @param userAuth user authentication
      */
     private void storeUserAuthentication(final UserAuth userAuth) {
-        final File tokenFile = new File(RemindableAuthController.TOKEN_FILE_URI);
+        final File tokenFile = new File(RemindableAuthManager.TOKEN_FILE_URI);
         if (!tokenFile.exists()) {
             try {
                 // Create the file if it doesn't exist
@@ -215,7 +206,7 @@ public class RemindableAuthController implements AuthenticationController {
      *         correct format, a filled in Optional otherwise
      */
     private Optional<UserAuth> readUserAuthentication() {
-        final File tokenFile = new File(RemindableAuthController.TOKEN_FILE_URI);
+        final File tokenFile = new File(RemindableAuthManager.TOKEN_FILE_URI);
         if (!tokenFile.exists()) {
             return Optional.empty();
         }

@@ -12,7 +12,7 @@ import reega.users.NewUser;
  * @author Marco
  *
  */
-public interface AuthenticationController {
+public interface AuthManager {
 
     /**
      * Try a login without a password
