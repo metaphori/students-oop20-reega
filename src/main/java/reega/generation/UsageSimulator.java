@@ -1,5 +1,6 @@
 package reega.generation;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -7,13 +8,13 @@ import reega.data.models.ServiceType;
 
 
 /**
- * simulates the usage of the services for a single contract.
+ * simulates the usage of the services specified at construction.
  */
 public interface UsageSimulator {
 	
 	/**
-	 * generates the usage of water, electric energy and gas,
-	 * but only the ones specified at construction. 
+	 * generates the usage for water, electric energy and gas,
+	 * excluding the ones NOT specified at construction.
 	 * returns an empty map if no services are specified.
 	 * 
 	 * @return
@@ -22,8 +23,8 @@ public interface UsageSimulator {
 	public Map<ServiceType, Double> getServicesUsage(); 
 	
 	/**
-	 * generates the values of paper, plastic, glass and mixed wastes,
-	 * but only the ones specified at construction.
+	 * generates the values for paper, plastic, glass and mixed wastes,
+	 * excluding the ones NOT specified at construction.
 	 * returns an empty map if no services are specified.
 	 * 
 	 * @return
@@ -32,9 +33,19 @@ public interface UsageSimulator {
 	public Map<ServiceType, Double> getWastesUsage();
 	
 	/**
-	 * generates the usage of the specified service; if the service
-	 * does not belong to the given contract the method returns an 
-	 * null Optional.
+	 * generates the values for selected services
+	 * excluding the ones NOT specified at construction.
+	 * returns an empty map if no services are specified or selected.
+	 * 
+	 * @return
+	 * 		map of utilization values, key is the type of service.
+	 */
+	public Map<ServiceType, Double> getSelectedUsage(List<ServiceType> services);
+
+	/**
+	 * generates the usage for the specified service; if the service
+	 * does not belong to the ones specifies ate construction 
+	 * the method returns an Optional null.
 	 * 
 	 * @param service
 	 * 		type of service of which the usage will be generated.
