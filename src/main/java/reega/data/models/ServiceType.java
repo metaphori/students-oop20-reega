@@ -1,5 +1,7 @@
 package reega.data.models;
 
+import java.util.List;
+
 public enum ServiceType {
 	ELECTRICITY("electricity", 0),
 	GAS("gas",1),
@@ -23,5 +25,18 @@ public enum ServiceType {
 	
 	public int getID() {
 		return this.id;
+	}
+	
+	public static class Categories {
+		
+		static {
+			SERVICES = List.of(WATER, ELECTRICITY, GAS);
+			WASTES = List.of(PAPER, PLASTIC, GAS, MIXED);
+		}
+		
+		public static final List<ServiceType> SERVICES;
+		public static final List<ServiceType> WASTES;
+		
+		private Categories() {}
 	}
 }
