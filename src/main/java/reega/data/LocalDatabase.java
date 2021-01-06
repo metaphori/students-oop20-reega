@@ -23,6 +23,7 @@ import com.google.gson.reflect.TypeToken;
 import reega.data.models.Contract;
 import reega.data.models.Data;
 import reega.data.models.PriceModel;
+import reega.data.models.ServiceType;
 
 public final class LocalDatabase implements DataController {
 	private final DBAccess db;
@@ -71,10 +72,10 @@ public final class LocalDatabase implements DataController {
 	}
 
 	@Override
-	public Long getLatestData(int contractID) throws SQLException {
+	public Long getLatestData(int contractID, ServiceType service) throws SQLException {
 		String sql = String.format(
-				"select \"timestamp\" from  data where \"contract_id\" = %d order by \"timestamp\" desc limit 1;",
-				contractID);
+				"select \"timestamp\" from  data where \"contract_id\" = %d and \"type\" = %d order by \"timestamp\" desc limit 1;",
+				contractID, service.getID());
 		final Statement s = db.getConnection().createStatement();
 		final ResultSet rs = s.executeQuery(sql);
 		if (!rs.next()) {

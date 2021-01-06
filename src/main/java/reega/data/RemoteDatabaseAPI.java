@@ -6,6 +6,7 @@ import java.util.List;
 
 import reega.data.models.Contract;
 import reega.data.models.Data;
+import reega.data.models.ServiceType;
 
 public final class RemoteDatabaseAPI implements DataController {
 	private static RemoteDatabaseAPI INSTANCE;
@@ -29,7 +30,7 @@ public final class RemoteDatabaseAPI implements DataController {
 	}
 
 	@Override
-	public Long getLatestData(int contractID) {
+	public Long getLatestData(int contractID, ServiceType service) {
 		// TODO Auto-generated method stub
 		return null;
 	}

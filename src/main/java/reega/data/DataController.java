@@ -6,6 +6,7 @@ import java.util.List;
 
 import reega.data.models.Contract;
 import reega.data.models.Data;
+import reega.data.models.ServiceType;
 
 public interface DataController {
 
@@ -32,5 +33,5 @@ public interface DataController {
 	 * @return
 	 * @throws SQLException
 	 */
-	public Long getLatestData(int contractID) throws SQLException;
+	public Long getLatestData(int contractID, ServiceType service) throws SQLException;
 }
