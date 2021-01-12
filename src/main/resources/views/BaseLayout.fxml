@@ -8,8 +8,9 @@
 
 <?import reega.viewutils.ContentControl?>
 
-<ScrollPane xmlns="http://javafx.com/javafx"
+<fx:root xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
+            type="ScrollPane"
             prefHeight="800.0"
             prefWidth="700.0"
             stylesheets="@/css/Common.css"
@@ -17,4 +18,4 @@
     <content>
         <ContentControl fx:id="contentControl"/>
     </content>
-</ScrollPane>
+</fx:root>
