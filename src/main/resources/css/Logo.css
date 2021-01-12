@@ -1,0 +1,6 @@
+.logoImg {
+    -fx-background-image: url("/images/Reega_Logo.png");
+    -fx-background-size: contain;
+    -fx-background-position: center bottom;
+    -fx-background-repeat: no-repeat no-repeat;
+}

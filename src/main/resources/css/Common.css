@@ -1,0 +1,50 @@
+.text-field {
+    -fx-background-radius: 17px;
+    -fx-font-size: 14px;
+    -fx-font-family: 'Comic Sans MS';
+    -fx-padding: 13px;
+    /* gaussian blur type, color, blur radius, spread radius, x-offset, y-offset */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25) , 4, 0, 0, 4 );
+}
+
+.button {
+    -fx-text-fill: #ffffff;
+    -fx-padding: 13px;
+    -fx-font-size: 16px;
+    -fx-font-family: 'Comic Sans MS';
+    -fx-background-radius: 17px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25) , 4, 0, 0, 4 );
+}
+
+.button:focused {
+
+}
+
+/*Clicked event*/
+.button:armed {
+    -fx-background-color: rgba(20,105,4,1);
+}
+
+
+.root > .viewport {
+    -fx-background-color: linear-gradient(to bottom,rgba(20,105,4,1),rgba(147,205,11,0.5));
+}
+
+
+.check-box > .box {
+    -fx-background-color: rgba(20,105,4, 0.75);
+}
+
+.check-box:selected > .box > .mark {
+    -fx-background-color: #ffffff;
+}
+
+.hyperlink {
+    -fx-text-fill: rgba(20,105,4,1);
+    -fx-border-color: transparent;
+}
+
+.hyperlink:visited {
+    -fx-underline: false;
+}
+

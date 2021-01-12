@@ -1,6 +1,7 @@
 plugins {
     id 'java-library'
     id 'org.openjfx.javafxplugin' version '0.0.9'
+    id 'application'
 }
 apply plugin: 'java'
 apply plugin: 'eclipse'
@@ -45,3 +46,5 @@ javafx {
 test {
 	useJUnitPlatform()
 }
+
+mainClassName='reega.main.ReegaMain'

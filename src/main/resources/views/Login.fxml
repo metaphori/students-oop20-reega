@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.text.TextFlow?>
+<?import javafx.scene.text.Text?>
+
+
+<fx:root xmlns="http://javafx.com/javafx"
+         xmlns:fx="http://javafx.com/fxml"
+         type="GridPane"
+         prefHeight="400.0"
+         prefWidth="600.0"
+         vgap="40"
+         alignment="CENTER"
+         stylesheets="@/css/Login.css,@/css/Logo.css">
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" halignment="CENTER" percentWidth="25.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" halignment="CENTER" percentWidth="50.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" halignment="CENTER" percentWidth="25.0"/>
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints percentHeight="30.0"/>
+        <RowConstraints fillHeight="true"/>
+    </rowConstraints>
+    <children>
+        <StackPane styleClass="logoImg" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+        <VBox spacing="9" alignment="TOP_CENTER" styleClass="fieldsVBox" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <children>
+                <!-- FocusTraversable is false so that it doesn't autofocus on startup-->
+                <TextField promptText="Email or fiscal code"
+                           focusTraversable="false"/>
+                <!-- FocusTraversable is false so that it doesn't autofocus on startup -->
+                <PasswordField promptText="Password"
+                               focusTraversable="false"/>
+                <Button maxWidth="1.7976931348623157E308">Login</Button>
+                <CheckBox>Remember me</CheckBox>
+                <TextFlow textAlignment="CENTER">
+                    <children>
+                        <Text>Don't have an account?</Text>
+                        <Hyperlink onAction="#jumpToRegistration">Click here</Hyperlink>
+                    </children>
+                </TextFlow>
+            </children>
+        </VBox>
+    </children>
+</fx:root>
