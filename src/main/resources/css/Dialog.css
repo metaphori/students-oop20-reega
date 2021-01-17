@@ -1,0 +1,26 @@
+.commonDialog {
+    -fx-background-color: linear-gradient(to bottom,rgba(20,105,4,1),rgba(147,205,11,0.5));
+}
+
+.button {
+    -fx-background-color: rgba(20,105,4, 0.50);
+}
+
+.button:hover {
+    -fx-background-color: rgba(20,105,4, 1);
+    -fx-border-radius: 17 17 17 17;
+    -fx-border-color: rgba(0,255,255,1);
+}
+
+
+.commonDialog > *.label.content{
+    -fx-font-size: 14px;
+}
+.commonDialog:header *.header-panel{
+	-fx-background-color: transparent;
+}
+.commonDialog:header *.header-panel *.label{
+    -fx-font-size: 18px;
+    -fx-font-style: italic;
+    -fx-fill: #ffffff;
+}
