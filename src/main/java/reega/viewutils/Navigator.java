@@ -6,8 +6,9 @@ public interface Navigator {
     /**
      * Push a controller in the navigation stack
      *
-     * @param <T>             type of the controller
-     * @param controllerClass class of the controller
+     * @param <T>                 type of the controller
+     * @param controllerClass     class of the controller
+     * @param actionAfterCreation action to do after the controller has been created
      * @return an instance of the controller
      */
     <T extends Controller> T pushController(Class<T> controllerClass);
