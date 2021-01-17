@@ -18,11 +18,23 @@ public class ValueResult<T> {
      * Construct a not valid result
      *
      * @param value   resulting value
-     * @param message message associated with the not valid result
+     * @param message message associated with the invalid result
      */
     public ValueResult(final T value, final String message) {
         Objects.requireNonNull(message);
         this.value = value;
+        this.message = message;
+        this.valid = false;
+    }
+
+    /**
+     * Construct a not valid result with a null value
+     *
+     * @param message message associated with the invalid result
+     */
+    public ValueResult(final String message) {
+        Objects.requireNonNull(message);
+        this.value = null;
         this.message = message;
         this.valid = false;
     }
@@ -63,6 +75,15 @@ public class ValueResult<T> {
      */
     public boolean isValid() {
         return this.valid;
+    }
+
+    /**
+     * Check if the result is invalid
+     *
+     * @return true if the result is invalid, false otherwise
+     */
+    public boolean isInvalid() {
+        return !this.valid;
     }
 
 }
