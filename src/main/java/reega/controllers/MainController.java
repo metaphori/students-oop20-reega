@@ -14,8 +14,12 @@ public class MainController {
         this.navigator = navigator;
         this.navigator.selectedControllerProperty().addListener((observable, oldValue, newValue) -> {
             this.selectedController = newValue;
-            this.selectedController
-                    .setControllerChangeEvent(event -> this.navigator.pushController(event.getEventItem()));
+            this.selectedController.setControllerChangeEvent((event, actionToExecuteAfterCreation) -> {
+                final Controller controller = this.navigator.pushController(event.getEventItem());
+                if (actionToExecuteAfterCreation != null) {
+                    actionToExecuteAfterCreation.accept(controller);
+                }
+            });
         });
     }
 
