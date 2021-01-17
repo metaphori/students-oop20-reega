@@ -3,15 +3,23 @@
  */
 package reega.main;
 
-import java.util.function.Function;
+import java.sql.SQLException;
 import java.util.function.Supplier;
 
 import javafx.scene.Parent;
+import reega.auth.AuthManager;
+import reega.auth.RemindableAuthManager;
 import reega.controllers.LoginController;
 import reega.controllers.LoginControllerImpl;
 import reega.controllers.MainController;
 import reega.controllers.RegistrationController;
 import reega.controllers.RegistrationControllerImpl;
+import reega.data.AuthController;
+import reega.data.AuthControllerFactory;
+import reega.io.IOController;
+import reega.io.IOControllerFactory;
+import reega.logging.ExceptionHandler;
+import reega.logging.SimpleExceptionHandler;
 import reega.util.ServiceCollection;
 import reega.util.ServiceProvider;
 import reega.views.LoginView;
@@ -31,13 +39,16 @@ public class AppInitializer {
 
     public static AppInitializer instance = new AppInitializer();
 
-    public ServiceProvider buildServiceProvider() {
+    public ServiceProvider buildServiceProvider() throws ClassNotFoundException, SQLException {
         final ServiceCollection svcCollection = new ServiceCollection();
-        svcCollection.addSingleton(Navigator.class, (Function<ServiceProvider, Navigator>) NavigatorImpl::new);
+        svcCollection.addSingleton(Navigator.class, NavigatorImpl::new);
         svcCollection.addSingleton(MainController.class);
+        svcCollection.addSingleton(AuthController.class, AuthControllerFactory.getDefaultAuthController());
+        svcCollection.addSingleton(IOController.class, IOControllerFactory.getDefaultIOController());
+        svcCollection.addSingleton(ExceptionHandler.class, SimpleExceptionHandler.class);
+        svcCollection.addSingleton(AuthManager.class, RemindableAuthManager.class);
         svcCollection.addTransient(LoginController.class, LoginControllerImpl.class);
         svcCollection.addTransient(RegistrationController.class, RegistrationControllerImpl.class);
-        svcCollection.addSingleton(MainController.class);
         svcCollection.addSingleton(BaseLayoutView.class);
         return svcCollection.buildServiceProvider();
     }
