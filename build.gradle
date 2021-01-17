@@ -37,6 +37,9 @@ dependencies {
     
     // Dependency injection
     implementation 'javax.inject:javax.inject:1'
+    
+    // Email validation
+    implementation 'commons-validator:commons-validator:1.7'
 }
 
 javafx {
