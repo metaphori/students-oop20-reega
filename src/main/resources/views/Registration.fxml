@@ -16,7 +16,6 @@
          type="GridPane"
          prefHeight="400.0" prefWidth="600.0"
          alignment="CENTER"
-         vgap="40"
          stylesheets="@/css/Registration.css,@/css/Logo.css">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" halignment="CENTER" percentWidth="25.0"/>
@@ -25,26 +24,21 @@
     </columnConstraints>
     <rowConstraints>
         <RowConstraints percentHeight="30.0"/>
-        <RowConstraints fillHeight="true"/>
+        <RowConstraints percentHeight="5.0"/>
+        <RowConstraints percentHeight="65.0"/>
     </rowConstraints>
     <children>
-        <StackPane styleClass="logoImg" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+        <StackPane styleClass="logoImg" GridPane.columnIndex="1" GridPane.rowIndex="0" focusTraversable="true"/>
 
-        <VBox spacing="9" alignment="TOP_CENTER" styleClass="fieldsVBox" GridPane.columnIndex="1" GridPane.rowIndex="1">
+        <VBox spacing="9" alignment="TOP_CENTER" styleClass="fieldsVBox" GridPane.columnIndex="1" GridPane.rowIndex="2">
             <children>
-                <TextField promptText="Name"
-                           focusTraversable="false"/>
-                <TextField promptText="Surname"
-                           focusTraversable="false"/>
-                <TextField promptText="Fiscal Code"
-                           focusTraversable="false"/>
-                <TextField promptText="Email"
-                           focusTraversable="false"/>
-                <PasswordField promptText="Password"
-                               focusTraversable="false"/>
-                <PasswordField promptText="Confirm Password"
-                               focusTraversable="false"/>
-                <Button maxWidth="1.7976931348623157E308">Create an account</Button>
+                <TextField fx:id="nameField" promptText="Name"/>
+                <TextField fx:id="surnameField" promptText="Surname"/>
+                <TextField fx:id="fiscalCodeField" promptText="Fiscal Code"/>
+                <TextField fx:id="emailField" promptText="Email"/>
+                <PasswordField fx:id="passwordField" promptText="Password"/>
+                <PasswordField fx:id="confirmPasswordField" promptText="Confirm Password"/>
+                <Button maxWidth="1.7976931348623157E308" onAction="#register">Create an account</Button>
                 <TextFlow textAlignment="CENTER">
                     <children>
                         <Text>You already have an account?</Text>

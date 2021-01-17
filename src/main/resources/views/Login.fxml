@@ -17,7 +17,6 @@
          type="GridPane"
          prefHeight="400.0"
          prefWidth="600.0"
-         vgap="40"
          alignment="CENTER"
          stylesheets="@/css/Login.css,@/css/Logo.css">
     <columnConstraints>
@@ -27,22 +26,22 @@
     </columnConstraints>
     <rowConstraints>
         <RowConstraints percentHeight="30.0"/>
-        <RowConstraints fillHeight="true"/>
+        <RowConstraints percentHeight="5.0"/>
+        <RowConstraints percentHeight="65.0"/>
     </rowConstraints>
     <children>
-        <StackPane styleClass="logoImg" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+    	<!-- Focus Traversable is set to true to auto-focus on the logo instead of the first TextField -->
+        <StackPane styleClass="logoImg" GridPane.columnIndex="1" GridPane.rowIndex="0" focusTraversable="true"/>
 
-        <VBox spacing="9" alignment="TOP_CENTER" styleClass="fieldsVBox" GridPane.columnIndex="1" GridPane.rowIndex="1">
+        <VBox spacing="9" alignment="TOP_CENTER" styleClass="fieldsVBox" GridPane.columnIndex="1" GridPane.rowIndex="2">
             <children>
-                <!-- FocusTraversable is false so that it doesn't autofocus on startup-->
-                <TextField promptText="Email or fiscal code"
-                           focusTraversable="false"/>
-                <!-- FocusTraversable is false so that it doesn't autofocus on startup -->
-                <PasswordField promptText="Password"
-                               focusTraversable="false"/>
-                <Button maxWidth="1.7976931348623157E308">Login</Button>
-                <CheckBox>Remember me</CheckBox>
-                <TextFlow textAlignment="CENTER">
+                <TextField fx:id="emailOrFiscalCodeField"
+                           promptText="Email or fiscal code"/>
+                <PasswordField fx:id="passwordField"
+                               promptText="Password"/>
+                <Button maxWidth="1.7976931348623157E308" onAction="#login">Login</Button>
+                <CheckBox fx:id="rememberMeCheckBox">Remember me</CheckBox>
+                <TextFlow textAlignment="CENTER" focusTraversable="false">
                     <children>
                         <Text>Don't have an account?</Text>
                         <Hyperlink onAction="#jumpToRegistration">Click here</Hyperlink>
@@ -50,5 +49,6 @@
                 </TextFlow>
             </children>
         </VBox>
+    	
     </children>
 </fx:root>
