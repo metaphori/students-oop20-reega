@@ -16,6 +16,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
+import javax.inject.Inject;
+
 import reega.data.AuthController;
 import reega.data.models.UserAuth;
 import reega.io.IOController;
@@ -38,6 +40,7 @@ public class RemindableAuthManager implements AuthManager {
     private final ExceptionHandler exceptionHandler;
     private final IOController ioController;
 
+    @Inject
     public RemindableAuthManager(final AuthController authController, final ExceptionHandler exceptionHandler,
             final IOController ioController) {
         Objects.requireNonNull(authController);
