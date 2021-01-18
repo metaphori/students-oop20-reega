@@ -4,6 +4,7 @@
 package reega.main;
 
 import java.sql.SQLException;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import javafx.scene.Parent;
@@ -41,7 +42,7 @@ public class AppInitializer {
 
     public ServiceProvider buildServiceProvider() throws ClassNotFoundException, SQLException {
         final ServiceCollection svcCollection = new ServiceCollection();
-        svcCollection.addSingleton(Navigator.class, NavigatorImpl::new);
+        svcCollection.addSingleton(Navigator.class, (Function<ServiceProvider, Navigator>) NavigatorImpl::new);
         svcCollection.addSingleton(MainController.class);
         svcCollection.addSingleton(AuthController.class, AuthControllerFactory.getDefaultAuthController());
         svcCollection.addSingleton(IOController.class, IOControllerFactory.getDefaultIOController());
