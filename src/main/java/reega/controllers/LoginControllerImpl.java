@@ -31,7 +31,7 @@ public class LoginControllerImpl extends AbstractController implements LoginCont
      */
     @Override
     public void jumpToRegistration() {
-        this.pushController(RegistrationController.class);
+        this.pushController(RegistrationController.class, true);
     }
 
     /**
@@ -82,6 +82,6 @@ public class LoginControllerImpl extends AbstractController implements LoginCont
     }
 
     private void jumpToNextPage(final GenericUser user) {
-        this.pushController(PageAfterLoginController.class, newController -> newController.setUser(user));
+        this.pushController(PageAfterLoginController.class, newController -> newController.setUser(user), true);
     }
 }

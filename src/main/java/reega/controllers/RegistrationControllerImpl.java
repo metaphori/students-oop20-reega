@@ -32,7 +32,7 @@ public class RegistrationControllerImpl extends AbstractController implements Re
      */
     @Override
     public void jumpToLogin() {
-        this.pushController(LoginController.class);
+        this.pushController(LoginController.class, true);
     }
 
     /**
@@ -138,7 +138,7 @@ public class RegistrationControllerImpl extends AbstractController implements Re
             return new ValueResult<>("Something went wrong with the registration");
         }
 
-        this.pushController(LoginController.class);
+        this.jumpToLogin();
 
         return new ValueResult<>((Void) null);
     }

@@ -16,7 +16,7 @@ public interface ControllerChangedEventHandler<T extends Controller> extends Eve
      */
     @Override
     default void handle(final EventArgs<Class<T>> eventArgs) {
-        this.handle(eventArgs, null);
+        this.handle(eventArgs, null, false);
     }
 
     /**
@@ -27,5 +27,6 @@ public interface ControllerChangedEventHandler<T extends Controller> extends Eve
      * @param actionToExecuteAfterCreation action to execute after the creation of
      *                                     the controller
      */
-    void handle(final EventArgs<Class<T>> eventArgs, final Consumer<T> actionToExecuteAfterCreation);
+    void handle(final EventArgs<Class<T>> eventArgs, final Consumer<T> actionToExecuteAfterCreation,
+            boolean clearNavigationStack);
 }

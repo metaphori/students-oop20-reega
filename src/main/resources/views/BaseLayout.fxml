@@ -16,6 +16,11 @@
             stylesheets="@/css/Common.css"
             fitToWidth="true" fitToHeight="true">
     <content>
-        <ContentControl fx:id="contentControl"/>
+        <StackPane>
+            <children>
+                <Button fx:id="backArrowButton" StackPane.alignment="TOP_LEFT" onAction="#popController"/>
+                <ContentControl fx:id="contentControl" StackPane.alignment="CENTER"/>
+            </children>
+        </StackPane>
     </content>
 </fx:root>

@@ -4,14 +4,12 @@
 package reega.main;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 import javax.inject.Inject;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import reega.controllers.MainController;
 import reega.viewutils.ContentControl;
@@ -20,10 +18,12 @@ import reega.viewutils.ContentControl;
  * @author Marco
  *
  */
-public class BaseLayoutView extends ScrollPane implements Initializable {
+public class BaseLayoutView extends ScrollPane {
 
     @FXML
     private ContentControl contentControl;
+    @FXML
+    private Button backArrowButton;
 
     private final MainController controller;
 
@@ -41,14 +41,12 @@ public class BaseLayoutView extends ScrollPane implements Initializable {
         this.controller = controller;
         this.controller.initializeApp();
         this.contentControl.objectProperty().bind(this.controller.getNavigator().selectedControllerProperty());
+        this.backArrowButton.visibleProperty().bind(this.controller.getNavigator().navigationStackNotEmptyProperty());
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void initialize(final URL location, final ResourceBundle resources) {
-
+    @FXML
+    private void popController() {
+        this.controller.popController();
     }
 
 }
