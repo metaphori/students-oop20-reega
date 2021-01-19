@@ -1,5 +1,6 @@
 package reega.generation;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -12,8 +13,8 @@ public class SelectiveUsageSimulator implements UsageSimulator {
 	private final Map<ServiceType, Generator> generators;
 
 	public SelectiveUsageSimulator(List<ServiceType> services) {
-		this.generators = services.stream()
-				.collect(Collectors.toMap(srv -> srv, GaussianGeneratorFactory::getGaussianGenerator));
+		this.generators = new HashMap<>();
+		services.forEach(srv -> this.generators.put(srv, GaussianGeneratorFactory.getGaussianGenerator(srv)));
 	}
 
 	@Override
