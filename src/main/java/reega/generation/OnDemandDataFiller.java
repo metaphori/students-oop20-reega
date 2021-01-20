@@ -9,6 +9,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import reega.data.DataController;
 import reega.data.models.Contract;
 import reega.data.models.Data;
@@ -19,6 +22,8 @@ public class OnDemandDataFiller implements DataFiller {
 	private static final Long SERVICES_STEPPING = 3_600_000L; // one hour in ms
 	private static final Long WASTES_STEPPING = 86_400_000L; // one day in ms
 	private static final Long START_DATE = new Date().getTime() - 2_592_600_000L; // 30 days and 10 min ago in ms
+
+	private static final Logger lOGGER = LoggerFactory.getLogger(DataFiller.class);
 
 	// multi value map: 1 usage simulator (for every contract) many Data to fill
 	private final Map<UsageSimulator, Set<Data>> UsageDataMap;
@@ -38,7 +43,7 @@ public class OnDemandDataFiller implements DataFiller {
 
 	@Override
 	public void fill() {
-		// for each entry <UsageSimlator, Data> generate data and submit it
+		// for each entry <UsageSimlator, Set<Data>> generate data and submit it
 		for (Entry<UsageSimulator, Set<Data>> entry : this.UsageDataMap.entrySet()) {
 			try {
 				for (Data data : entry.getValue()) {
@@ -46,8 +51,7 @@ public class OnDemandDataFiller implements DataFiller {
 					this.database.putUserData(data);
 				}
 			} catch (SQLException e) {
-				System.err.println("could not save data to DB. \nerror: " + e.getMessage());
-				e.printStackTrace();
+				lOGGER.error("could not save generated data to DB.", e);
 				break;
 			}
 		}
