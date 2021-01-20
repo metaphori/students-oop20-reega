@@ -14,14 +14,11 @@ public class MainController {
         this.navigator = navigator;
         this.navigator.selectedControllerProperty().addListener((observable, oldValue, newValue) -> {
             this.selectedController = newValue;
-            this.selectedController
-                    .setControllerChangeEvent((event, actionToExecuteAfterCreation, clearNavigationStack) -> {
-                        final Controller controller = this.navigator.pushController(event.getEventItem(),
-                                clearNavigationStack);
-                        if (actionToExecuteAfterCreation != null) {
-                            actionToExecuteAfterCreation.accept(controller);
-                        }
-                    });
+            this.selectedController.setControllerChangeEvent(evtArgs -> {
+                final Controller controller = this.navigator.pushController(evtArgs.getEventItem(),
+                        evtArgs.isClearNavigationStack());
+                evtArgs.executeAction(controller);
+            });
         });
     }
 
@@ -41,6 +38,11 @@ public class MainController {
         this.navigator.popController();
     }
 
+    /**
+     * Get the main navigator of the app
+     *
+     * @return the main navigator of the app
+     */
     public Navigator getNavigator() {
         return this.navigator;
     }

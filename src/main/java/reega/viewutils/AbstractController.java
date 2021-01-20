@@ -40,7 +40,7 @@ public abstract class AbstractController implements Controller {
         if (this.controllerChangeEvent == null) {
             return;
         }
-        this.controllerChangeEvent.handle(new EventArgs<Class<Controller>>((Class<Controller>) controllerClass, this),
+        this.controllerChangeEvent.handle(new EventArgs<>(controllerClass, this),
                 (Consumer<Controller>) actionToExecuteAfterCreation, clearNavigationStack);
     }
 
