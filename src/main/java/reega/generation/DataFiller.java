@@ -12,5 +12,5 @@ public interface DataFiller {
 	 * If no starting time is to be found in the database data will be generated for
 	 * the last 30 days.
 	 */
-	public void fill();
+	void fill();
 }
