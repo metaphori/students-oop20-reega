@@ -12,7 +12,7 @@ import reega.util.ServiceProvider;
  * @author Marco
  *
  */
-public class ReegaMain extends Application {
+public class Main extends Application {
 
     /**
      * @param args
