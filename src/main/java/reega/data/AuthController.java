@@ -14,7 +14,7 @@ public interface AuthController {
      * @param newUser
      * @throws SQLException
      */
-    public void addUser(NewUser newUser) throws SQLException, IOException;
+    void addUser(NewUser newUser) throws SQLException, IOException;
 
     /**
      * Login using email and password
@@ -26,7 +26,7 @@ public interface AuthController {
      * @throws SQLException
      * @See GenericUser
      */
-    public GenericUser emailLogin(String email, String password) throws SQLException, IOException;
+    GenericUser emailLogin(String email, String password) throws SQLException, IOException;
 
     /**
      * Login using fiscal code and password
@@ -37,7 +37,7 @@ public interface AuthController {
      * password
      * @throws SQLException
      */
-    public GenericUser fiscalCodeLogin(String fiscalCode, String password) throws SQLException, IOException;
+    GenericUser fiscalCodeLogin(String fiscalCode, String password) throws SQLException, IOException;
 
     /**
      * Login using the credentials locally stored
@@ -45,26 +45,24 @@ public interface AuthController {
      * @param credentials
      * @return
      */
-    public GenericUser tokenLogin(UserAuth credentials) throws SQLException, IOException;
+    GenericUser tokenLogin(UserAuth credentials) throws SQLException, IOException;
 
     /**
      * Store selector and validator to enable the remind-me functionality
      *
-     * @param userID    the user ID
      * @param selector  random aphanumrical string up to 12 characters
      * @param validator SHA256 encryption of a random alphanumerical string (64
      *                  characters)
      * @throws IOException
      * @throws SQLException
      */
-    public void storeUserCredentials(int userID, String selector, String validator) throws SQLException, IOException;
+    void storeUserCredentials(String selector, String validator) throws SQLException, IOException;
 
     /**
      * Remove selector and validator of the user from the DB. The user must prompt
      * in the credentials again to login
      *
-     * @param userID
      * @throws SQLException
      */
-    public void userLogout(int userID) throws SQLException, IOException;
+    void userLogout() throws SQLException, IOException;
 }

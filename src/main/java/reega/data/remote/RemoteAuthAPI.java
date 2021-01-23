@@ -78,7 +78,6 @@ public final class RemoteAuthAPI implements AuthController {
             return null;
         }
         return new GenericUser(
-                response.id,
                 Role.valueOf(response.role.toUpperCase()),
                 response.name,
                 response.surname,
@@ -87,15 +86,15 @@ public final class RemoteAuthAPI implements AuthController {
     }
 
     @Override
-    public void storeUserCredentials(int userID, String selector, String validator) throws IOException {
-        Call<Void> v = connection.getService().storeUserToken(new UserAuthToken(userID, selector, validator));
+    public void storeUserCredentials(String selector, String validator) throws IOException {
+        Call<Void> v = connection.getService().storeUserToken(new UserAuthToken(selector, validator));
         Response<Void> r = v.execute();
         logger.info(String.valueOf(r.code()));
         // TODO check successful state
     }
 
     @Override
-    public void userLogout(int userID) throws IOException {
+    public void userLogout() throws IOException {
         Call<Void> v = connection.getService().logout();
         Response<Void> r = v.execute();
         logger.info(String.valueOf(r.code()));

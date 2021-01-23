@@ -12,6 +12,4 @@ public interface User {
 	public String getFiscalCode();
 
 	public String getPasswordHash();
-
-	int getId();
 }

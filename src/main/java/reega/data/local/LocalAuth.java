@@ -14,6 +14,7 @@ import reega.users.NewUser;
 import reega.users.Role;
 
 public final class LocalAuth implements AuthController {
+    private static Integer userID;
     private final DBAccess db;
 
     public LocalAuth() throws ClassNotFoundException, SQLException {
@@ -47,10 +48,13 @@ public final class LocalAuth implements AuthController {
         if (!rs.next()) {
             return null;
         }
-        final GenericUser user = new GenericUser(rs.getInt("id"), Role.valueOf(rs.getString("role").toUpperCase()),
+        final GenericUser user = new GenericUser(Role.valueOf(rs.getString("role").toUpperCase()),
                 rs.getString("name"), rs.getString("surname"), rs.getString("email"), rs.getString("fiscal_code"));
         rs.close();
         s.close();
+        if (userID == null) {
+            userID = rs.getInt("id");
+        }
         return user;
     }
 
@@ -69,15 +73,18 @@ public final class LocalAuth implements AuthController {
         if (!BCrypt.checkpw(password, passwordHash)) {
             return null;
         }
-        final GenericUser user = new GenericUser(rs.getInt("id"), Role.valueOf(rs.getString("role").toUpperCase()),
+        final GenericUser user = new GenericUser(Role.valueOf(rs.getString("role").toUpperCase()),
                 rs.getString("name"), rs.getString("surname"), rs.getString("email"), rs.getString("fiscal_code"));
         rs.close();
         s.close();
+        if (userID == null) {
+            userID = rs.getInt("id");
+        }
         return user;
     }
 
     @Override
-    public void storeUserCredentials(int userID, String selector, String validator) throws IOException, SQLException {
+    public void storeUserCredentials(String selector, String validator) throws IOException, SQLException {
         if (selector.length() > 12) {
             throw new IllegalArgumentException("The selector must be <= 12 characters");
         }
@@ -89,7 +96,7 @@ public final class LocalAuth implements AuthController {
     }
 
     @Override
-    public void userLogout(int userID) throws SQLException {
+    public void userLogout() throws SQLException {
         String sql = String.format("delete from authentication where user_id = %d;", userID);
         db.executeStatement(sql);
     }
