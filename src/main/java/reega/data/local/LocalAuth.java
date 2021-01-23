@@ -39,10 +39,9 @@ public final class LocalAuth implements AuthController {
     }
 
     @Override
-    public GenericUser tokenLogin(UserAuth credentials) throws SQLException {
-        String sql = String.format(
-                "select u.* from users u inner join authentication a on u.id = a.user_id where u.\"id\" = %d;",
-                credentials.getUserID());
+    public GenericUser tokenLogin(UserAuth credentials) throws SQLException, IOException {
+        String sql = String.format(db.getQuery("token_login.sql"),
+                credentials.getSelector(), credentials.getValidator());
         final Statement s = db.getConnection().createStatement();
         ResultSet rs = s.executeQuery(sql);
         if (!rs.next()) {
