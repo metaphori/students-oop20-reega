@@ -10,6 +10,9 @@ import retrofit2.http.Query;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Specify the API layout and request types
+ */
 public interface ReegaService {
     // region auth
 

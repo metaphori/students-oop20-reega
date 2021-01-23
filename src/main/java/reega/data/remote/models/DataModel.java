@@ -5,6 +5,9 @@ import reega.data.models.Data;
 
 import java.util.Map;
 
+/**
+ * API data model
+ */
 public class DataModel {
     @SerializedName("type")
     public Integer type;

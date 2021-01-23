@@ -16,6 +16,9 @@ import reega.data.remote.models.DataModel;
 import retrofit2.Call;
 import retrofit2.Response;
 
+/**
+ * DataController implementation, using remote database via http requests
+ */
 public final class RemoteDatabaseAPI implements DataController {
     private static final Logger logger = LoggerFactory.getLogger(RemoteDatabaseAPI.class);
     private static RemoteConnection connection;
@@ -60,10 +63,9 @@ public final class RemoteDatabaseAPI implements DataController {
         return r.body().stream()
                 .map(cm -> new Contract(
                         cm.id,
-                        cm.userID,
                         cm.address,
                         cm.services,
-                        cm.priceModel.getModel(),
+                        cm.priceModel.getPriceModel(),
                         cm.startTime
                 )).collect(Collectors.toList());
     }

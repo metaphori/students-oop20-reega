@@ -26,6 +26,9 @@ import reega.data.models.Data;
 import reega.data.models.PriceModel;
 import reega.data.models.ServiceType;
 
+/**
+ * Implementation of DataController, using a local database (mainly for development purpose)
+ */
 public final class LocalDatabase implements DataController {
     private final DBAccess db;
 
@@ -49,7 +52,7 @@ public final class LocalDatabase implements DataController {
             final Map<String, Double> prices = new Gson().fromJson(rs.getString("prices"), pricesType);
             final PriceModel pm = new PriceModel(rs.getInt("price_model_id"), rs.getString("price_model_name"), prices);
             final List<String> services = new Gson().fromJson(rs.getString("services"), servicesType);
-            contracts.add(new Contract(rs.getInt("contract_id"), rs.getInt("user_id"), rs.getString("address"),
+            contracts.add(new Contract(rs.getInt("contract_id"), rs.getString("address"),
                     services, pm, new Date(rs.getTimestamp("start_time", tzUTC).getTime())));
         }
         rs.close();

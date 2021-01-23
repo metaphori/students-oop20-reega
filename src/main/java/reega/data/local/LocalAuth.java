@@ -13,6 +13,9 @@ import reega.users.GenericUser;
 import reega.users.NewUser;
 import reega.users.Role;
 
+/**
+ * Implementation of AuthController, using a local database (mainly for development purpose)
+ */
 public final class LocalAuth implements AuthController {
     private final DBAccess db;
 

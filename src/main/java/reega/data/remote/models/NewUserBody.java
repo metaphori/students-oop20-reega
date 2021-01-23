@@ -2,6 +2,9 @@ package reega.data.remote.models;
 
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * API data model
+ */
 public class NewUserBody {
     @SerializedName("name")
     public String name;

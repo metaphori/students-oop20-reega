@@ -1,5 +1,8 @@
 package reega.users;
 
+/**
+ * Generic implementation of User.
+ */
 public class GenericUser implements User {
 	private final Role role;
 	private final String name;

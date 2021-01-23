@@ -2,6 +2,9 @@ package reega.data.remote.models;
 
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * API data model
+ */
 public class UserAuthToken {
     @SerializedName("selector")
     public String selector;

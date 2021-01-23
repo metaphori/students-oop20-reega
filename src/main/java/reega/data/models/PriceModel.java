@@ -1,9 +1,11 @@
 package reega.data.models;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.Map;
 
+/**
+ * This object describe a PriceModel. It contains the prices for
+ * all the services supplied by Reega
+ */
 public final class PriceModel {
     private final int id;
     private final String name;
@@ -25,19 +27,6 @@ public final class PriceModel {
 
     public Map<String, Double> getPrices() {
         return this.prices;
-    }
-
-    public static final class PriceModelJsonSerialized {
-        @SerializedName("id")
-        public Integer id;
-        @SerializedName("name")
-        public String name;
-        @SerializedName("prices")
-        public Map<String, Double> prices;
-
-        public PriceModel getModel() {
-            return new PriceModel(id, name, prices);
-        }
     }
 
     @Override

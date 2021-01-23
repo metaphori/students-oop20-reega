@@ -1,5 +1,8 @@
 package reega.data.models;
 
+/**
+ * Services supplied by Reega
+ */
 public enum ServiceType {
     ELECTRICITY("electricity", 0),
     GAS("gas", 1),

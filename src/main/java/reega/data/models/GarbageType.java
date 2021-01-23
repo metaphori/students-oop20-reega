@@ -1,5 +1,8 @@
 package reega.data.models;
 
+/**
+ * Specific types of Garbage
+ */
 public enum GarbageType {
     PAPER("paper", 0),
     GLASS("glass", 1),

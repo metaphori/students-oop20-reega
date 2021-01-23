@@ -3,6 +3,9 @@ package reega.data.models;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This is a container for the data to be pushed into the DB
+ */
 public final class Data {
 	private final int contractID;
 	private final ServiceType type;

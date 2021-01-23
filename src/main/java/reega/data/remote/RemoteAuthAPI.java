@@ -15,6 +15,9 @@ import reega.users.Role;
 import retrofit2.Call;
 import retrofit2.Response;
 
+/**
+ * AuthController implementation, using remote database via http requests
+ */
 public final class RemoteAuthAPI implements AuthController {
     private static final Logger logger = LoggerFactory.getLogger(RemoteAuthAPI.class);
     private static RemoteAuthAPI INSTANCE;

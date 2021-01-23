@@ -10,6 +10,9 @@ import java.sql.Statement;
 
 import org.apache.commons.io.IOUtils;
 
+/**
+ * Handle the connection to the local DB
+ */
 class DBAccess {
 	private static DBAccess INSTANCE;
 	private static final String dbURL = "jdbc:postgresql://localhost:5432/reega";

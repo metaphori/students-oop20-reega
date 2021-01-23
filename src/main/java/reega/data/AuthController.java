@@ -7,6 +7,9 @@ import reega.data.models.UserAuth;
 import reega.users.GenericUser;
 import reega.users.NewUser;
 
+/**
+ * This controller handles all the operations on users and authentication
+ */
 public interface AuthController {
     /**
      * Add user to REEGA platform

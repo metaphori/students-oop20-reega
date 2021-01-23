@@ -7,6 +7,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import java.io.IOException;
 
+/**
+ * Handle the connection to the server and the http methods authentication
+ */
 public class RemoteConnection {
     private static final String baseUrl = "http://reega.zapto.org:4932/";
     private static String JWT;

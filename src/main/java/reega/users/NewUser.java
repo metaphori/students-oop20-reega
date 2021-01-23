@@ -2,6 +2,11 @@ package reega.users;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
+/**
+ * Application specific implementation of User. This object is
+ * used to add a new user to the DB. The password is cyphered
+ * using BCrypt algorithm with 12 rounds
+ */
 public final class NewUser extends GenericUser {
 	private final String passwordHash;
 
