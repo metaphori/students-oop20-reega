@@ -41,6 +41,7 @@ public final class UserAuth implements Serializable {
 	 * @param userID
 	 */
 	public UserAuth(final int userID) {
+		// TODO use apache instead of google hashing
 		this(userID, RandomStringUtils.random(12),
 				Hashing.sha256().hashString(RandomStringUtils.random(64), StandardCharsets.UTF_8).toString());
 	}
