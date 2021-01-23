@@ -1,13 +1,14 @@
 package reega.data.remote;
 
-import reega.data.remote.models.LoginResponse;
-import reega.data.remote.models.NewUserBody;
-import reega.data.remote.models.UserAuthToken;
+import reega.data.remote.models.*;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
+
+import java.util.Date;
+import java.util.List;
 
 public interface ReegaService {
     // region auth
@@ -33,6 +34,15 @@ public interface ReegaService {
     // endregion
 
     // region data
-    // TODO
+
+    @GET("data/getContracts")
+    Call<List<ContractModel>> getContracts();
+
+    @POST("data/fillUserData")
+    Call<Void> pushData(@Body DataModel data);
+
+    @GET("data/getLatestTimestamp")
+    Call<Date> getLatestData(@Query("type") int type, @Query("contract_id") int contractId);
+
     // endregion
 }

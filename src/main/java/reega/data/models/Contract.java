@@ -50,4 +50,16 @@ public final class Contract {
 			final Date startDate) {
 		this(0, userID, address, services, priceModel, startDate);
 	}
+
+	@Override
+	public String toString() {
+		return "Contract{" +
+				"id=" + id +
+				", userID=" + userID +
+				", address='" + address + '\'' +
+				", services=" + services +
+				", priceModel=" + priceModel +
+				", startDate=" + startDate +
+				'}';
+	}
 }

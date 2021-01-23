@@ -1,15 +1,15 @@
 package reega.data.models;
 
-public enum ServiceType {
-    ELECTRICITY("electricity", 0),
-    GAS("gas", 1),
-    WATER("water", 2),
-    GARBAGE("garbage", 3);
+public enum GarbageType {
+    PAPER("paper", 0),
+    GLASS("glass", 1),
+    PLASTIC("plastic", 2),
+    MIXED("mixed", 3);
 
     private final String name;
     private final int id;
 
-    ServiceType(String name, int id) {
+    GarbageType(String name, int id) {
         this.name = name;
         this.id = id;
     }

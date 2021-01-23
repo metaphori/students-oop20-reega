@@ -25,7 +25,7 @@ public interface DataController {
 	 * @param data
 	 * @throws SQLException
 	 */
-	public void putUserData(Data data) throws SQLException;
+	public void putUserData(Data data) throws SQLException, IOException;
 
 	/**
 	 * 
@@ -33,5 +33,5 @@ public interface DataController {
 	 * @return
 	 * @throws SQLException
 	 */
-	public Long getLatestData(int contractID, ServiceType service) throws SQLException;
+	public Long getLatestData(int contractID, ServiceType service) throws SQLException, IOException;
 }
