@@ -14,7 +14,6 @@ import reega.users.NewUser;
 import reega.users.Role;
 
 public final class LocalAuth implements AuthController {
-    private static Integer userID;
     private final DBAccess db;
 
     public LocalAuth() throws ClassNotFoundException, SQLException {
@@ -52,8 +51,8 @@ public final class LocalAuth implements AuthController {
                 rs.getString("name"), rs.getString("surname"), rs.getString("email"), rs.getString("fiscal_code"));
         rs.close();
         s.close();
-        if (userID == null) {
-            userID = rs.getInt("id");
+        if (db.userID == null) {
+            db.userID = rs.getInt("id");
         }
         return user;
     }
@@ -77,8 +76,8 @@ public final class LocalAuth implements AuthController {
                 rs.getString("name"), rs.getString("surname"), rs.getString("email"), rs.getString("fiscal_code"));
         rs.close();
         s.close();
-        if (userID == null) {
-            userID = rs.getInt("id");
+        if (db.userID == null) {
+            db.userID = rs.getInt("id");
         }
         return user;
     }
@@ -91,13 +90,13 @@ public final class LocalAuth implements AuthController {
         if (validator.length() != 64) {
             throw new IllegalArgumentException("The validator bus be a 64 char string (result of SHA265 encryption)");
         }
-        String sql = String.format(db.getQuery("insert_authentication.sql"), userID, selector, validator);
+        String sql = String.format(db.getQuery("insert_authentication.sql"), db.userID, selector, validator);
         db.executeStatement(sql);
     }
 
     @Override
     public void userLogout() throws SQLException {
-        String sql = String.format("delete from authentication where user_id = %d;", userID);
+        String sql = String.format("delete from authentication where user_id = %d;", db.userID);
         db.executeStatement(sql);
     }
 

@@ -13,12 +13,11 @@ public interface DataController {
     /**
      * List all contracts for a specific user
      *
-     * @param userID
      * @return List<Contract>
      * @throws IOException
      * @throws SQLException
      */
-    List<Contract> getUserContracts(int userID) throws IOException, SQLException;
+    List<Contract> getUserContracts() throws IOException, SQLException;
 
     /**
      * @param data

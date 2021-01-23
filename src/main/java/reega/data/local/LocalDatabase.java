@@ -34,8 +34,8 @@ public final class LocalDatabase implements DataController {
     }
 
     @Override
-    public List<Contract> getUserContracts(final int userID) throws IOException, SQLException {
-        final String sql = String.format(this.db.getQuery("user_contracts.sql"), userID);
+    public List<Contract> getUserContracts() throws IOException, SQLException {
+        final String sql = String.format(this.db.getQuery("user_contracts.sql"), db.userID);
 
         final Statement s = this.db.getConnection().createStatement();
         final ResultSet rs = s.executeQuery(sql);

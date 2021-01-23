@@ -16,6 +16,7 @@ class DBAccess {
 	private static final String dbUser = "postgres";
 	private static final String dbPass = "Nze9IiKV4s31YacJa6r4AZBV";
 	private static Connection c;
+	protected Integer userID;
 
 	DBAccess() throws ClassNotFoundException, SQLException {
 		Class.forName("org.postgresql.Driver");
@@ -43,6 +44,7 @@ class DBAccess {
 
 	protected String getQuery(String queryFile) throws IOException {
 		final InputStream is = getClass().getClassLoader().getResourceAsStream("queries/" + queryFile);
+		assert is != null;
 		return IOUtils.toString(is, StandardCharsets.UTF_8.name());
 	}
 }

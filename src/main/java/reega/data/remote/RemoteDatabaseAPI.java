@@ -51,7 +51,7 @@ public final class RemoteDatabaseAPI implements DataController {
     }
 
     @Override
-    public List<Contract> getUserContracts(int userID) throws IOException {
+    public List<Contract> getUserContracts() throws IOException {
         Call<List<ContractModel>> v = connection.getService().getContracts();
         Response<List<ContractModel>> r = v.execute();
         if (r.body() == null) {
