@@ -1,4 +1,4 @@
-package reega.data;
+package reega.data.local;
 
 import java.io.IOException;
 import java.io.InputStream;

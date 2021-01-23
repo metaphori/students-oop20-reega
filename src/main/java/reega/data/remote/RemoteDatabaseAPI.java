@@ -1,9 +1,10 @@
-package reega.data;
+package reega.data.remote;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
+import reega.data.DataController;
 import reega.data.models.Contract;
 import reega.data.models.Data;
 import reega.data.models.ServiceType;
@@ -15,7 +16,7 @@ public final class RemoteDatabaseAPI implements DataController {
 		// TODO
 	}
 
-	protected synchronized static RemoteDatabaseAPI getInstance() {
+	public synchronized static RemoteDatabaseAPI getInstance() {
 		if (INSTANCE == null) {
 			INSTANCE = new RemoteDatabaseAPI();
 		}

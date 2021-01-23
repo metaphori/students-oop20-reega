@@ -1,13 +1,14 @@
-package reega.data;
+package reega.data.remote;
 
 import java.io.IOException;
 import java.sql.SQLException;
 
+import reega.data.AuthController;
 import reega.data.models.UserAuth;
 import reega.users.GenericUser;
 import reega.users.NewUser;
 
-final class RemoteAuthAPI implements AuthController {
+public final class RemoteAuthAPI implements AuthController {
 
 	@Override
 	public void addUser(NewUser newUser) throws SQLException {

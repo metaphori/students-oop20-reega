@@ -1,5 +1,8 @@
 package reega.data;
 
+import reega.data.local.LocalAuth;
+import reega.data.remote.RemoteAuthAPI;
+
 import java.sql.SQLException;
 
 public final class AuthControllerFactory {
