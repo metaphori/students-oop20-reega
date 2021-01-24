@@ -1,4 +1,4 @@
-package reega.data;
+package reega.data.mock;
 
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockWebServer;
@@ -16,7 +16,7 @@ public class MockConnection implements AutoCloseable {
     private static RemoteDatabaseAPI databaseAPI;
     private static RemoteAuthAPI authAPI;
 
-    MockConnection(Dispatcher dispatcher) throws IOException {
+    public MockConnection(Dispatcher dispatcher) throws IOException {
         server = new MockWebServer();
         server.setDispatcher(dispatcher);
         server.start();

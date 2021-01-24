@@ -1,4 +1,4 @@
-package reega.data;
+package reega.data.mock;
 
 import com.google.gson.Gson;
 import okhttp3.HttpUrl;
@@ -24,7 +24,7 @@ public class MockedDataService {
     private final Contract defaultContract;
 
     // TODO implement methods to add and menage contracts
-    MockedDataService(Contract defaultContract) {
+    public MockedDataService(Contract defaultContract) {
         this.defaultContract = defaultContract;
     }
 

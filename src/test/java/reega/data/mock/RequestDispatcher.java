@@ -1,4 +1,4 @@
-package reega.data;
+package reega.data.mock;
 
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
@@ -15,7 +15,7 @@ import java.util.Objects;
 public final class RequestDispatcher extends Dispatcher {
     private final MockedDataService dataService;
 
-    RequestDispatcher(MockedDataService dataService) {
+    public RequestDispatcher(MockedDataService dataService) {
         this.dataService = dataService;
     }
 
