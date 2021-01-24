@@ -34,7 +34,7 @@ public class MockedDataService {
     }
 
     MockResponse fillData(RecordedRequest recordedRequest) {
-        DataModel d = new Gson().fromJson(recordedRequest.getBody().getBuffer().readUtf8(), DataModel.class);
+        DataModel d = new Gson().fromJson(recordedRequest.getBody().readUtf8(), DataModel.class);
         assertNotNull(d);
         if (d.contractId == defaultContract.getId()) {
             this.dataValues.put(d.type, d.data);

@@ -15,6 +15,7 @@ public class RemoteConnection {
     private static String JWT;
     private static Retrofit retrofit;
     private static ReegaService service;
+    private static boolean forcedService = false;
 
     interface LoginMethod {
         LoginResponse login() throws IOException;
@@ -37,6 +38,7 @@ public class RemoteConnection {
      * @param s
      */
     public RemoteConnection(ReegaService s) {
+        forcedService = true;
         service = s;
     }
 
@@ -50,6 +52,10 @@ public class RemoteConnection {
     }
 
     private void setClientAuth() {
+        // not touching the service as it's been specified at init time
+        if (forcedService) {
+            return;
+        }
         final OkHttpClient client = new OkHttpClient.Builder().addInterceptor(chain ->
                 chain.proceed(
                         chain.request().newBuilder()

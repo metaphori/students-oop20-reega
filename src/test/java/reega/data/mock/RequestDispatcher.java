@@ -39,7 +39,7 @@ public final class RequestDispatcher extends Dispatcher {
                     case "storeUserToken":
                         return authService.storeUserToken(recordedRequest);
                     case "logout":
-                        return authService.logout(recordedRequest);
+                        return authService.logout();
                 }
             } else if (path.startsWith("/data/") && dataService != null) {
                 switch (path.substring(6)) {

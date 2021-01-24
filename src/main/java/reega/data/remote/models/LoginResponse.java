@@ -20,4 +20,14 @@ public class LoginResponse {
     public String role;
     @SerializedName("jwt")
     public String jwt;
+
+    public LoginResponse(Integer id, String name, String surname, String email, String fiscalCode, String role, String jwt) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
+        this.fiscalCode = fiscalCode;
+        this.role = role;
+        this.jwt = jwt;
+    }
 }
