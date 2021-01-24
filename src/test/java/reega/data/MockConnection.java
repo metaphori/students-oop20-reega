@@ -1,38 +1,26 @@
 package reega.data;
 
+import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockWebServer;
-import reega.data.models.Contract;
-import reega.data.models.PriceModel;
 import reega.data.remote.ReegaService;
+import reega.data.remote.RemoteAuthAPI;
 import reega.data.remote.RemoteConnection;
 import reega.data.remote.RemoteDatabaseAPI;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
-
-public class MockedDataController implements AutoCloseable {
+public class MockConnection implements AutoCloseable {
     private static MockWebServer server;
     private static RemoteDatabaseAPI databaseAPI;
+    private static RemoteAuthAPI authAPI;
 
-    public MockedDataController() {
-        PriceModel pm = new PriceModel(1, "test_pm", Map.of("electricity", 1.5));
-        Contract c = new Contract(1, "address", List.of("electricity"), pm, new Date());
-        MockedDataService dataService = new MockedDataService(c);
-
+    MockConnection(Dispatcher dispatcher) throws IOException {
         server = new MockWebServer();
-        server.setDispatcher(new RequestDispatcher(dataService));
-        try {
-            server.start();
-        } catch (IOException e) {
-            fail();
-        }
+        server.setDispatcher(dispatcher);
+        server.start();
+
         final ReegaService service = new Retrofit.Builder()
                 .baseUrl(server.url("/"))
                 .addConverterFactory(GsonConverterFactory.create())
@@ -40,11 +28,15 @@ public class MockedDataController implements AutoCloseable {
                 .create(ReegaService.class);
         RemoteConnection connection = new RemoteConnection(service);
         databaseAPI = RemoteDatabaseAPI.getInstanceWithConnection(connection);
-        assertNotNull(databaseAPI);
+        authAPI = RemoteAuthAPI.getInstanceWithConnection(connection);
     }
 
     public RemoteDatabaseAPI getDatabaseAPI() {
         return databaseAPI;
+    }
+
+    public RemoteAuthAPI getAuthAPI() {
+        return authAPI;
     }
 
     @Override

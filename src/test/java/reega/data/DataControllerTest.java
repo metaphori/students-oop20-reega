@@ -1,33 +1,41 @@
 package reega.data;
 
+import okhttp3.mockwebserver.Dispatcher;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import reega.data.models.Contract;
 import reega.data.models.Data;
+import reega.data.models.PriceModel;
 import reega.data.models.ServiceType;
 import reega.data.remote.RemoteDatabaseAPI;
 
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class DataControllerTest {
-    private static final MockedDataController controller = new MockedDataController();
+    private static MockConnection connection;
     private static RemoteDatabaseAPI databaseAPI;
 
     @BeforeAll
-    static void setup() {
-        databaseAPI = controller.getDatabaseAPI();
+    static void setup() throws IOException {
+        // TODO replace this with method to add and menage contracts
+        PriceModel pm = new PriceModel(1, "test_pm", Map.of("electricity", 1.5));
+        Contract c = new Contract(1, "address", List.of("electricity"), pm, new Date());
+        Dispatcher dispatcher = new RequestDispatcher(new MockedDataService(c));
+        connection = new MockConnection(dispatcher);
+        databaseAPI = connection.getDatabaseAPI();
     }
 
     @AfterAll
     static void cleanup() throws IOException {
-        controller.close();
+        connection.close();
     }
 
     @Test
