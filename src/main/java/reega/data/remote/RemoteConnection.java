@@ -31,6 +31,15 @@ public class RemoteConnection {
         service = retrofit.create(ReegaService.class);
     }
 
+    /**
+     * Initialize the connection with the given service
+     *
+     * @param s
+     */
+    public RemoteConnection(ReegaService s) {
+        service = s;
+    }
+
     public LoginResponse login(final LoginMethod loginMethod) throws IOException {
         final LoginResponse response = loginMethod.login();
         if (response != null) {
