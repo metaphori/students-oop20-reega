@@ -3,20 +3,20 @@ package reega.data.mock;
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.RecordedRequest;
-import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 
 public final class RequestDispatcher extends Dispatcher {
     private final MockedDataService dataService;
+    private final MockedAuthService authService;
 
-    public RequestDispatcher(MockedDataService dataService) {
+    public RequestDispatcher(@Nullable MockedDataService dataService, @Nullable MockedAuthService authService) {
         this.dataService = dataService;
+        this.authService = authService;
     }
 
     @NotNull
@@ -26,63 +26,35 @@ public final class RequestDispatcher extends Dispatcher {
         int queryPoint = path.indexOf("?");
         path = path.substring(0, queryPoint == -1 ? path.length() : queryPoint);
         try {
-            switch (path) {
-                // Auth
-                case "/auth/addUser":
-                    return addUser(recordedRequest);
-                case "/auth/emailLogin":
-                    return emailLogin(recordedRequest);
-                case "/auth/fcLogin":
-                    return fcLogin(recordedRequest);
-                case "/auth/tokenLogin":
-                    return tokenLogin(recordedRequest);
-                case "/auth/storeUserToken":
-                    return storeUserToken(recordedRequest);
-                case "/auth/logout":
-                    return logout(recordedRequest);
-                // Data
-                case "/data/getContracts":
-                    return dataService.contracts();
-                case "/data/fillUserData":
-                    return dataService.fillData(recordedRequest);
-                case "/data/getLatestTimestamp":
-                    return dataService.getLatestTimestamp(recordedRequest);
-                default:
-                    System.out.println("route non trovata per" + recordedRequest.getPath());
-                    return new MockResponse().setResponseCode(404);
+            if (path.startsWith("/auth/") && authService != null) {
+                switch (path.substring(6)) {
+                    case "addUser":
+                        return authService.addUser(recordedRequest);
+                    case "emailLogin":
+                        return authService.emailLogin(recordedRequest);
+                    case "fcLogin":
+                        return authService.fcLogin(recordedRequest);
+                    case "tokenLogin":
+                        return authService.tokenLogin(recordedRequest);
+                    case "storeUserToken":
+                        return authService.storeUserToken(recordedRequest);
+                    case "logout":
+                        return authService.logout(recordedRequest);
+                }
+            } else if (path.startsWith("/data/") && dataService != null) {
+                switch (path.substring(6)) {
+                    case "getContracts":
+                        return dataService.contracts();
+                    case "fillUserData":
+                        return dataService.fillData(recordedRequest);
+                    case "getLatestTimestamp":
+                        return dataService.getLatestTimestamp(recordedRequest);
+                }
             }
         } catch (IOException e) {
-            return new MockResponse().setResponseCode(500);
+            e.printStackTrace();
         }
-    }
-
-    private MockResponse addUser(RecordedRequest recordedRequest) {
+        System.out.println("route non trovata per" + recordedRequest.getPath());
         return new MockResponse().setResponseCode(500);
-    }
-
-    private MockResponse emailLogin(RecordedRequest recordedRequest) {
-        return new MockResponse().setResponseCode(500);
-    }
-
-    private MockResponse fcLogin(RecordedRequest recordedRequest) {
-        return new MockResponse().setResponseCode(500);
-    }
-
-    private MockResponse tokenLogin(RecordedRequest recordedRequest) {
-        return new MockResponse().setResponseCode(500);
-    }
-
-    private MockResponse storeUserToken(RecordedRequest recordedRequest) {
-        return new MockResponse().setResponseCode(500);
-    }
-
-    private MockResponse logout(RecordedRequest recordedRequest) {
-        return new MockResponse().setResponseCode(500);
-    }
-
-    private String getResponse(String response) throws IOException {
-        final InputStream is = getClass().getClassLoader().getResourceAsStream("mock-response/" + response);
-        assert is != null;
-        return IOUtils.toString(is, StandardCharsets.UTF_8.name());
     }
 }

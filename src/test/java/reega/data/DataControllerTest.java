@@ -31,7 +31,7 @@ public class DataControllerTest {
         // TODO replace this with method to add and menage contracts
         PriceModel pm = new PriceModel(1, "test_pm", Map.of("electricity", 1.5));
         Contract c = new Contract(1, "address", List.of("electricity"), pm, new Date());
-        Dispatcher dispatcher = new RequestDispatcher(new MockedDataService(c));
+        Dispatcher dispatcher = new RequestDispatcher(new MockedDataService(c), null);
         connection = new MockConnection(dispatcher);
         databaseAPI = connection.getDatabaseAPI();
     }
