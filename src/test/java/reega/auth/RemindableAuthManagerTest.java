@@ -19,8 +19,9 @@ import okhttp3.mockwebserver.Dispatcher;
 import reega.data.mock.MockConnection;
 import reega.data.mock.MockedAuthService;
 import reega.data.mock.RequestDispatcher;
-import reega.io.IOController;
 import reega.io.IOControllerFactory;
+import reega.io.MockIOController;
+import reega.io.TokenIOController;
 import reega.users.GenericUser;
 import reega.users.NewUser;
 import reega.users.Role;
@@ -34,7 +35,7 @@ class RemindableAuthManagerTest {
 
     private static MockConnection connection;
     private static MockedAuthService authService;
-    private static IOController ioController;
+    private static TokenIOController ioController;
     private static AuthManager authManager;
 
     @BeforeAll
@@ -42,7 +43,7 @@ class RemindableAuthManagerTest {
         RemindableAuthManagerTest.authService = new MockedAuthService();
         final Dispatcher dispatcher = new RequestDispatcher(null, RemindableAuthManagerTest.authService);
         RemindableAuthManagerTest.connection = new MockConnection(dispatcher);
-        RemindableAuthManagerTest.ioController = IOControllerFactory.getDefaultIOController();
+        RemindableAuthManagerTest.ioController = IOControllerFactory.createTokenIOController(new MockIOController());
         RemindableAuthManagerTest.authManager = new RemindableAuthManager(
                 RemindableAuthManagerTest.connection.getAuthAPI(), new MockExceptionHandler(),
                 RemindableAuthManagerTest.ioController);

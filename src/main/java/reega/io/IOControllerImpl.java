@@ -26,10 +26,6 @@ public class IOControllerImpl implements IOController {
      * URI of the directory of the app
      */
     private static final String APP_DIRECTORY_URI;
-    /**
-     * URI of the token file
-     */
-    private static final String TOKEN_FILE_URI;
 
     static {
         final String baseDir = System.getProperty("user.home");
@@ -47,8 +43,6 @@ public class IOControllerImpl implements IOController {
             // Create the directory if it doesn't exist
             dir.mkdir();
         }
-
-        TOKEN_FILE_URI = IOControllerImpl.APP_DIRECTORY_URI + File.separator + "token.reega";
     }
 
     /**
@@ -65,14 +59,6 @@ public class IOControllerImpl implements IOController {
     @Override
     public String getDefaultDirectoryPath() {
         return IOControllerImpl.APP_DIRECTORY_URI;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getTokenFilePath() {
-        return IOControllerImpl.TOKEN_FILE_URI;
     }
 
 }
