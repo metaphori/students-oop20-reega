@@ -1,17 +1,18 @@
 package reega.users;
 
+/**
+ * Basic use interface containing the minimum user's info
+ */
 public interface User {
-	public Role getRole();
+    Role getRole();
 
-	public String getName();
+    String getName();
 
-	public String getSurname();
+    String getSurname();
 
-	public String getEmail();
+    String getEmail();
 
-	public String getFiscalCode();
+    String getFiscalCode();
 
-	public String getPasswordHash();
-
-	int getId();
+    String getPasswordHash();
 }

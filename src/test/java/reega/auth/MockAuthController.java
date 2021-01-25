@@ -74,13 +74,14 @@ public class MockAuthController implements AuthController {
      * {@inheritDoc}
      */
     @Override
-    public void storeUserCredentials(final int userID, final String selector, final String validator)
+    public void storeUserCredentials(final String selector, final String validator)
             throws SQLException, IOException {
-        if (userID == MockAuthController.ID_FOR_SQL_EXCEPTION) {
+        // deprecated handling user ID
+        /*if (userID == MockAuthController.ID_FOR_SQL_EXCEPTION) {
             throw new SQLException();
         } else if (userID == MockAuthController.ID_FOR_IO_EXCEPTION) {
             throw new IOException();
-        }
+        }*/
 
     }
 
@@ -88,9 +89,10 @@ public class MockAuthController implements AuthController {
      * {@inheritDoc}
      */
     @Override
-    public void userLogout(final int userID) throws SQLException {
-        if (userID == MockAuthController.ID_FOR_SQL_EXCEPTION) {
+    public void userLogout() throws SQLException {
+        // deprecated handling user ID
+        /*if (userID == MockAuthController.ID_FOR_SQL_EXCEPTION) {
             throw new SQLException();
-        }
+        }*/
     }
 }

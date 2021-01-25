@@ -42,7 +42,7 @@ public class RemindableAuthManager implements AuthManager {
 
     @Inject
     public RemindableAuthManager(final AuthController authController, final ExceptionHandler exceptionHandler,
-            final IOController ioController) {
+                                 final IOController ioController) {
         Objects.requireNonNull(authController);
         Objects.requireNonNull(exceptionHandler);
         Objects.requireNonNull(ioController);
@@ -63,7 +63,7 @@ public class RemindableAuthManager implements AuthManager {
         final Optional<GenericUser> loggedInUser;
         try {
             loggedInUser = Optional.ofNullable(this.authController.tokenLogin(uAuth.get()));
-        } catch (final SQLException e) {
+        } catch (final SQLException | IOException e) {
             this.exceptionHandler.handleException(e);
             return Optional.empty();
         }
@@ -78,7 +78,7 @@ public class RemindableAuthManager implements AuthManager {
     public boolean createUser(final NewUser user) {
         try {
             this.authController.addUser(user);
-        } catch (final SQLException e) {
+        } catch (final SQLException | IOException e) {
             this.exceptionHandler.handleException(e, "createUser");
             return false;
         }
@@ -94,7 +94,7 @@ public class RemindableAuthManager implements AuthManager {
             Optional<GenericUser> loggedInUser;
             try {
                 loggedInUser = Optional.ofNullable(this.authController.emailLogin(userMethod, hash));
-            } catch (final SQLException e) {
+            } catch (final SQLException | IOException e) {
                 this.exceptionHandler.handleException(e, "emailLogin -> Login call");
                 return Optional.empty();
             }
@@ -111,7 +111,7 @@ public class RemindableAuthManager implements AuthManager {
             Optional<GenericUser> loggedInUser;
             try {
                 loggedInUser = Optional.ofNullable(this.authController.fiscalCodeLogin(userMethod, hash));
-            } catch (final SQLException e) {
+            } catch (final SQLException | IOException e) {
                 this.exceptionHandler.handleException(e, "fiscalCodeLogin -> Login call");
                 return Optional.empty();
             }
@@ -131,20 +131,20 @@ public class RemindableAuthManager implements AuthManager {
      *         Optional otherwise
      */
     private Optional<GenericUser> login(final String userMethod, final String pwd, final boolean saveToken,
-            final BiFunction<String, String, Optional<GenericUser>> invocationMethod) {
+                                        final BiFunction<String, String, Optional<GenericUser>> invocationMethod) {
         final Optional<GenericUser> loggedInUser = invocationMethod.apply(userMethod, pwd);
 
         if (saveToken) {
             // Save the token
             loggedInUser.ifPresent(usr -> {
-                final UserAuth uAuth = new UserAuth(usr.getId());
+                final UserAuth uAuth = new UserAuth();
                 this.storeUserAuthentication(uAuth);
             });
         } else {
             // Delete the token if it exists
             loggedInUser.ifPresent(usr -> {
                 if (this.getExistingTokenFile().isPresent()) {
-                    this.deleteUserAuthentication(usr.getId());
+                    this.deleteUserAuthentication();
                 }
             });
         }
@@ -161,7 +161,7 @@ public class RemindableAuthManager implements AuthManager {
      */
     private void storeUserAuthentication(final UserAuth userAuth) {
         try {
-            this.authController.storeUserCredentials(userAuth.getUserID(), userAuth.getSelector(),
+            this.authController.storeUserCredentials(userAuth.getSelector(),
                     userAuth.getValidator());
         } catch (final SQLException | IOException e) {
             this.exceptionHandler.handleException(e);
@@ -191,11 +191,10 @@ public class RemindableAuthManager implements AuthManager {
         }
 
         try (FileOutputStream stream = new FileOutputStream(tokenFile);
-                ObjectOutputStream oos = new ObjectOutputStream(stream)) {
+             ObjectOutputStream oos = new ObjectOutputStream(stream)) {
             oos.writeObject(userAuth);
         } catch (final IOException e) {
             this.exceptionHandler.handleException(e, "readUserAuthentication -> Reading the token file");
-            return;
         }
     }
 
@@ -215,7 +214,7 @@ public class RemindableAuthManager implements AuthManager {
 
         final UserAuth userAuth;
         try (FileInputStream stream = new FileInputStream(tokenFile);
-                ObjectInputStream oos = new ObjectInputStream(stream)) {
+             ObjectInputStream oos = new ObjectInputStream(stream)) {
             userAuth = (UserAuth) oos.readObject();
         } catch (final IOException e) {
             this.exceptionHandler.handleException(e, "readUserAuthentication -> Reading the token file IO");
@@ -253,13 +252,12 @@ public class RemindableAuthManager implements AuthManager {
      * Delete the user authentication with the {@link #authController} and in the
      * disk
      *
-     * @param userID ID of the user that needs to revoke its authentication
      * @return true if the operation successfully ended, false otherwise
      */
-    private boolean deleteUserAuthentication(final int userID) {
+    private boolean deleteUserAuthentication() {
         try {
-            this.authController.userLogout(userID);
-        } catch (final SQLException e) {
+            this.authController.userLogout();
+        } catch (final SQLException | IOException e) {
             this.exceptionHandler.handleException(e, "logout -> db logout");
             return false;
         }
@@ -289,8 +287,8 @@ public class RemindableAuthManager implements AuthManager {
      * {@inheritDoc}
      */
     @Override
-    public boolean logout(final int userID) {
-        return this.deleteUserAuthentication(userID);
+    public boolean logout() {
+        return this.deleteUserAuthentication();
     }
 
     /**
@@ -298,7 +296,7 @@ public class RemindableAuthManager implements AuthManager {
      */
     @Override
     public boolean logout(final GenericUser user) {
-        return this.logout(user.getId());
+        return this.logout();
     }
 
 }
