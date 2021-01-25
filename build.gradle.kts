@@ -35,11 +35,15 @@ dependencies {
             implementation("org.openjfx:javafx-$module:13:$platform")
         }
     }
+    
 
     // Tests
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.0")
     testImplementation("com.squareup.okhttp3:mockwebserver:4.9.0")
+    
+    // Implementation to make MockWebServer work with JUnit 5 in Eclipse 
+    implementation("com.squareup.okhttp3:okhttp:4.9.0")
 
     // DB driver (local development purpose only)
     implementation("org.postgresql:postgresql:42.2.18")
