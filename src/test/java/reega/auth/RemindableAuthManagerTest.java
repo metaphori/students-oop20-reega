@@ -52,6 +52,7 @@ class RemindableAuthManagerTest {
     @AfterAll
     static void cleanup() throws IOException {
         RemindableAuthManagerTest.connection.close();
+
     }
 
     @AfterEach

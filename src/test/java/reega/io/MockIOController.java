@@ -6,21 +6,22 @@ package reega.io;
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.rules.TemporaryFolder;
-
 /**
  * @author Marco
  *
  */
 public class MockIOController implements IOController {
 
-    private final TemporaryFolder tmpFolder = TemporaryFolder.builder().assureDeletion().build();
-
-    private final File defaultDirectory;
+    private final File defaultDirectoryFile;
 
     public MockIOController() throws IOException {
-        this.tmpFolder.create();
-        this.defaultDirectory = this.tmpFolder.newFolder();
+        // Get the temporary directory based on the OS
+        final String tmpDirPath = System.getProperty("java.io.tmpdir");
+        this.defaultDirectoryFile = new File(tmpDirPath + File.separator + "reega");
+        // Create the folder
+        this.defaultDirectoryFile.mkdir();
+        // Make it delete itself when the JVM shuts down
+        this.defaultDirectoryFile.deleteOnExit();
     }
 
     /**
@@ -28,7 +29,7 @@ public class MockIOController implements IOController {
      */
     @Override
     public File getDefaultDirectory() {
-        return this.defaultDirectory;
+        return this.defaultDirectoryFile;
     }
 
     /**
@@ -36,7 +37,7 @@ public class MockIOController implements IOController {
      */
     @Override
     public String getDefaultDirectoryPath() {
-        return this.defaultDirectory.getAbsolutePath();
+        return this.defaultDirectoryFile.getAbsolutePath();
     }
 
 }
