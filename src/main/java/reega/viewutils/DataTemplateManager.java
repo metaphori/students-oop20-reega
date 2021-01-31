@@ -60,8 +60,7 @@ public final class DataTemplateManager {
      * Get the the template associated with {@code dataObjectClass}
      *
      * @param dataObjectClass data object class to search
-     * @return an Optional filled in with a {@link DataTemplate} if it has been
-     *         found, an empty Optional otherwise
+     * @return an Optional filled in with a {@link DataTemplate} if it has been found, an empty Optional otherwise
      */
     public Optional<DataTemplate<?>> getTemplate(final Class<?> dataObjectClass) {
         Objects.requireNonNull(dataObjectClass);

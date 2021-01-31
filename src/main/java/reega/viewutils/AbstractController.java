@@ -16,8 +16,7 @@ public abstract class AbstractController implements Controller {
      *
      * @param <T>                  type of the new controller
      * @param controllerClass      class of the new controller
-     * @param clearNavigationStack clear the navigation stack before pushing the new
-     *                             controller
+     * @param clearNavigationStack clear the navigation stack before pushing the new controller
      */
     protected <T extends Controller> void pushController(final Class<T> controllerClass,
             final boolean clearNavigationStack) {
@@ -25,14 +24,12 @@ public abstract class AbstractController implements Controller {
     }
 
     /**
-     * Push a new controller and execute {@code actionToExecuteAfterCreation} after
-     * it has been created
+     * Push a new controller and execute {@code actionToExecuteAfterCreation} after it has been created
      *
      * @param <T>                  type of the new controller
      * @param controllerClass      class of the new controller
      * @param actionToExecute      action to execute after its creation
-     * @param clearNavigationStack clear the navigation stack before pushing the new
-     *                             controller
+     * @param clearNavigationStack clear the navigation stack before pushing the new controller
      */
     @SuppressWarnings("unchecked")
     protected <T extends Controller> void pushController(final Class<T> controllerClass,

@@ -8,30 +8,34 @@ import reega.data.models.Contract;
 import reega.data.models.Data;
 import reega.data.models.ServiceType;
 
+/**
+ * This controller handles all the data-based operations
+ */
 public interface DataController {
 
-	/**
-	 * List all contracts for a specific user
-	 * 
-	 * @param userID
-	 * @return List<Contract>
-	 * @throws IOException
-	 * @throws SQLException
-	 */
-	public List<Contract> getUserContracts(int userID) throws IOException, SQLException;
+    /**
+     * List all contracts for the user
+     *
+     * @return List<Contract>
+     * @throws IOException
+     * @throws SQLException
+     */
+    List<Contract> getUserContracts() throws IOException, SQLException;
 
-	/**
-	 * 
-	 * @param data
-	 * @throws SQLException
-	 */
-	public void putUserData(Data data) throws SQLException;
+    /**
+     * Push data to the database (implementation specific)
+     *
+     * @param data
+     * @throws SQLException
+     */
+    void putUserData(Data data) throws SQLException, IOException;
 
-	/**
-	 * 
-	 * @param contractID
-	 * @return
-	 * @throws SQLException
-	 */
-	public Long getLatestData(int contractID, ServiceType service) throws SQLException;
+    /**
+     * Get the latest timestamp for the specific contract and metric present in the database
+     *
+     * @param contractID
+     * @return
+     * @throws SQLException
+     */
+    Long getLatestData(int contractID, ServiceType service) throws SQLException, IOException;
 }
