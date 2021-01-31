@@ -102,7 +102,7 @@ public class MockedAuthService {
             default:
                 return new MockResponse().setResponseCode(500);
         }
-        if (usr.size() < 1 || !BCrypt.checkpw(psk, users.get(0).passwordHash)) {
+        if (usr.size() < 1 || !BCrypt.checkpw(psk, usr.get(0).passwordHash)) {
             return new MockResponse().setResponseCode(500);
         }
         LoginResponse user = getLoginResponse(usr.get(0));
