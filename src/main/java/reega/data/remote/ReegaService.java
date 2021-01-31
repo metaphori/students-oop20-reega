@@ -38,8 +38,14 @@ public interface ReegaService {
 
     // region data
 
-    @GET("data/getContracts")
+    @POST("data/contract")
+    Call<Void> addContract(@Body NewContract contract);
+
+    @GET("data/contract")
     Call<List<ContractModel>> getContracts();
+
+    @GET("data/price_model")
+    Call<List<ContractModel.PriceModel>> getPriceModels();
 
     @POST("data/fillUserData")
     Call<Void> pushData(@Body DataModel data);
