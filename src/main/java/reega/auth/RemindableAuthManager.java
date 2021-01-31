@@ -28,8 +28,7 @@ import reega.users.NewUser;
 /**
  * @author Marco
  *
- *         Authentication controller that uses a file token to authenticate
- *         without a password
+ *         Authentication controller that uses a file token to authenticate without a password
  */
 public class RemindableAuthManager implements AuthManager {
 
@@ -42,7 +41,7 @@ public class RemindableAuthManager implements AuthManager {
 
     @Inject
     public RemindableAuthManager(final AuthController authController, final ExceptionHandler exceptionHandler,
-                                 final IOController ioController) {
+            final IOController ioController) {
         Objects.requireNonNull(authController);
         Objects.requireNonNull(exceptionHandler);
         Objects.requireNonNull(ioController);
@@ -120,18 +119,16 @@ public class RemindableAuthManager implements AuthManager {
     }
 
     /**
-     * Generic login given a {@code userMethod} that is a string and a password
-     * {@code pwd}
+     * Generic login given a {@code userMethod} that is a string and a password {@code pwd}
      *
      * @param userMethod       credential to login
      * @param pwd              password (not encrypted)
      * @param saveToken        true if needed to save the token
      * @param invocationMethod method to invoke for logging in
-     * @return a filled in Optional if the login successfully returned, an empty
-     *         Optional otherwise
+     * @return a filled in Optional if the login successfully returned, an empty Optional otherwise
      */
     private Optional<GenericUser> login(final String userMethod, final String pwd, final boolean saveToken,
-                                        final BiFunction<String, String, Optional<GenericUser>> invocationMethod) {
+            final BiFunction<String, String, Optional<GenericUser>> invocationMethod) {
         final Optional<GenericUser> loggedInUser = invocationMethod.apply(userMethod, pwd);
 
         if (saveToken) {
@@ -153,16 +150,14 @@ public class RemindableAuthManager implements AuthManager {
     }
 
     /**
-     * Store the user authentication with the {@link #authController} and in the
-     * disk
+     * Store the user authentication with the {@link #authController} and in the disk
      *
      * @param userAuth user authentication to save
      * @see #storeUserAuthenticationToDisk(UserAuth)
      */
     private void storeUserAuthentication(final UserAuth userAuth) {
         try {
-            this.authController.storeUserCredentials(userAuth.getSelector(),
-                    userAuth.getValidator());
+            this.authController.storeUserCredentials(userAuth.getSelector(), userAuth.getValidator());
         } catch (final SQLException | IOException e) {
             this.exceptionHandler.handleException(e);
             return;
@@ -191,7 +186,7 @@ public class RemindableAuthManager implements AuthManager {
         }
 
         try (FileOutputStream stream = new FileOutputStream(tokenFile);
-             ObjectOutputStream oos = new ObjectOutputStream(stream)) {
+                ObjectOutputStream oos = new ObjectOutputStream(stream)) {
             oos.writeObject(userAuth);
         } catch (final IOException e) {
             this.exceptionHandler.handleException(e, "readUserAuthentication -> Reading the token file");
@@ -201,8 +196,8 @@ public class RemindableAuthManager implements AuthManager {
     /**
      * Read the user authentication token from the disk
      *
-     * @return an empty Optional if any operation failed or the file isn't in the
-     *         correct format, a filled in Optional otherwise
+     * @return an empty Optional if any operation failed or the file isn't in the correct format, a filled in Optional
+     *         otherwise
      */
     private Optional<UserAuth> readUserAuthenticationFromDisk() {
         final Optional<File> tokenFileOptional = this.getExistingTokenFile();
@@ -214,7 +209,7 @@ public class RemindableAuthManager implements AuthManager {
 
         final UserAuth userAuth;
         try (FileInputStream stream = new FileInputStream(tokenFile);
-             ObjectInputStream oos = new ObjectInputStream(stream)) {
+                ObjectInputStream oos = new ObjectInputStream(stream)) {
             userAuth = (UserAuth) oos.readObject();
         } catch (final IOException e) {
             this.exceptionHandler.handleException(e, "readUserAuthentication -> Reading the token file IO");
@@ -249,8 +244,7 @@ public class RemindableAuthManager implements AuthManager {
     }
 
     /**
-     * Delete the user authentication with the {@link #authController} and in the
-     * disk
+     * Delete the user authentication with the {@link #authController} and in the disk
      *
      * @return true if the operation successfully ended, false otherwise
      */
@@ -267,8 +261,7 @@ public class RemindableAuthManager implements AuthManager {
     /**
      * Get the token file if it exists, otherwise an empty Optional
      *
-     * @return a filled in Optional with the token file if the token file exists, an
-     *         empty Optional otherwise
+     * @return a filled in Optional with the token file if the token file exists, an empty Optional otherwise
      */
     private Optional<File> getExistingTokenFile() {
         return Optional.of(this.getTokenFile()).filter(File::exists);

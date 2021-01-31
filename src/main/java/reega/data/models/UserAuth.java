@@ -1,14 +1,14 @@
 package reega.data.models;
 
-import com.google.common.hash.Hashing;
-import org.apache.commons.lang3.RandomStringUtils;
-
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 
+import org.apache.commons.lang3.RandomStringUtils;
+
+import com.google.common.hash.Hashing;
+
 /**
- * This object is used to represent everything you need to implement the
- * "remind-me" mechanism.
+ * This object is used to represent everything you need to implement the "remind-me" mechanism.
  *
  * @author manu
  */
@@ -30,8 +30,7 @@ public final class UserAuth implements Serializable {
     }
 
     /**
-     * Generate a UserAuth for the user with self generating selector
-     * and validator
+     * Generate a UserAuth for the user with self generating selector and validator
      */
     public UserAuth() {
         // TODO use apache instead of google hashing
@@ -40,10 +39,10 @@ public final class UserAuth implements Serializable {
     }
 
     public String getSelector() {
-        return selector;
+        return this.selector;
     }
 
     public String getValidator() {
-        return validator;
+        return this.validator;
     }
 }

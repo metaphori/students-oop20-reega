@@ -31,8 +31,7 @@ public interface DataController {
     void putUserData(Data data) throws SQLException, IOException;
 
     /**
-     * Get the latest timestamp for the specific contract and metric
-     * present in the database
+     * Get the latest timestamp for the specific contract and metric present in the database
      *
      * @param contractID
      * @return

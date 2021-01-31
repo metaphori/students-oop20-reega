@@ -3,8 +3,7 @@ package reega.data.models;
 import java.util.Map;
 
 /**
- * This object describe a PriceModel. It contains the prices for
- * all the services supplied by Reega
+ * This object describe a PriceModel. It contains the prices for all the services supplied by Reega
  */
 public final class PriceModel {
     private final int id;
@@ -31,10 +30,6 @@ public final class PriceModel {
 
     @Override
     public String toString() {
-        return "PriceModel{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", prices=" + prices +
-                '}';
+        return "PriceModel{" + "id=" + this.id + ", name='" + this.name + '\'' + ", prices=" + this.prices + '}';
     }
 }

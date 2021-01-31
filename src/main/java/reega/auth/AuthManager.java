@@ -17,8 +17,7 @@ public interface AuthManager {
     /**
      * Try a login without a password
      *
-     * @return an empty Optional if the operation didn't succeed, filled in with the
-     *         logged in user otherwise
+     * @return an empty Optional if the operation didn't succeed, filled in with the logged in user otherwise
      */
     Optional<GenericUser> tryLoginWithoutPassword();
 
@@ -35,10 +34,8 @@ public interface AuthManager {
      *
      * @param email     email to use for login
      * @param pwd       password to use for login
-     * @param saveToken true if there's desire to save a token for a no password
-     *                  login, false otherwise
-     * @return an Optional filled in with logged in user if the login succeded, an
-     *         empty Optional otherwise
+     * @param saveToken true if there's desire to save a token for a no password login, false otherwise
+     * @return an Optional filled in with logged in user if the login succeded, an empty Optional otherwise
      */
     Optional<GenericUser> emailLogin(String email, String pwd, boolean saveToken);
 
@@ -47,16 +44,13 @@ public interface AuthManager {
      *
      * @param fiscalCode fiscal code to use for login
      * @param pwd        password to use for login
-     * @param saveToken  true if there's desire to save a token for a no password
-     *                   login, false otherwise
-     * @return an Optional filled in with logged in user if the login succeded, an
-     *         empty Optional otherwise
+     * @param saveToken  true if there's desire to save a token for a no password login, false otherwise
+     * @return an Optional filled in with logged in user if the login succeded, an empty Optional otherwise
      */
     Optional<GenericUser> fiscalCodeLogin(String fiscalCode, String pwd, boolean saveToken);
 
     /**
-     * Log out the user represented by {@code userID} from the current application,
-     * and delete token if exists
+     * Log out the user represented by {@code userID} from the current application, and delete token if exists
      *
      * @return true if the user successfully logged out, false otherwise
      */

@@ -6,8 +6,7 @@ import reega.data.remote.RemoteAuthAPI;
 import java.sql.SQLException;
 
 /**
- * This factory returns an implementation of AuthController based
- * on the needs.
+ * This factory returns an implementation of AuthController based on the needs.
  */
 public final class AuthControllerFactory {
     public static AuthController getDefaultAuthController() throws ClassNotFoundException, SQLException {
