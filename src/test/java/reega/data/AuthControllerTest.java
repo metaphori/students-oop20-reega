@@ -99,6 +99,6 @@ public class AuthControllerTest {
         assertNull(user);
 
         user = authAPI.emailLogin("test@reega.it", "PASSWORD");
-        assertNull(user);
+        assertNotNull(user);
     }
 }

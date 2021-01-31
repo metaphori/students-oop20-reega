@@ -87,7 +87,6 @@ public class MockedAuthService {
 
     MockResponse logout() {
         tokens.remove(userID);
-        users.remove(userID);
         return new MockResponse().setResponseCode(500);
     }
 
