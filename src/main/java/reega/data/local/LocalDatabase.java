@@ -58,7 +58,7 @@ public final class LocalDatabase implements DataController {
     public void addContract(NewContract contract) throws SQLException {
         String sql = String.format("with \"user\" as (select id from users where fiscal_code = %s)" +
                         "insert into contracts (user_id, address, price_model_id, services, start_time) (" +
-                        "select id, %s, %d, %s, %s from \"user\");",
+                        "select id, '%s', %d, '%s', '%s' from \"user\");",
                 contract.userFiscalCode,
                 contract.address,
                 contract.priceModelId,
@@ -80,6 +80,19 @@ public final class LocalDatabase implements DataController {
             prices.add(new PriceModel(rs.getInt("id"), rs.getString("name"), p));
         }
         return prices;
+    }
+
+    @Override
+    public void addPriceModel(PriceModel priceModel) throws SQLException {
+        String prices = new Gson().toJson(priceModel.getPrices());
+        String sql = String.format("insert into price_models (\"name\", prices) values ('%s', '%s');",
+                priceModel.getName(), prices);
+        db.executeStatement(sql);
+    }
+
+    @Override
+    public void removePriceModel(int id) throws IOException, SQLException {
+        db.executeStatement("delete from price_models where id = " + id);
     }
 
     @Override

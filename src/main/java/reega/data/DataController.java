@@ -43,6 +43,23 @@ public interface DataController {
     List<PriceModel> getPriceModels() throws IOException, SQLException;
 
     /**
+     * Add price model
+     *
+     * @throws IOException
+     * @throws SQLException
+     */
+    void addPriceModel(PriceModel priceModel) throws IOException, SQLException;
+
+    /**
+     * Remove the price model. DO NOT DELETE IF THERE IS A CONTRACT USING THE PRICE MODEL
+     *
+     * @param id
+     * @throws IOException
+     * @throws SQLException
+     */
+    void removePriceModel(int id) throws IOException, SQLException;
+
+    /**
      * Push data to the database (implementation specific)
      *
      * @param data

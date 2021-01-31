@@ -101,4 +101,23 @@ public class RemoteDatabaseAPI implements DataController {
         }
         return r.body().stream().map(ContractModel.PriceModel::getPriceModel).collect(Collectors.toList());
     }
+
+    @Override
+    public void addPriceModel(PriceModel priceModel) throws IOException {
+        ContractModel.PriceModel model = new ContractModel.PriceModel();
+        model.name = priceModel.getName();
+        model.prices = priceModel.getPrices();
+        Call<Void> v = connection.getService().addPriceModel(model);
+        Response<Void> r = v.execute();
+        logger.info(String.valueOf(r.code()));
+        // TODO check successful state
+    }
+
+    @Override
+    public void removePriceModel(int id) throws IOException {
+        Call<Void> v = connection.getService().removePriceModel(id);
+        Response<Void> r = v.execute();
+        logger.info(String.valueOf(r.code()));
+        // TODO check successful state
+    }
 }
