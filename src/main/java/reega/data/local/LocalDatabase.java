@@ -69,6 +69,11 @@ public final class LocalDatabase implements DataController {
     }
 
     @Override
+    public void removeContract(int id) throws SQLException {
+        db.executeStatement("delete from contracts where id = " + id);
+    }
+
+    @Override
     public List<PriceModel> getPriceModels() throws SQLException {
         final Statement s = this.db.getConnection().createStatement();
         final ResultSet rs = s.executeQuery("select * from price_models");
@@ -91,7 +96,7 @@ public final class LocalDatabase implements DataController {
     }
 
     @Override
-    public void removePriceModel(int id) throws IOException, SQLException {
+    public void removePriceModel(int id) throws SQLException {
         db.executeStatement("delete from price_models where id = " + id);
     }
 

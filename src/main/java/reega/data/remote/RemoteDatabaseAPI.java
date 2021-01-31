@@ -92,6 +92,14 @@ public class RemoteDatabaseAPI implements DataController {
     }
 
     @Override
+    public void removeContract(int id) throws IOException {
+        Call<Void> v = connection.getService().removeContract(id);
+        Response<Void> r = v.execute();
+        logger.info(String.valueOf(r.code()));
+        // TODO check successful state
+    }
+
+    @Override
     public List<PriceModel> getPriceModels() throws IOException {
         Call<List<ContractModel.PriceModel>> v = connection.getService().getPriceModels();
         Response<List<ContractModel.PriceModel>> r = v.execute();

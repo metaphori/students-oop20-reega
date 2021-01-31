@@ -34,6 +34,14 @@ public interface DataController {
     void addContract(NewContract contract) throws IOException, SQLException;
 
     /**
+     * Delete contract with REEGA. It will also delete all the related data
+     * @param id
+     * @throws IOException
+     * @throws SQLException
+     */
+    void removeContract(int id) throws IOException, SQLException;
+
+    /**
      * List the available price models
      *
      * @return

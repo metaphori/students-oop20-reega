@@ -41,6 +41,9 @@ public interface ReegaService {
     @GET("data/contract")
     Call<List<ContractModel>> getContracts();
 
+    @DELETE("data/contract")
+    Call<Void> removeContract(@Query("id") int id);
+
     @GET("data/price_model")
     Call<List<ContractModel.PriceModel>> getPriceModels();
 
