@@ -1,7 +1,6 @@
 package reega.data.remote.models;
 
 import com.google.gson.annotations.SerializedName;
-import reega.data.models.PriceModel;
 
 import java.util.Date;
 import java.util.List;
@@ -24,7 +23,7 @@ public class ContractModel {
     @SerializedName("price_model")
     public PriceModel priceModel;
 
-    public class PriceModel{
+    public static class PriceModel{
         @SerializedName("id")
         public Integer id;
         @SerializedName("name")

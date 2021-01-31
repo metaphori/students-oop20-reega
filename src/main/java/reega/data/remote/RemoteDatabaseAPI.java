@@ -5,9 +5,11 @@ import org.slf4j.LoggerFactory;
 import reega.data.DataController;
 import reega.data.models.Contract;
 import reega.data.models.Data;
+import reega.data.models.PriceModel;
 import reega.data.models.ServiceType;
 import reega.data.remote.models.ContractModel;
 import reega.data.remote.models.DataModel;
+import reega.data.remote.models.NewContract;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -79,5 +81,51 @@ public class RemoteDatabaseAPI implements DataController {
                         cm.priceModel.getPriceModel(),
                         cm.startTime
                 )).collect(Collectors.toList());
+    }
+
+    @Override
+    public void addContract(NewContract contract) throws IOException {
+        Call<Void> v = connection.getService().addContract(contract);
+        Response<Void> r = v.execute();
+        logger.info(String.valueOf(r.code()));
+        // TODO check successful state
+    }
+
+    @Override
+    public void removeContract(int id) throws IOException {
+        Call<Void> v = connection.getService().removeContract(id);
+        Response<Void> r = v.execute();
+        logger.info(String.valueOf(r.code()));
+        // TODO check successful state
+    }
+
+    @Override
+    public List<PriceModel> getPriceModels() throws IOException {
+        Call<List<ContractModel.PriceModel>> v = connection.getService().getPriceModels();
+        Response<List<ContractModel.PriceModel>> r = v.execute();
+        logger.info(String.valueOf(r.code()));
+        if (r.body() == null) {
+            return null;
+        }
+        return r.body().stream().map(ContractModel.PriceModel::getPriceModel).collect(Collectors.toList());
+    }
+
+    @Override
+    public void addPriceModel(PriceModel priceModel) throws IOException {
+        ContractModel.PriceModel model = new ContractModel.PriceModel();
+        model.name = priceModel.getName();
+        model.prices = priceModel.getPrices();
+        Call<Void> v = connection.getService().addPriceModel(model);
+        Response<Void> r = v.execute();
+        logger.info(String.valueOf(r.code()));
+        // TODO check successful state
+    }
+
+    @Override
+    public void removePriceModel(int id) throws IOException {
+        Call<Void> v = connection.getService().removePriceModel(id);
+        Response<Void> r = v.execute();
+        logger.info(String.valueOf(r.code()));
+        // TODO check successful state
     }
 }

@@ -1,5 +1,14 @@
 package reega.data.local;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import reega.data.DataController;
+import reega.data.models.Contract;
+import reega.data.models.Data;
+import reega.data.models.PriceModel;
+import reega.data.models.ServiceType;
+import reega.data.remote.models.NewContract;
+
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.sql.ResultSet;
@@ -8,23 +17,8 @@ import java.sql.Statement;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.TimeZone;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import reega.data.DataController;
-import reega.data.models.Contract;
-import reega.data.models.Data;
-import reega.data.models.PriceModel;
-import reega.data.models.ServiceType;
 
 /**
  * Implementation of DataController, using a local database (mainly for development purpose)
@@ -58,6 +52,52 @@ public final class LocalDatabase implements DataController {
         rs.close();
         s.close();
         return contracts;
+    }
+
+    @Override
+    public void addContract(NewContract contract) throws SQLException {
+        String sql = String.format("with \"user\" as (select id from users where fiscal_code = %s)" +
+                        "insert into contracts (user_id, address, price_model_id, services, start_time) (" +
+                        "select id, '%s', %d, '%s', '%s' from \"user\");",
+                contract.userFiscalCode,
+                contract.address,
+                contract.priceModelId,
+                contract.services,
+                contract.startTime
+        );
+        db.executeStatement(sql);
+    }
+
+    @Override
+    public void removeContract(int id) throws SQLException {
+        db.executeStatement("delete from contracts where id = " + id);
+    }
+
+    @Override
+    public List<PriceModel> getPriceModels() throws SQLException {
+        final Statement s = this.db.getConnection().createStatement();
+        final ResultSet rs = s.executeQuery("select * from price_models");
+        List<PriceModel> prices = new ArrayList<>();
+        final Type pricesType = new TypeToken<Map<String, Double>>() {
+        }.getType();
+        while (rs.next()) {
+            final Map<String, Double> p = new Gson().fromJson(rs.getString("prices"), pricesType);
+            prices.add(new PriceModel(rs.getInt("id"), rs.getString("name"), p));
+        }
+        return prices;
+    }
+
+    @Override
+    public void addPriceModel(PriceModel priceModel) throws SQLException {
+        String prices = new Gson().toJson(priceModel.getPrices());
+        String sql = String.format("insert into price_models (\"name\", prices) values ('%s', '%s');",
+                priceModel.getName(), prices);
+        db.executeStatement(sql);
+    }
+
+    @Override
+    public void removePriceModel(int id) throws SQLException {
+        db.executeStatement("delete from price_models where id = " + id);
     }
 
     @Override

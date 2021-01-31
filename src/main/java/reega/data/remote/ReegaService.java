@@ -2,10 +2,7 @@ package reega.data.remote;
 
 import reega.data.remote.models.*;
 import retrofit2.Call;
-import retrofit2.http.Body;
-import retrofit2.http.GET;
-import retrofit2.http.POST;
-import retrofit2.http.Query;
+import retrofit2.http.*;
 
 import java.util.Date;
 import java.util.List;
@@ -38,8 +35,23 @@ public interface ReegaService {
 
     // region data
 
-    @GET("data/getContracts")
+    @POST("data/contract")
+    Call<Void> addContract(@Body NewContract contract);
+
+    @GET("data/contract")
     Call<List<ContractModel>> getContracts();
+
+    @DELETE("data/contract")
+    Call<Void> removeContract(@Query("id") int id);
+
+    @GET("data/price_model")
+    Call<List<ContractModel.PriceModel>> getPriceModels();
+
+    @POST("data/price_model")
+    Call<Void> addPriceModel(@Body ContractModel.PriceModel priceModel);
+
+    @DELETE("data/price_model")
+    Call<Void> removePriceModel(@Query("id") int id);
 
     @POST("data/fillUserData")
     Call<Void> pushData(@Body DataModel data);
