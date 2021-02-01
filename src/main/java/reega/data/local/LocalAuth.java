@@ -1,17 +1,16 @@
 package reega.data.local;
 
-import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-
 import org.springframework.security.crypto.bcrypt.BCrypt;
-
 import reega.data.AuthController;
 import reega.data.models.UserAuth;
 import reega.users.GenericUser;
 import reega.users.NewUser;
 import reega.users.Role;
+
+import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * Implementation of AuthController, using a local database (mainly for development purpose)
@@ -77,11 +76,11 @@ public final class LocalAuth implements AuthController {
         }
         final GenericUser user = new GenericUser(Role.valueOf(rs.getString("role").toUpperCase()),
                 rs.getString("name"), rs.getString("surname"), rs.getString("email"), rs.getString("fiscal_code"));
-        rs.close();
-        s.close();
         if (db.userID == null) {
             db.userID = rs.getInt("id");
         }
+        rs.close();
+        s.close();
         return user;
     }
 
