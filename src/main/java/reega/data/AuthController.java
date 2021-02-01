@@ -20,6 +20,15 @@ public interface AuthController {
     void addUser(NewUser newUser) throws SQLException, IOException;
 
     /**
+     * Remove user from REEGA platform
+     *
+     * @param fiscalCode
+     * @throws SQLException
+     * @throws IOException
+     */
+    void removeUser(String fiscalCode) throws SQLException, IOException;
+
+    /**
      * Login using email and password
      *
      * @param email

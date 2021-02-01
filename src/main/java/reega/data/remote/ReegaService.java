@@ -37,6 +37,9 @@ public interface ReegaService {
     @POST("auth/addUser")
     Call<Void> addUser(@Body NewUserBody newUser);
 
+    @DELETE("auth/removeUser")
+    Call<Void> removeUser(@Query("fc") String fiscalCode);
+
     @POST("auth/logout")
     Call<Void> logout();
 

@@ -54,6 +54,14 @@ public final class RemoteAuthAPI implements AuthController {
     }
 
     @Override
+    public void removeUser(String fiscalCode) throws IOException {
+        Call<Void> v = connection.getService().removeUser(fiscalCode);
+        Response<Void> r = v.execute();
+        logger.info(String.valueOf(r.code()));
+        // TODO check successful state
+    }
+
+    @Override
     public GenericUser emailLogin(final String email, final String password) throws IOException {
         return this.genericLogin(() -> {
             final Call<LoginResponse> r = this.connection.getService().emailLogin(email, password);

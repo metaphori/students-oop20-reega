@@ -31,6 +31,12 @@ public final class LocalAuth implements AuthController {
     }
 
     @Override
+    public void removeUser(String fiscalCode) throws SQLException {
+        String sql = String.format("DELETE FROM users WHERE fiscal_code = '%s';", fiscalCode);
+        db.executeStatement(sql);
+    }
+
+    @Override
     public GenericUser emailLogin(final String email, final String password) throws SQLException {
         return this.genericLogin("email", email, password);
     }
