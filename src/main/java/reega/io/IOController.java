@@ -19,17 +19,12 @@ public interface IOController {
     File getDefaultDirectory();
 
     /**
-     * Get the default directory path of the application
+     * Get the absolute default directory path of the application
      *
      * @return the default directory path of the application used for storing data
      * @see #getDefaultDirectory()
      */
-    String getDefaultDirectoryPath();
-
-    /**
-     * Get the file path of the token file
-     *
-     * @return the file path of the token
-     */
-    String getTokenFilePath();
+    default String getDefaultDirectoryPath() {
+        return this.getDefaultDirectory().getAbsolutePath();
+    }
 }

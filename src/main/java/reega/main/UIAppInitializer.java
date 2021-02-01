@@ -19,6 +19,7 @@ import reega.data.AuthController;
 import reega.data.AuthControllerFactory;
 import reega.io.IOController;
 import reega.io.IOControllerFactory;
+import reega.io.TokenIOController;
 import reega.logging.ExceptionHandler;
 import reega.logging.SimpleExceptionHandler;
 import reega.util.ServiceCollection;
@@ -74,6 +75,7 @@ public class UIAppInitializer implements AppInitializer {
         svcCollection.addSingleton(MainController.class);
         svcCollection.addSingleton(AuthController.class, AuthControllerFactory.getDefaultAuthController());
         svcCollection.addSingleton(IOController.class, IOControllerFactory.getDefaultIOController());
+        svcCollection.addSingleton(TokenIOController.class, IOControllerFactory.getDefaultTokenIOController());
         svcCollection.addSingleton(ExceptionHandler.class, SimpleExceptionHandler.class);
         svcCollection.addSingleton(AuthManager.class, RemindableAuthManager.class);
         svcCollection.addTransient(LoginController.class, LoginControllerImpl.class);
