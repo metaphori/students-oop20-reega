@@ -1,14 +1,14 @@
 package reega.data;
 
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
 import reega.data.models.Contract;
 import reega.data.models.Data;
 import reega.data.models.PriceModel;
 import reega.data.models.ServiceType;
 import reega.data.remote.models.NewContract;
-
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.List;
 
 /**
  * This controller handles all the data-based operations
@@ -35,6 +35,7 @@ public interface DataController {
 
     /**
      * Delete contract with REEGA. It will also delete all the related data
+     *
      * @param id
      * @throws IOException
      * @throws SQLException

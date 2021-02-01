@@ -1,11 +1,20 @@
 package reega.data.remote;
 
-import reega.data.remote.models.*;
-import retrofit2.Call;
-import retrofit2.http.*;
-
 import java.util.Date;
 import java.util.List;
+
+import reega.data.remote.models.ContractModel;
+import reega.data.remote.models.DataModel;
+import reega.data.remote.models.LoginResponse;
+import reega.data.remote.models.NewContract;
+import reega.data.remote.models.NewUserBody;
+import reega.data.remote.models.UserAuthToken;
+import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.DELETE;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.Query;
 
 /**
  * Specify the API layout and request types

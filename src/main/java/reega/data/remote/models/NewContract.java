@@ -1,9 +1,9 @@
 package reega.data.remote.models;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import com.google.gson.annotations.SerializedName;
 
 public class NewContract {
     @SerializedName("address")
@@ -17,12 +17,13 @@ public class NewContract {
     @SerializedName("start_time")
     public String startTime;
 
-    public NewContract(String address, int priceModelId, String services, String userFiscalCode, Date startTime) {
+    public NewContract(final String address, final int priceModelId, final String services, final String userFiscalCode,
+            final Date startTime) {
         this.address = address;
         this.priceModelId = priceModelId;
         this.services = services;
         this.userFiscalCode = userFiscalCode;
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+        final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
         this.startTime = format.format(startTime);
     }
 }

@@ -19,7 +19,8 @@ public class NewUserBody {
     @SerializedName("password")
     public String passwordHash;
 
-    public NewUserBody(String name, String surname, String email, String fiscalCode, String role, String passwordHash) {
+    public NewUserBody(final String name, final String surname, final String email, final String fiscalCode,
+            final String role, final String passwordHash) {
         this.name = name;
         this.surname = surname;
         this.email = email;

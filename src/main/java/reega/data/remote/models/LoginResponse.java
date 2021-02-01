@@ -21,7 +21,8 @@ public class LoginResponse {
     @SerializedName("jwt")
     public String jwt;
 
-    public LoginResponse(Integer id, String name, String surname, String email, String fiscalCode, String role, String jwt) {
+    public LoginResponse(final Integer id, final String name, final String surname, final String email,
+            final String fiscalCode, final String role, final String jwt) {
         this.id = id;
         this.name = name;
         this.surname = surname;

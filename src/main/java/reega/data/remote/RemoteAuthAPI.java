@@ -1,7 +1,11 @@
 package reega.data.remote;
 
+import java.io.IOException;
+import java.util.Objects;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import reega.data.AuthController;
 import reega.data.models.UserAuth;
 import reega.data.remote.models.LoginResponse;
@@ -13,9 +17,6 @@ import reega.users.Role;
 import retrofit2.Call;
 import retrofit2.Response;
 
-import java.io.IOException;
-import java.util.Objects;
-
 /**
  * AuthController implementation, using remote database via http requests
  */
@@ -24,8 +25,8 @@ public final class RemoteAuthAPI implements AuthController {
     private static RemoteAuthAPI INSTANCE;
     private final RemoteConnection connection;
 
-    private RemoteAuthAPI(RemoteConnection conn) {
-        connection = Objects.requireNonNullElseGet(conn, RemoteConnection::new);
+    private RemoteAuthAPI(final RemoteConnection conn) {
+        this.connection = Objects.requireNonNullElseGet(conn, RemoteConnection::new);
     }
 
     public synchronized static RemoteAuthAPI getInstance() {
@@ -35,7 +36,7 @@ public final class RemoteAuthAPI implements AuthController {
         return INSTANCE;
     }
 
-    public static synchronized RemoteAuthAPI getInstanceWithConnection(RemoteConnection conn) {
+    public static synchronized RemoteAuthAPI getInstanceWithConnection(final RemoteConnection conn) {
         if (INSTANCE == null) {
             INSTANCE = new RemoteAuthAPI(conn);
         }
@@ -43,71 +44,61 @@ public final class RemoteAuthAPI implements AuthController {
     }
 
     @Override
-    public void addUser(NewUser newUser) throws IOException {
-        NewUserBody body = new NewUserBody(
-                newUser.getName(),
-                newUser.getSurname(),
-                newUser.getEmail(),
-                newUser.getFiscalCode(),
-                newUser.getRole().getRoleName(),
-                newUser.getPasswordHash());
-        Call<Void> v = connection.getService().addUser(body);
-        Response<Void> r = v.execute();
+    public void addUser(final NewUser newUser) throws IOException {
+        final NewUserBody body = new NewUserBody(newUser.getName(), newUser.getSurname(), newUser.getEmail(),
+                newUser.getFiscalCode(), newUser.getRole().getRoleName(), newUser.getPasswordHash());
+        final Call<Void> v = this.connection.getService().addUser(body);
+        final Response<Void> r = v.execute();
         logger.info(String.valueOf(r.code()));
         // TODO check successful state
     }
 
     @Override
-    public GenericUser emailLogin(String email, String password) throws IOException {
-        return genericLogin(() -> {
-            Call<LoginResponse> r = connection.getService().emailLogin(email, password);
+    public GenericUser emailLogin(final String email, final String password) throws IOException {
+        return this.genericLogin(() -> {
+            final Call<LoginResponse> r = this.connection.getService().emailLogin(email, password);
             return r.execute().body();
         });
     }
 
     @Override
-    public GenericUser fiscalCodeLogin(String fiscalCode, String password) throws IOException {
-        return genericLogin(() -> {
-            Call<LoginResponse> r = connection.getService().fiscalCodeLogin(fiscalCode, password);
+    public GenericUser fiscalCodeLogin(final String fiscalCode, final String password) throws IOException {
+        return this.genericLogin(() -> {
+            final Call<LoginResponse> r = this.connection.getService().fiscalCodeLogin(fiscalCode, password);
             return r.execute().body();
         });
     }
 
     @Override
-    public GenericUser tokenLogin(UserAuth credentials) throws IOException {
-        return genericLogin(() -> {
-            Call<LoginResponse> r = connection.getService().tokenCodeLogin(
-                    credentials.getSelector(), credentials.getValidator()
-            );
+    public GenericUser tokenLogin(final UserAuth credentials) throws IOException {
+        return this.genericLogin(() -> {
+            final Call<LoginResponse> r = this.connection.getService()
+                    .tokenCodeLogin(credentials.getSelector(), credentials.getValidator());
             return r.execute().body();
         });
     }
 
-    private GenericUser genericLogin(RemoteConnection.LoginMethod loginMethod) throws IOException {
-        final LoginResponse response = connection.login(loginMethod);
+    private GenericUser genericLogin(final RemoteConnection.LoginMethod loginMethod) throws IOException {
+        final LoginResponse response = this.connection.login(loginMethod);
         if (response == null) {
             return null;
         }
-        return new GenericUser(
-                Role.valueOf(response.role.toUpperCase()),
-                response.name,
-                response.surname,
-                response.email,
-                response.fiscalCode);
+        return new GenericUser(Role.valueOf(response.role.toUpperCase()), response.name, response.surname,
+                response.email, response.fiscalCode);
     }
 
     @Override
-    public void storeUserCredentials(String selector, String validator) throws IOException {
-        Call<Void> v = connection.getService().storeUserToken(new UserAuthToken(selector, validator));
-        Response<Void> r = v.execute();
+    public void storeUserCredentials(final String selector, final String validator) throws IOException {
+        final Call<Void> v = this.connection.getService().storeUserToken(new UserAuthToken(selector, validator));
+        final Response<Void> r = v.execute();
         logger.info(String.valueOf(r.code()));
         // TODO check successful state
     }
 
     @Override
     public void userLogout() throws IOException {
-        Call<Void> v = connection.getService().logout();
-        Response<Void> r = v.execute();
+        final Call<Void> v = this.connection.getService().logout();
+        final Response<Void> r = v.execute();
         logger.info(String.valueOf(r.code()));
         // TODO check successful state
     }

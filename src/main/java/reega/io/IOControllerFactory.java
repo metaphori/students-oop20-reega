@@ -32,12 +32,10 @@ public class IOControllerFactory {
     }
 
     /**
-     * Create a {@link TokenIOController} with {@code ioController} as the
-     * controller
+     * Create a {@link TokenIOController} with {@code ioController} as the controller
      *
      * @param ioController {@link IOController} to use
-     * @return a new {@link TokenIOController} that uses {@code ioController} as its
-     *         controller
+     * @return a new {@link TokenIOController} that uses {@code ioController} as its controller
      */
     public static TokenIOController createTokenIOController(final IOController ioController) {
         return new TokenIOControllerImpl(ioController);

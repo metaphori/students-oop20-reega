@@ -37,8 +37,7 @@ public interface TokenIOController extends IOController {
     /**
      * Read the user authentication
      *
-     * @return an empty optional if no authentication has been found, a filled in
-     *         optional otherwise
+     * @return an empty optional if no authentication has been found, a filled in optional otherwise
      */
     Optional<UserAuth> readUserAuthentication() throws IOException;
 

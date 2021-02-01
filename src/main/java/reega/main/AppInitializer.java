@@ -15,8 +15,7 @@ public interface AppInitializer {
     /**
      * Initialize the app
      *
-     * @throws Exception throw a generic exception that can be raised when
-     *                   initializing everything
+     * @throws Exception throw a generic exception that can be raised when initializing everything
      */
     void initialize() throws Exception;
 

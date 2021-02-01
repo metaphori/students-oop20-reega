@@ -1,8 +1,8 @@
 package reega.data.remote.models;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.Objects;
+
+import com.google.gson.annotations.SerializedName;
 
 /**
  * API data model
@@ -13,22 +13,25 @@ public class UserAuthToken {
     @SerializedName("validator")
     public String validator;
 
-    public UserAuthToken(String selector, String validator) {
+    public UserAuthToken(final String selector, final String validator) {
         this.selector = selector;
         this.validator = validator;
     }
 
-
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserAuthToken that = (UserAuthToken) o;
-        return selector.equals(that.selector) && validator.equals(that.validator);
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || this.getClass() != o.getClass()) {
+            return false;
+        }
+        final UserAuthToken that = (UserAuthToken) o;
+        return this.selector.equals(that.selector) && this.validator.equals(that.validator);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(selector, validator);
+        return Objects.hash(this.selector, this.validator);
     }
 }

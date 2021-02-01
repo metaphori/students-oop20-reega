@@ -1,11 +1,11 @@
 package reega.data.remote;
 
+import java.io.IOException;
+
 import okhttp3.OkHttpClient;
 import reega.data.remote.models.LoginResponse;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
-import java.io.IOException;
 
 /**
  * Handle the connection to the server and the http methods authentication
@@ -24,8 +24,7 @@ public class RemoteConnection {
     public RemoteConnection() {
         // build base retrofit
         if (retrofit == null) {
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(baseUrl)
+            retrofit = new Retrofit.Builder().baseUrl(baseUrl)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
@@ -37,7 +36,7 @@ public class RemoteConnection {
      *
      * @param s
      */
-    public RemoteConnection(ReegaService s) {
+    public RemoteConnection(final ReegaService s) {
         forcedService = true;
         service = s;
     }
@@ -46,7 +45,7 @@ public class RemoteConnection {
         final LoginResponse response = loginMethod.login();
         if (response != null) {
             JWT = response.jwt;
-            setClientAuth();
+            this.setClientAuth();
         }
         return response;
     }
@@ -56,16 +55,12 @@ public class RemoteConnection {
         if (forcedService) {
             return;
         }
-        final OkHttpClient client = new OkHttpClient.Builder().addInterceptor(chain ->
-                chain.proceed(
-                        chain.request().newBuilder()
-                                .addHeader("Authorization", "Bearer " + JWT)
-                                .build()
-                )
-        ).build();
+        final OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(chain -> chain
+                        .proceed(chain.request().newBuilder().addHeader("Authorization", "Bearer " + JWT).build()))
+                .build();
         // building retrofit service with authenticator
-        retrofit = new Retrofit.Builder()
-                .client(client)
+        retrofit = new Retrofit.Builder().client(client)
                 .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();

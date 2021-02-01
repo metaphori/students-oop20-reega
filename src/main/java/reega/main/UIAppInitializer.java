@@ -64,10 +64,8 @@ public class UIAppInitializer implements AppInitializer {
      * Build the service provider for the app
      *
      * @return the service provider for the app
-     * @throws ClassNotFoundException exception raised in
-     *                                {@link AuthControllerFactory#getDefaultAuthController()}
-     * @throws SQLException           exception raised in
-     *                                {@link AuthControllerFactory#getDefaultAuthController()}
+     * @throws ClassNotFoundException exception raised in {@link AuthControllerFactory#getDefaultAuthController()}
+     * @throws SQLException           exception raised in {@link AuthControllerFactory#getDefaultAuthController()}
      */
     private ServiceProvider buildServiceProvider() throws ClassNotFoundException, SQLException {
         final ServiceCollection svcCollection = new ServiceCollection();

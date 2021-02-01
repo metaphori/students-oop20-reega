@@ -1,10 +1,10 @@
 package reega.data.remote.models;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import com.google.gson.annotations.SerializedName;
 
 /**
  * API data model
@@ -23,7 +23,7 @@ public class ContractModel {
     @SerializedName("price_model")
     public PriceModel priceModel;
 
-    public static class PriceModel{
+    public static class PriceModel {
         @SerializedName("id")
         public Integer id;
         @SerializedName("name")
@@ -31,8 +31,8 @@ public class ContractModel {
         @SerializedName("prices")
         public Map<String, Double> prices;
 
-        public reega.data.models.PriceModel getPriceModel(){
-            return new reega.data.models.PriceModel(id, name, prices);
+        public reega.data.models.PriceModel getPriceModel() {
+            return new reega.data.models.PriceModel(this.id, this.name, this.prices);
         }
     }
 }
