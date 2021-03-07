@@ -65,6 +65,39 @@ public class AuthControllerTest {
     }
 
     @Test
+    public void removeUserTest() throws IOException {
+        NewUser newUser1 = new NewUser(Role.USER, "test1", "surname1", "test1@reega.it", "ABC123", "PASSWORD");
+        authAPI.addUser(newUser1);
+
+        GenericUser u = authAPI.fiscalCodeLogin("ABC123", "PASSWORD");
+        assertNotNull(u);
+
+        authAPI.removeUser("ABC123");
+        u = authAPI.fiscalCodeLogin("ABC123", "PASSWORD");
+        assertNull(u);
+    }
+
+    @Test
+    public void removeUserWithToken() throws IOException {
+        NewUser newUser1 = new NewUser(Role.USER, "test1", "surname1", "test1@reega.it", "ABC123", "PASSWORD");
+        authAPI.addUser(newUser1);
+
+        GenericUser u = authAPI.fiscalCodeLogin("ABC123", "PASSWORD");
+        assertNotNull(u);
+
+        // store token for the default user (0)
+        UserAuth auth = new UserAuth();
+        authAPI.storeUserCredentials(auth.getSelector(), auth.getValidator());
+
+        authAPI.removeUser("ABC123");
+        u = authAPI.fiscalCodeLogin("ABC123", "PASSWORD");
+        assertNull(u);
+
+        u = authAPI.tokenLogin(auth);
+        assertNull(u);
+    }
+
+    @Test
     public void tokenLoginTest() throws IOException {
         final NewUser newUser1 = new NewUser(Role.USER, "test1", "surname1", "test1@reega.it", "ABC123", "PASSWORD");
         final NewUser newUser2 = new NewUser(Role.USER, "test1", "surname2", "test2@reega.it", "ZZZ999", "PASSWORD");
