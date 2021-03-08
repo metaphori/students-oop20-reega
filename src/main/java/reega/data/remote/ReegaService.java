@@ -1,20 +1,11 @@
 package reega.data.remote;
 
+import reega.data.remote.models.*;
+import retrofit2.Call;
+import retrofit2.http.*;
+
 import java.util.Date;
 import java.util.List;
-
-import reega.data.remote.models.ContractModel;
-import reega.data.remote.models.DataModel;
-import reega.data.remote.models.LoginResponse;
-import reega.data.remote.models.NewContract;
-import reega.data.remote.models.NewUserBody;
-import reega.data.remote.models.UserAuthToken;
-import retrofit2.Call;
-import retrofit2.http.Body;
-import retrofit2.http.DELETE;
-import retrofit2.http.GET;
-import retrofit2.http.POST;
-import retrofit2.http.Query;
 
 /**
  * Specify the API layout and request types
@@ -26,10 +17,10 @@ public interface ReegaService {
     Call<LoginResponse> emailLogin(@Query("email") String email, @Query("password") String password);
 
     @GET("auth/fcLogin")
-    Call<LoginResponse> fiscalCodeLogin(@Query("fc") String email, @Query("password") String password);
+    Call<LoginResponse> fiscalCodeLogin(@Query("fc") String fiscalCode, @Query("password") String password);
 
     @GET("auth/tokenLogin")
-    Call<LoginResponse> tokenCodeLogin(@Query("selector") String email, @Query("validator") String password);
+    Call<LoginResponse> tokenCodeLogin(@Query("selector") String selector, @Query("validator") String validator);
 
     @POST("auth/storeUserToken")
     Call<Void> storeUserToken(@Body UserAuthToken userAuthToken);
