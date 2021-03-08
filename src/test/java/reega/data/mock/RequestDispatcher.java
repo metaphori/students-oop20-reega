@@ -31,6 +31,8 @@ public final class RequestDispatcher extends Dispatcher {
                 switch (path.substring(6)) {
                     case "addUser":
                         return this.authService.addUser(recordedRequest);
+                    case "removeUser":
+                        return authService.removeUser(recordedRequest);
                     case "emailLogin":
                         return this.authService.emailLogin(recordedRequest);
                     case "fcLogin":

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -39,6 +40,21 @@ public class MockedAuthService {
             return new MockResponse().setResponseCode(400);
         }
         this.users.put(this.userID, user);
+        return new MockResponse().setResponseCode(200);
+    }
+
+    MockResponse removeUser(RecordedRequest recordedRequest) {
+        HttpUrl url = recordedRequest.getRequestUrl();
+        assertNotNull(url);
+        String fc = url.queryParameter("fc");
+        if (fc == null) {
+            return new MockResponse().setResponseCode(404);
+        }
+        Optional<Integer> first = users.keySet().stream().filter(k -> users.get(k).fiscalCode.equals(fc)).findFirst();
+        if (first.isPresent()) {
+            users.remove(first.get());
+            tokens.remove(first.get());
+        }
         return new MockResponse().setResponseCode(200);
     }
 
