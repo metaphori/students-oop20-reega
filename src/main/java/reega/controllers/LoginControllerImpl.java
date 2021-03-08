@@ -22,8 +22,6 @@ public class LoginControllerImpl extends AbstractController implements LoginCont
     @Inject
     public LoginControllerImpl(final AuthManager authManager) {
         this.authManager = authManager;
-        // Try login without password
-        this.authManager.tryLoginWithoutPassword().ifPresent(this::jumpToNextPage);
     }
 
     /**
@@ -83,5 +81,14 @@ public class LoginControllerImpl extends AbstractController implements LoginCont
 
     private void jumpToNextPage(final GenericUser user) {
         this.pushController(PageAfterLoginController.class, newController -> newController.setUser(user), true);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void tryLoginWithoutPassword() {
+        // Try login without password
+        this.authManager.tryLoginWithoutPassword().ifPresent(this::jumpToNextPage);
     }
 }

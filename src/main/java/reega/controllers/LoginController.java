@@ -5,6 +5,11 @@ import reega.viewutils.Controller;
 
 public interface LoginController extends Controller {
     /**
+     * Try the login without the password
+     */
+    void tryLoginWithoutPassword();
+
+    /**
      * Jump to the registration page
      */
     void jumpToRegistration();
