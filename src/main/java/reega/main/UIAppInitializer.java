@@ -3,18 +3,10 @@
  */
 package reega.main;
 
-import java.sql.SQLException;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
 import javafx.scene.Parent;
 import reega.auth.AuthManager;
 import reega.auth.RemindableAuthManager;
-import reega.controllers.LoginController;
-import reega.controllers.LoginControllerImpl;
-import reega.controllers.MainController;
-import reega.controllers.RegistrationController;
-import reega.controllers.RegistrationControllerImpl;
+import reega.controllers.*;
 import reega.data.AuthController;
 import reega.data.AuthControllerFactory;
 import reega.io.IOController;
@@ -25,11 +17,16 @@ import reega.logging.SimpleExceptionHandler;
 import reega.util.ServiceCollection;
 import reega.util.ServiceProvider;
 import reega.views.LoginView;
+import reega.views.MainView;
 import reega.views.RegistrationView;
 import reega.viewutils.DataTemplate;
 import reega.viewutils.DataTemplateManager;
 import reega.viewutils.Navigator;
 import reega.viewutils.NavigatorImpl;
+
+import java.sql.SQLException;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * App initializer for the UI main class
@@ -78,6 +75,7 @@ public class UIAppInitializer implements AppInitializer {
         svcCollection.addSingleton(AuthManager.class, RemindableAuthManager.class);
         svcCollection.addTransient(LoginController.class, LoginControllerImpl.class);
         svcCollection.addTransient(RegistrationController.class, RegistrationControllerImpl.class);
+        svcCollection.addSingleton(MainViewController.class, MainViewControllerImpl.class);
         svcCollection.addSingleton(BaseLayoutView.class);
         return svcCollection.buildServiceProvider();
     }
@@ -107,6 +105,17 @@ public class UIAppInitializer implements AppInitializer {
             @Override
             public Supplier<? extends Parent> getControlFactory(final LoginControllerImpl controller) {
                 return () -> new LoginView(controller);
+            }
+        });
+        templateManager.addTemplate(new DataTemplate<MainViewControllerImpl>() {
+            @Override
+            public Class<MainViewControllerImpl> getDataObjectClass() {
+                return MainViewControllerImpl.class;
+            }
+
+            @Override
+            public Supplier<? extends Parent> getControlFactory(final MainViewControllerImpl controller) {
+                return () -> new MainView(controller);
             }
         });
     }

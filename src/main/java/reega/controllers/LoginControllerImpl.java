@@ -1,17 +1,15 @@
 package reega.controllers;
 
-import java.util.Optional;
-
-import javax.inject.Inject;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
-
 import reega.auth.AuthManager;
 import reega.users.GenericUser;
 import reega.util.FiscalCodeValidator;
 import reega.util.ValueResult;
 import reega.viewutils.AbstractController;
+
+import javax.inject.Inject;
+import java.util.Optional;
 
 public class LoginControllerImpl extends AbstractController implements LoginController {
 
@@ -80,7 +78,7 @@ public class LoginControllerImpl extends AbstractController implements LoginCont
     }
 
     private void jumpToNextPage(final GenericUser user) {
-        this.pushController(PageAfterLoginController.class, newController -> newController.setUser(user), true);
+        this.pushController(MainViewController.class, newController -> newController.user().setValue(user), true);
     }
 
     /**
