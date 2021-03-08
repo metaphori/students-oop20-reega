@@ -1,16 +1,17 @@
 package reega.data.local;
 
+import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import org.springframework.security.crypto.bcrypt.BCrypt;
+
 import reega.data.AuthController;
 import reega.data.models.UserAuth;
 import reega.users.GenericUser;
 import reega.users.NewUser;
 import reega.users.Role;
-
-import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 /**
  * Implementation of AuthController, using a local database (mainly for development purpose)
@@ -31,9 +32,9 @@ public final class LocalAuth implements AuthController {
     }
 
     @Override
-    public void removeUser(String fiscalCode) throws SQLException {
-        String sql = String.format("DELETE FROM users WHERE fiscal_code = '%s';", fiscalCode);
-        db.executeStatement(sql);
+    public void removeUser(final String fiscalCode) throws SQLException {
+        final String sql = String.format("DELETE FROM users WHERE fiscal_code = '%s';", fiscalCode);
+        this.db.executeStatement(sql);
     }
 
     @Override
@@ -57,11 +58,11 @@ public final class LocalAuth implements AuthController {
         }
         final GenericUser user = new GenericUser(Role.valueOf(rs.getString("role").toUpperCase()), rs.getString("name"),
                 rs.getString("surname"), rs.getString("email"), rs.getString("fiscal_code"));
-        rs.close();
-        s.close();
         if (this.db.userID == null) {
             this.db.userID = rs.getInt("id");
         }
+        rs.close();
+        s.close();
         return user;
     }
 
