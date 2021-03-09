@@ -27,6 +27,7 @@ public class MainController {
      */
     public void initializeApp() {
         this.navigator.pushController(LoginController.class, false);
+        ((LoginController) this.selectedController).tryLoginWithoutPassword();
     }
 
     /**

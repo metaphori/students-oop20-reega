@@ -41,8 +41,6 @@ public class LoginView extends GridPane {
         } catch (final IOException ex) {
             ex.printStackTrace();
         }
-        // Try the login without the password
-        this.loginController.tryLoginWithoutPassword();
 
         // Change email or fiscal code on lost focus
         this.emailOrFiscalCodeField.focusedProperty().addListener((observable, oldValue, newValue) -> {
