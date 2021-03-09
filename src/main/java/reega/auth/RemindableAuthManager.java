@@ -68,6 +68,11 @@ public class RemindableAuthManager implements AuthManager {
             return Optional.empty();
         }
 
+        if (loggedInUser.isEmpty()) {
+            // If the authentication is not correct, then delete the authentication
+            this.deleteUserAuthentication();
+        }
+
         return loggedInUser;
     }
 
