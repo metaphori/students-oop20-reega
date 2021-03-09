@@ -1,15 +1,19 @@
 package reega.controllers;
 
+import java.util.Optional;
+
+import javax.inject.Inject;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
+
 import reega.auth.AuthManager;
 import reega.users.GenericUser;
 import reega.util.FiscalCodeValidator;
 import reega.util.ValueResult;
 import reega.viewutils.AbstractController;
-
-import javax.inject.Inject;
-import java.util.Optional;
+import reega.viewutils.Controller;
+import reega.viewutils.ControllerChangedEventHandler;
 
 public class LoginControllerImpl extends AbstractController implements LoginController {
 
@@ -82,11 +86,19 @@ public class LoginControllerImpl extends AbstractController implements LoginCont
     }
 
     /**
+     * Try the login without the password
+     */
+    private void tryLoginWithoutPassword() {
+        // Try login without password
+        this.authManager.tryLoginWithoutPassword().ifPresent(this::jumpToNextPage);
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
-    public void tryLoginWithoutPassword() {
-        // Try login without password
-        this.authManager.tryLoginWithoutPassword().ifPresent(this::jumpToNextPage);
+    public void setControllerChangeEvent(final ControllerChangedEventHandler<Controller> controllerChangeEvent) {
+        super.setControllerChangeEvent(controllerChangeEvent);
+        this.tryLoginWithoutPassword();
     }
 }
