@@ -58,19 +58,16 @@ public class RemindableAuthManager implements AuthManager {
             return Optional.empty();
         }
 
-        final Optional<GenericUser> loggedInUser;
+        Optional<GenericUser> loggedInUser = Optional.empty();
         try {
             loggedInUser = Optional.ofNullable(this.authController.tokenLogin(uAuth.get()));
         } catch (final SQLException | IOException e) {
-            // Delete the user authentication if an exception occurs
-            this.deleteUserAuthentication();
             this.exceptionHandler.handleException(e);
-            return Optional.empty();
         }
 
         if (loggedInUser.isEmpty()) {
             // If the authentication is not correct, then delete the authentication
-            this.deleteUserAuthentication();
+            this.deleteUserAuthenticationFromDisk();
         }
 
         return loggedInUser;
@@ -189,6 +186,15 @@ public class RemindableAuthManager implements AuthManager {
             return false;
         }
 
+        return this.deleteUserAuthenticationFromDisk();
+    }
+
+    /**
+     * Delete the user authentication from the disk
+     *
+     * @return true if the operation successfully ended, false otherwise
+     */
+    private boolean deleteUserAuthenticationFromDisk() {
         try {
             this.ioController.deleteUserAuthentication();
         } catch (final IOException e) {
