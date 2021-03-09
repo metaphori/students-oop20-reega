@@ -62,6 +62,8 @@ public class RemindableAuthManager implements AuthManager {
         try {
             loggedInUser = Optional.ofNullable(this.authController.tokenLogin(uAuth.get()));
         } catch (final SQLException | IOException e) {
+            // Delete the user authentication if an exception occurs
+            this.deleteUserAuthentication();
             this.exceptionHandler.handleException(e);
             return Optional.empty();
         }
