@@ -26,8 +26,8 @@ public class Main extends Application {
      */
     @Override
     public void start(final Stage primaryStage) throws Exception {
-        AppInitializer.instance.initializateTemplateManager();
-        final ServiceProvider svcProvider = AppInitializer.instance.buildServiceProvider();
+        UIAppInitializer.getInstance().initialize();
+        final ServiceProvider svcProvider = UIAppInitializer.getInstance().getServiceProvider();
         primaryStage.setScene(new Scene(svcProvider.getRequiredService(BaseLayoutView.class)));
         primaryStage.show();
     }

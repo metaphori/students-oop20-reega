@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<fx:root xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml"
+        type="GridPane"
+        prefHeight="400.0"
+        prefWidth="600.0"
+        alignment="CENTER">
+
+    <Label fx:id="testText"
+           layoutX="272.0"
+           layoutY="192.0"
+           text="Ci siamo :)"/>
+</fx:root>

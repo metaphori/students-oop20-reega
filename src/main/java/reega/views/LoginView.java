@@ -9,7 +9,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
-import reega.controllers.LoginControllerImpl;
+import reega.controllers.LoginController;
 import reega.util.ValueResult;
 import reega.viewutils.DialogFactory;
 
@@ -28,9 +28,9 @@ public class LoginView extends GridPane {
     @FXML
     private CheckBox rememberMeCheckBox;
 
-    private final LoginControllerImpl loginController;
+    private final LoginController loginController;
 
-    public LoginView(final LoginControllerImpl controller) {
+    public LoginView(final LoginController controller) {
         this.loginController = controller;
         final FXMLLoader fxmlLoader = new FXMLLoader(
                 ClassLoader.getSystemClassLoader().getResource("views/Login.fxml"));
@@ -41,6 +41,7 @@ public class LoginView extends GridPane {
         } catch (final IOException ex) {
             ex.printStackTrace();
         }
+
         // Change email or fiscal code on lost focus
         this.emailOrFiscalCodeField.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {

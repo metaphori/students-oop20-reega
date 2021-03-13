@@ -20,12 +20,11 @@ public interface ControllerChangedEventHandler<T extends Controller> extends Eve
     }
 
     /**
-     * Handle a controller change event that can have an action that needs to be
-     * invoked after the creation of the controller
+     * Handle a controller change event that can have an action that needs to be invoked after the creation of the
+     * controller
      *
      * @param eventArgs                    event args
-     * @param actionToExecuteAfterCreation action to execute after the creation of
-     *                                     the controller
+     * @param actionToExecuteAfterCreation action to execute after the creation of the controller
      *
      * @see ControllerChangedEventHandlerArgs
      */
@@ -36,8 +35,7 @@ public interface ControllerChangedEventHandler<T extends Controller> extends Eve
     }
 
     /**
-     * Handle a controller change event with its
-     * {@link ControllerChangedEventHandlerArgs}
+     * Handle a controller change event with its {@link ControllerChangedEventHandlerArgs}
      *
      * @param args event args to use
      */
@@ -48,8 +46,7 @@ public interface ControllerChangedEventHandler<T extends Controller> extends Eve
      *
      * @author Marco
      *
-     * @param <T> type of the controller of the
-     *            {@link ControllerChangedEventHandler}
+     * @param <T> type of the controller of the {@link ControllerChangedEventHandler}
      */
     public static final class ControllerChangedEventHandlerArgs<T extends Controller>
             extends EventArgs<Class<? extends T>> {
@@ -85,8 +82,7 @@ public interface ControllerChangedEventHandler<T extends Controller> extends Eve
         }
 
         /**
-         * Boolean to indicate if there's a need to clear the navigation stack before
-         * pushing the new controller
+         * Boolean to indicate if there's a need to clear the navigation stack before pushing the new controller
          *
          * @return true if you want to clear the navigation stack, false otherwise
          */

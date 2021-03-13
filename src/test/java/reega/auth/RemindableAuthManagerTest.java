@@ -4,8 +4,10 @@
 package reega.auth;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Optional;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -13,8 +15,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 
-import reega.io.IOController;
+import okhttp3.mockwebserver.Dispatcher;
+import reega.data.mock.MockConnection;
+import reega.data.mock.MockedAuthService;
+import reega.data.mock.RequestDispatcher;
 import reega.io.IOControllerFactory;
+import reega.io.MockIOController;
+import reega.io.TokenIOController;
 import reega.users.GenericUser;
 import reega.users.NewUser;
 import reega.users.Role;
@@ -26,78 +33,102 @@ import reega.users.Role;
 @TestInstance(Lifecycle.PER_CLASS)
 class RemindableAuthManagerTest {
 
-    private final IOController ioController = IOControllerFactory.getDefaultIOController();
-    private final AuthManager authController = new RemindableAuthManager(new MockAuthController(),
-            new MockExceptionHandler(), this.ioController);
+    private static MockConnection connection;
+    private static MockedAuthService authService;
+    private static TokenIOController ioController;
+    private static AuthManager authManager;
 
     @BeforeAll
-    public void setupBeforeAll() {
+    static void setup() throws IOException {
+        RemindableAuthManagerTest.authService = new MockedAuthService();
+        final Dispatcher dispatcher = new RequestDispatcher(null, RemindableAuthManagerTest.authService);
+        RemindableAuthManagerTest.connection = new MockConnection(dispatcher);
+        RemindableAuthManagerTest.ioController = IOControllerFactory.createTokenIOController(new MockIOController());
+        RemindableAuthManagerTest.authManager = new RemindableAuthManager(
+                RemindableAuthManagerTest.connection.getAuthAPI(), new MockExceptionHandler(),
+                RemindableAuthManagerTest.ioController);
+    }
+
+    @AfterAll
+    static void cleanup() throws IOException {
+        RemindableAuthManagerTest.connection.close();
+
     }
 
     @AfterEach
-    public void setupAfterEach() {
+    void cleanUsers() {
+        RemindableAuthManagerTest.authService.clean();
         // Delete the token file if it exists
-        final File tokenFile = new File(this.ioController.getTokenFilePath());
+        final File tokenFile = new File(RemindableAuthManagerTest.ioController.getTokenFilePath());
         if (tokenFile.exists()) {
             tokenFile.delete();
         }
     }
 
     @Test
-    void emailLogin() {
-        final Optional<GenericUser> loggedInUser = this.authController.emailLogin("Email", "Password", true);
-        if (loggedInUser.isEmpty()) {
-            Assertions.fail();
-        }
-        final Optional<GenericUser> notLoggedInUser = this.authController.emailLogin("Email",
-                MockAuthController.HASH_SQL_EXCEPTION, true);
-        if (notLoggedInUser.isPresent()) {
-            Assertions.fail();
-        }
+    public void addUserAndLoginTest() {
+        // Try to login with email or fiscal code, without having created credentials
+        Optional<GenericUser> u = RemindableAuthManagerTest.authManager.emailLogin("test@reega.it", "PASSWORD", false);
+        Assertions.assertTrue(u.isEmpty());
+        u = RemindableAuthManagerTest.authManager.fiscalCodeLogin("ZZZ999", "PASSWORD", false);
+        Assertions.assertTrue(u.isEmpty());
+
+        // Create a new user and try an email login
+        NewUser newUser = new NewUser(Role.USER, "test", "surname", "test@reega.it", "ABC123", "PASSWORD");
+        RemindableAuthManagerTest.authManager.createUser(newUser);
+        u = RemindableAuthManagerTest.authManager.emailLogin("test@reega.it", "PASSWORD", false);
+        Assertions.assertTrue(u.isPresent());
+
+        // Create a new user and try a fiscal code login
+        newUser = new NewUser(Role.USER, "test", "surname", "test@reega.it", "ZZZ999", "PASSWORD");
+        RemindableAuthManagerTest.authManager.createUser(newUser);
+        u = RemindableAuthManagerTest.authManager.fiscalCodeLogin("ZZZ999", "PASSWORD", false);
+        Assertions.assertTrue(u.isPresent());
     }
 
     @Test
-    void fiscalCodeLogin() {
-        final Optional<GenericUser> loggedInUser = this.authController.fiscalCodeLogin("Fiscal Code", "Password", true);
-        if (loggedInUser.isEmpty()) {
-            Assertions.fail();
-        }
-        final Optional<GenericUser> notLoggedInUser = this.authController.fiscalCodeLogin("Email",
-                MockAuthController.HASH_SQL_EXCEPTION, true);
-        if (notLoggedInUser.isPresent()) {
-            Assertions.fail();
-        }
-    }
+    public void tokenLoginTest() {
+        // Create two users
+        final NewUser newUser1 = new NewUser(Role.USER, "test1", "surname1", "test1@reega.it", "ABC123", "PASSWORD");
+        final NewUser newUser2 = new NewUser(Role.USER, "test1", "surname2", "test2@reega.it", "ZZZ999", "PASSWORD");
+        // Set the user IDs
+        RemindableAuthManagerTest.authService.setUserID(1);
+        RemindableAuthManagerTest.authManager.createUser(newUser1);
 
-    @Test
-    void tokenLogin() {
-        final Optional<GenericUser> loggedInUser = this.authController.tryLoginWithoutPassword();
-        if (loggedInUser.isPresent()) {
-            Assertions.fail();
-        }
+        RemindableAuthManagerTest.authService.setUserID(2);
+        RemindableAuthManagerTest.authManager.createUser(newUser2);
 
-        final Optional<GenericUser> saveableTokenUser = this.authController.fiscalCodeLogin("Fiscal Code", "Password",
+        // Login the second user and save the token
+        Optional<GenericUser> usr = RemindableAuthManagerTest.authManager.emailLogin("test2@reega.it", "PASSWORD",
                 true);
-        if (saveableTokenUser.isEmpty()) {
-            Assertions.fail();
-        }
 
-        final Optional<GenericUser> loggedInUserWithoutPassword = this.authController.tryLoginWithoutPassword();
-        if (loggedInUserWithoutPassword.isEmpty()) {
-            Assertions.fail();
-        }
+        // Try the login without password
+        usr = RemindableAuthManagerTest.authManager.tryLoginWithoutPassword();
+        Assertions.assertTrue(usr.isPresent());
+        Assertions.assertEquals(newUser2.getEmail(), usr.get().getEmail());
     }
 
     @Test
-    void createUser() {
-        if (!this.authController.createUser(new NewUser(Role.ADMIN, "Name", "Surname", "EMAIL", "FiscalCode", "PWD"))) {
-            Assertions.fail();
-        }
+    public void logoutTest() {
+        // Create a new user
+        final NewUser newUser = new NewUser(Role.USER, "test", "surname", "test@reega.it", "ABC123", "PASSWORD");
+        RemindableAuthManagerTest.authManager.createUser(newUser);
+        // Login and store the token
+        RemindableAuthManagerTest.authManager.emailLogin("test@reega.it", "PASSWORD", true);
 
-        if (this.authController.createUser(new NewUser(Role.ADMIN, "Name", "Surname",
-                MockAuthController.EMAIL_FOR_SQL_EXCEPTION, "FiscalCode", "PWD"))) {
-            Assertions.fail();
-        }
+        Optional<GenericUser> user = RemindableAuthManagerTest.authManager.tryLoginWithoutPassword();
+        Assertions.assertTrue(user.isPresent());
+
+        // Logout (so that if a token exists, it gets deleted)
+        RemindableAuthManagerTest.authManager.logout();
+
+        // Try the login without password
+        user = RemindableAuthManagerTest.authManager.tryLoginWithoutPassword();
+        Assertions.assertTrue(user.isEmpty());
+
+        // Try the login with email
+        user = RemindableAuthManagerTest.authManager.emailLogin("test@reega.it", "PASSWORD", false);
+        Assertions.assertTrue(user.isPresent());
     }
 
 }

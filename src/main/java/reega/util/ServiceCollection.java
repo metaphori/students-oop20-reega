@@ -53,8 +53,7 @@ public class ServiceCollection {
      *
      * @param <T>                    Type of the class
      * @param type                   Class type
-     * @param implementationFunction Function that uses {@link ServiceProvider} to
-     *                               build the instance of the singleton
+     * @param implementationFunction Function that uses {@link ServiceProvider} to build the instance of the singleton
      */
     public <T> void addSingleton(final Class<T> type,
             final Function<ServiceProvider, ? extends T> implementationFunction) {
@@ -65,15 +64,13 @@ public class ServiceCollection {
     }
 
     /**
-     * Adds a singleton based on the {@link Inject} annotated constructor or a no
-     * parameter constructor if no {@link Inject} annotated constructor is found
+     * Adds a singleton based on the {@link Inject} annotated constructor or a no parameter constructor if no
+     * {@link Inject} annotated constructor is found
      *
      * @param <T>  Type of the class
      * @param type Class type
-     * @throws Exception                if there are 0 or more than 1 {@link Inject}
-     *                                  annotated constructors
-     * @throws IllegalArgumentException if {@code type} is an interface or an
-     *                                  abstract class
+     * @throws Exception                if there are 0 or more than 1 {@link Inject} annotated constructors
+     * @throws IllegalArgumentException if {@code type} is an interface or an abstract class
      */
     public <T> void addSingleton(final Class<T> type) {
         Objects.requireNonNull(type);
@@ -84,16 +81,14 @@ public class ServiceCollection {
     }
 
     /**
-     * Adds a singleton based on the {@link Inject} annotated constructor of
-     * {@code implementationType} or a no parameter constructor if no {@link Inject}
-     * annotated constructor is found
+     * Adds a singleton based on the {@link Inject} annotated constructor of {@code implementationType} or a no
+     * parameter constructor if no {@link Inject} annotated constructor is found
      *
      * @param <T>                Interface type
      * @param interfaceType      Interface class
      * @param implementationType Implementation class
-     * @throws IllegalArgumentException if {@code interfaceType} is not an interface
-     *                                  or if {@code implementationType} is an
-     *                                  interface or an abstract class
+     * @throws IllegalArgumentException if {@code interfaceType} is not an interface or if {@code implementationType} is
+     *                                  an interface or an abstract class
      */
     public <T> void addSingleton(final Class<T> interfaceType, final Class<? extends T> implementationType) {
         Objects.requireNonNull(interfaceType);
@@ -113,8 +108,7 @@ public class ServiceCollection {
      *
      * @param <T>                    Type of the class
      * @param type                   Class type
-     * @param implementationFunction Function that uses {@link ServiceProvider} to
-     *                               build the instance of the transient
+     * @param implementationFunction Function that uses {@link ServiceProvider} to build the instance of the transient
      */
     public <T> void addTransient(final Class<T> type, final Function<ServiceProvider, T> implementationFunction) {
         Objects.requireNonNull(type);
@@ -123,14 +117,12 @@ public class ServiceCollection {
     }
 
     /**
-     * Adds a transient based on the {@link Inject} annotated constructor or a no
-     * parameter constructor if no {@link Inject} annotated constructor is found
+     * Adds a transient based on the {@link Inject} annotated constructor or a no parameter constructor if no
+     * {@link Inject} annotated constructor is found
      *
      * @param type Class type
-     * @throws Exception                if there are 0 or more than 1 {@link Inject}
-     *                                  annotated constructors
-     * @throws IllegalArgumentException if {@code type} is an interface or an
-     *                                  abstract class
+     * @throws Exception                if there are 0 or more than 1 {@link Inject} annotated constructors
+     * @throws IllegalArgumentException if {@code type} is an interface or an abstract class
      */
     public <T> void addTransient(final Class<T> type) {
         if (this.isInterfaceOrAbstractClass(type)) {
@@ -140,16 +132,14 @@ public class ServiceCollection {
     }
 
     /**
-     * Adds a transient based on the {@link Inject} annotated constructor of
-     * {@code implementationType} or a no parameter constructor if no {@link Inject}
-     * annotated constructor is found
+     * Adds a transient based on the {@link Inject} annotated constructor of {@code implementationType} or a no
+     * parameter constructor if no {@link Inject} annotated constructor is found
      *
      * @param <T>                Interface type
      * @param interfaceType      Interface class
      * @param implementationType Implementation class
-     * @throws IllegalArgumentException if {@code interfaceType} is not an interface
-     *                                  or if {@code implementationType} is an
-     *                                  interface or an abstract class
+     * @throws IllegalArgumentException if {@code interfaceType} is not an interface or if {@code implementationType} is
+     *                                  an interface or an abstract class
      */
     public <T> void addTransient(final Class<T> interfaceType, final Class<? extends T> implementationType) {
         Objects.requireNonNull(interfaceType);
@@ -183,8 +173,7 @@ public class ServiceCollection {
     }
 
     /**
-     * Get the constructor and the parameters of the constructor of the class
-     * {@code type}
+     * Get the constructor and the parameters of the constructor of the class {@code type}
      *
      * @param type Class type
      * @return a Pair of a constructor and its resolved parameters implementation
@@ -245,8 +234,7 @@ public class ServiceCollection {
      * Build the service provider from this service collection
      *
      * @return a service provider that manages this services
-     * @throws IllegalStateException if a service provider has already been built
-     *                               with this collection
+     * @throws IllegalStateException if a service provider has already been built with this collection
      */
     public ServiceProvider buildServiceProvider() {
         return this.buildServiceProvider(true);
@@ -255,12 +243,11 @@ public class ServiceCollection {
     /**
      * Build a service provider
      *
-     * @param checkForSecondCall true if you want to check if the service provider
-     *                           has been already built, false otherwise
+     * @param checkForSecondCall true if you want to check if the service provider has been already built, false
+     *                           otherwise
      * @return a service provider that manages this services
-     * @throws IllegalStateException if {@code checkForSecondCall} is true and a
-     *                               service provider has already been built with
-     *                               this service collection
+     * @throws IllegalStateException if {@code checkForSecondCall} is true and a service provider has already been built
+     *                               with this service collection
      */
     private ServiceProvider buildServiceProvider(final boolean checkForSecondCall) {
         if (checkForSecondCall) {

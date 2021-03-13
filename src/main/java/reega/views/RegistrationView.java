@@ -8,7 +8,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
-import reega.controllers.RegistrationControllerImpl;
+import reega.controllers.RegistrationController;
 import reega.util.ValueResult;
 import reega.viewutils.DialogFactory;
 
@@ -33,9 +33,9 @@ public class RegistrationView extends GridPane {
     @FXML
     private PasswordField confirmPasswordField;
 
-    private final RegistrationControllerImpl registrationController;
+    private final RegistrationController registrationController;
 
-    public RegistrationView(final RegistrationControllerImpl registrationController) {
+    public RegistrationView(final RegistrationController registrationController) {
         this.registrationController = registrationController;
         final FXMLLoader fxmlLoader = new FXMLLoader(
                 ClassLoader.getSystemClassLoader().getResource("views/Registration.fxml"));

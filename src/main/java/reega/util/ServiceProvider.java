@@ -22,8 +22,7 @@ public class ServiceProvider {
      *
      * @param <T>  Type of the service
      * @param type Class type
-     * @return a Optional filled in with the service if the service exists, an empty
-     *         Optional otherwise
+     * @return a Optional filled in with the service if the service exists, an empty Optional otherwise
      */
     public <T> Optional<T> getService(final Class<T> type) {
         return this.svcCollection.getService(type);
