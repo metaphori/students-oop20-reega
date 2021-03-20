@@ -30,7 +30,6 @@ dependencies {
             implementation("org.openjfx:javafx-$module:17-ea+3:$platform")
         }
     }
-    
 
     // Tests
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
@@ -69,6 +68,7 @@ dependencies {
     implementation("commons-validator:commons-validator:1.7")
 }
 
+defaultTasks("clean", "test", "shadowJar")
 tasks {
     test {
         useJUnitPlatform()
@@ -79,6 +79,7 @@ tasks {
         }
     }
     withType<ShadowJar> {
+        archiveFileName.set("reega.jar")
         mergeServiceFiles()
     }
 }
