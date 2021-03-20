@@ -20,7 +20,7 @@ public class SelectiveUsageSimulator implements UsageSimulator {
 
     @Override
     public Map<DataType, Double> getServicesUsage() {
-        return this.getSelectedUsage(DataType.getDataTypesByService(ServiceType.GARBAGE));
+        return this.getSelectedUsage(List.of(DataType.ELECTRICITY, DataType.GAS, DataType.WATER));
     }
 
     @Override
