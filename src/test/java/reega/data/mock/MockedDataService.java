@@ -1,6 +1,12 @@
 package reega.data.mock;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import com.google.gson.Gson;
+import okhttp3.HttpUrl;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.RecordedRequest;
+import org.apache.commons.io.IOUtils;
+import reega.data.models.Contract;
+import reega.data.remote.models.DataModel;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,15 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import org.apache.commons.io.IOUtils;
-
-import com.google.gson.Gson;
-
-import okhttp3.HttpUrl;
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.RecordedRequest;
-import reega.data.models.Contract;
-import reega.data.remote.models.DataModel;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class MockedDataService {
     private final Map<Integer, Map<Long, Double>> dataValues = new HashMap<>();

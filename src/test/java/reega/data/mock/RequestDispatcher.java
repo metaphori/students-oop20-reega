@@ -1,14 +1,13 @@
 package reega.data.mock;
 
-import java.io.IOException;
-import java.util.Objects;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.RecordedRequest;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.io.IOException;
+import java.util.Objects;
 
 public final class RequestDispatcher extends Dispatcher {
     private final MockedDataService dataService;
@@ -46,7 +45,7 @@ public final class RequestDispatcher extends Dispatcher {
                 }
             } else if (path.startsWith("/data/") && this.dataService != null) {
                 switch (path.substring(6)) {
-                    case "getContracts":
+                    case "contract":
                         return this.dataService.contracts();
                     case "fillUserData":
                         return this.dataService.fillData(recordedRequest);
