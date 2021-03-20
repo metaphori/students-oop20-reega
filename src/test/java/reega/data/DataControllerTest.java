@@ -18,6 +18,7 @@ import reega.data.mock.MockedDataService;
 import reega.data.mock.RequestDispatcher;
 import reega.data.models.Contract;
 import reega.data.models.Data;
+import reega.data.models.DataType;
 import reega.data.models.PriceModel;
 import reega.data.models.ServiceType;
 import reega.data.remote.RemoteDatabaseAPI;
@@ -63,7 +64,7 @@ public class DataControllerTest {
     @Test
     public void userDataTest() throws IOException {
         final long timestamp = (System.currentTimeMillis() / 1000) * 1000;
-        final Data newData = new Data(1, ServiceType.ELECTRICITY);
+        final Data newData = new Data(1, DataType.ELECTRICITY);
         newData.addRecord(timestamp + 1000, 5.5);
         newData.addRecord(timestamp + 2000, 6.4);
         newData.addRecord(timestamp + 3000, 7.3);

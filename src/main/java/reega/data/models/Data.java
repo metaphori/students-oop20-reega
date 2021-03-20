@@ -8,12 +8,12 @@ import java.util.Map;
  */
 public final class Data {
     private final int contractID;
-    private final ServiceType type;
+    private final DataType type;
     private final Map<Long, Double> data = new HashMap<>();
 
-    public Data(final int contractID, final ServiceType serviceType) {
+    public Data(final int contractID, final DataType dataType) {
         this.contractID = contractID;
-        this.type = serviceType;
+        this.type = dataType;
     }
 
     public void addRecord(final long timestamp, final double value) {
@@ -28,7 +28,7 @@ public final class Data {
         return this.contractID;
     }
 
-    public ServiceType getType() {
+    public DataType getType() {
         return this.type;
     }
 
