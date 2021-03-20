@@ -11,7 +11,7 @@ import java.io.IOException;
  * Handle the connection to the server and the http methods authentication
  */
 public class RemoteConnection {
-    private static final String baseUrl = "http://52.30.34.181/";
+    private static final String baseUrl = "http://52.208.47.221/";
     private static String JWT;
     private static Retrofit retrofit;
     private static ReegaService service;
