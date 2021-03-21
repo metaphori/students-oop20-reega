@@ -29,21 +29,21 @@ public class OnDemandDataFiller implements DataFiller {
     private static final Logger LOGGER = LoggerFactory.getLogger(DataFiller.class);
 
     // multi value map: 1 usage simulator (for every contract) many Data to fill
-    private final Map<UsageSimulator, Set<Data>> UsageDataMap;
+    private final Map<UsageSimulator, Set<Data>> usageDataMap;
     private final DataController database;
     private final Long currentDate;
 
     public OnDemandDataFiller(DataController controller, final Collection<Contract> contracts) {
         this.currentDate = new Date().getTime() + 60_000L; // current date + 1 min
         this.database = controller;
-        this.UsageDataMap = new HashMap<>();
+        this.usageDataMap = new HashMap<>();
         this.addContracts(contracts);
     }
 
     @Override
     public void fill() {
         // for each entry <UsageSimlator, Set<Data>> generate data and submit it
-        for (Entry<UsageSimulator, Set<Data>> entry : this.UsageDataMap.entrySet()) {
+        for (Entry<UsageSimulator, Set<Data>> entry : this.usageDataMap.entrySet()) {
             try {
                 for (Data data : entry.getValue()) {
                     this.generateValues(entry.getKey(), data);
@@ -65,7 +65,7 @@ public class OnDemandDataFiller implements DataFiller {
                     .stream()
                     .flatMap(srv -> DataType.getDataTypesByService(srv).stream())
                     .collect(Collectors.toList());
-            this.UsageDataMap.put(new SelectiveUsageSimulator(dataTypes),
+            this.usageDataMap.put(new SelectiveUsageSimulator(dataTypes),
                     dataTypes.stream().map(data -> new Data(contract.getId(), data)).collect(Collectors.toSet()));
         }
     }
@@ -75,7 +75,7 @@ public class OnDemandDataFiller implements DataFiller {
         Map<Long, Double> simulations = new HashMap<>();
         Long stepping = data.getType().getServiceType() == ServiceType.GARBAGE ? GARBAGE_STEPPING : SERVICES_STEPPING;
         Long dataDate = this.database.getLatestData(data.getContractID(), data.getType().getServiceType());
-        if (dataDate == null) {
+        if (dataDate == null || dataDate == 0L) {
             dataDate = START_DATE;
         } else {
             dataDate += stepping;
