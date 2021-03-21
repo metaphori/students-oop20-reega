@@ -1,17 +1,7 @@
 package reega.data.remote;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import reega.data.DataController;
 import reega.data.models.Contract;
 import reega.data.models.Data;
@@ -22,6 +12,14 @@ import reega.data.remote.models.DataModel;
 import reega.data.remote.models.NewContract;
 import retrofit2.Call;
 import retrofit2.Response;
+
+import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * DataController implementation, using remote database via http requests
@@ -35,19 +33,16 @@ public class RemoteDatabaseAPI implements DataController {
         connection = Objects.requireNonNullElseGet(c, RemoteConnection::new);
     }
 
-    public synchronized static RemoteDatabaseAPI getInstance() {
+    public synchronized static RemoteDatabaseAPI getInstance(final RemoteConnection connection) {
         if (INSTANCE == null) {
-            INSTANCE = new RemoteDatabaseAPI(null);
+            INSTANCE = new RemoteDatabaseAPI(connection);
         }
 
         return INSTANCE;
     }
 
-    public static synchronized RemoteDatabaseAPI getInstanceWithConnection(final RemoteConnection conn) {
-        if (INSTANCE == null) {
-            INSTANCE = new RemoteDatabaseAPI(conn);
-        }
-        return INSTANCE;
+    public RemoteDatabaseAPI getNewInstance(final RemoteConnection connection) {
+        return new RemoteDatabaseAPI(connection);
     }
 
     @Override
@@ -70,6 +65,20 @@ public class RemoteDatabaseAPI implements DataController {
     @Nonnull
     public List<Contract> getUserContracts() throws IOException {
         final Call<List<ContractModel>> v = connection.getService().getContracts();
+        final Response<List<ContractModel>> r = v.execute();
+        if (r.body() == null) {
+            return new ArrayList<>();
+        }
+        return r.body()
+                .stream()
+                .map(cm -> new Contract(cm.id, cm.address, cm.services, cm.priceModel.getPriceModel(), cm.startTime))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Nonnull
+    public List<Contract> getAllContracts() throws IOException {
+        final Call<List<ContractModel>> v = connection.getService().getAllContracts();
         final Response<List<ContractModel>> r = v.execute();
         if (r.body() == null) {
             return new ArrayList<>();

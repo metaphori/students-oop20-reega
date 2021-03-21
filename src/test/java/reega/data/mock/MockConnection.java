@@ -1,7 +1,5 @@
 package reega.data.mock;
 
-import java.io.IOException;
-
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockWebServer;
 import reega.data.remote.ReegaService;
@@ -10,6 +8,8 @@ import reega.data.remote.RemoteConnection;
 import reega.data.remote.RemoteDatabaseAPI;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import java.io.IOException;
 
 public class MockConnection implements AutoCloseable {
     private static MockWebServer server;
@@ -26,7 +26,7 @@ public class MockConnection implements AutoCloseable {
                 .build()
                 .create(ReegaService.class);
         final RemoteConnection connection = new RemoteConnection(service);
-        databaseAPI = RemoteDatabaseAPI.getInstanceWithConnection(connection);
+        databaseAPI = RemoteDatabaseAPI.getInstance(connection);
         authAPI = RemoteAuthAPI.getInstanceWithConnection(connection);
     }
 
