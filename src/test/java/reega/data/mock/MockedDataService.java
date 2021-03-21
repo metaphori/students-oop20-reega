@@ -23,7 +23,7 @@ public class MockedDataService {
     private final Map<Integer, Map<Long, Double>> dataValues = new HashMap<>();
     private final Contract defaultContract;
 
-    // TODO implement methods to add and menage contracts
+    // TODO implement methods to add and manage contracts
     public MockedDataService(final Contract defaultContract) {
         this.defaultContract = defaultContract;
     }

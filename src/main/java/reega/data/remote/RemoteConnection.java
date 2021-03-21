@@ -12,10 +12,10 @@ import java.io.IOException;
  */
 public class RemoteConnection {
     private static final String baseUrl = "http://52.208.47.221/";
-    private static String JWT;
     private static Retrofit retrofit;
     private static ReegaService service;
     private static boolean forcedService = false;
+    private String JWT;
 
     interface LoginMethod {
         LoginResponse login() throws IOException;
@@ -39,6 +39,11 @@ public class RemoteConnection {
     public RemoteConnection(final ReegaService s) {
         forcedService = true;
         service = s;
+    }
+
+    public void overrideToken(final String JWT) {
+        this.JWT = JWT;
+        this.setClientAuth();
     }
 
     public LoginResponse login(final LoginMethod loginMethod) throws IOException {

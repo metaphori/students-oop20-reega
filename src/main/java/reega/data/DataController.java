@@ -1,14 +1,14 @@
 package reega.data;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.List;
-
 import reega.data.models.Contract;
 import reega.data.models.Data;
 import reega.data.models.PriceModel;
 import reega.data.models.ServiceType;
 import reega.data.remote.models.NewContract;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
 
 /**
  * This controller handles all the data-based operations
@@ -23,6 +23,13 @@ public interface DataController {
      * @throws SQLException
      */
     List<Contract> getUserContracts() throws IOException, SQLException;
+
+    /**
+     * @return
+     * @throws IOException
+     * @throws SQLException
+     */
+    List<Contract> getAllContracts() throws IOException, SQLException;
 
     /**
      * Add contract

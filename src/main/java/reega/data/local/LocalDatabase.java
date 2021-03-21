@@ -1,5 +1,14 @@
 package reega.data.local;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import reega.data.DataController;
+import reega.data.models.Contract;
+import reega.data.models.Data;
+import reega.data.models.PriceModel;
+import reega.data.models.ServiceType;
+import reega.data.remote.models.NewContract;
+
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.sql.ResultSet;
@@ -10,16 +19,6 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.Map.Entry;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import reega.data.DataController;
-import reega.data.models.Contract;
-import reega.data.models.Data;
-import reega.data.models.PriceModel;
-import reega.data.models.ServiceType;
-import reega.data.remote.models.NewContract;
 
 /**
  * Implementation of DataController, using a local database (mainly for development purpose)
@@ -53,6 +52,11 @@ public final class LocalDatabase implements DataController {
         rs.close();
         s.close();
         return contracts;
+    }
+
+    @Override
+    public List<Contract> getAllContracts() throws IOException, SQLException {
+        return null;
     }
 
     @Override
