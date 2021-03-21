@@ -37,15 +37,7 @@ public class OnDemandDataFiller implements DataFiller {
         this.currentDate = new Date().getTime() + 60_000L; // current date + 1 min
         this.database = controller;
         this.UsageDataMap = new HashMap<>();
-
-        for (Contract contract : contracts) {
-            List<DataType> dataTypes = contract.getServices()
-                    .stream()
-                    .flatMap(srv -> DataType.getDataTypesByService(srv).stream())
-                    .collect(Collectors.toList());
-            this.UsageDataMap.put(new SelectiveUsageSimulator(dataTypes),
-                    dataTypes.stream().map(data -> new Data(contract.getId(), data)).collect(Collectors.toSet()));
-        }
+        this.addContracts(contracts);
     }
 
     @Override
@@ -64,6 +56,17 @@ public class OnDemandDataFiller implements DataFiller {
                 LOGGER.error("could not save generated data to local DB.", e);
                 break;
             }
+        }
+    }
+
+    public void addContracts(Collection<Contract> contracts) {
+        for (Contract contract : contracts) {
+            List<DataType> dataTypes = contract.getServices()
+                    .stream()
+                    .flatMap(srv -> DataType.getDataTypesByService(srv).stream())
+                    .collect(Collectors.toList());
+            this.UsageDataMap.put(new SelectiveUsageSimulator(dataTypes),
+                    dataTypes.stream().map(data -> new Data(contract.getId(), data)).collect(Collectors.toSet()));
         }
     }
 
