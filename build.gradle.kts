@@ -2,7 +2,6 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
     id("com.github.johnrengelman.shadow") version "6.1.0"
-    id("org.openjfx.javafxplugin") version "0.0.9"
     id("java")
     id("application")
     id("eclipse")
@@ -22,20 +21,15 @@ application {
     mainClassName = "reega.main.Launcher"
 }
 
-javafx {
-    version = "15.0.1"
-}
-
 val javaFXModules = listOf("base", "controls", "fxml", "graphics", "swing")
 val supportedPlatforms = listOf("linux", "mac", "win")
 
 dependencies {
     for (platform in supportedPlatforms) {
         for (module in javaFXModules) {
-            implementation("org.openjfx:javafx-$module:13:$platform")
+            implementation("org.openjfx:javafx-$module:17-ea+3:$platform")
         }
     }
-    
 
     // Tests
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
@@ -74,6 +68,7 @@ dependencies {
     implementation("commons-validator:commons-validator:1.7")
 }
 
+defaultTasks("clean", "test", "shadowJar")
 tasks {
     test {
         useJUnitPlatform()
@@ -84,6 +79,7 @@ tasks {
         }
     }
     withType<ShadowJar> {
+        archiveFileName.set("reega.jar")
         mergeServiceFiles()
     }
 }
