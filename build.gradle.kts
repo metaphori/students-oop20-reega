@@ -79,6 +79,7 @@ tasks {
         }
     }
     withType<ShadowJar> {
+        dependsOn("test")
         archiveFileName.set("reega.jar")
         mergeServiceFiles()
     }

@@ -12,7 +12,7 @@ public enum DataType {
     private final ServiceType svcType;
     private final int id;
 
-    private DataType(int id, ServiceType svcType) {
+    DataType(int id, ServiceType svcType) {
         this.id = id;
         this.svcType = svcType;
     }
