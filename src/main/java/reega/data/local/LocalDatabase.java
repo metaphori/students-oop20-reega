@@ -5,8 +5,8 @@ import com.google.gson.reflect.TypeToken;
 import reega.data.DataController;
 import reega.data.models.Contract;
 import reega.data.models.Data;
+import reega.data.models.DataType;
 import reega.data.models.PriceModel;
-import reega.data.models.ServiceType;
 import reega.data.remote.models.NewContract;
 
 import java.io.IOException;
@@ -118,7 +118,7 @@ public final class LocalDatabase implements DataController {
     }
 
     @Override
-    public Long getLatestData(final int contractID, final ServiceType service) throws SQLException {
+    public Long getLatestData(final int contractID, final DataType service) throws SQLException {
         final String sql = String.format(
                 "with latestData as (select \"timestamp\" from  data where \"contract_id\" = %d and \"type\" = %d order by \"timestamp\" desc limit 1)"
                         + "select coalesce((select * from latestData), (select start_time from contracts where id = %d))",

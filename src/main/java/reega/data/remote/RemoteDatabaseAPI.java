@@ -5,8 +5,8 @@ import org.slf4j.LoggerFactory;
 import reega.data.DataController;
 import reega.data.models.Contract;
 import reega.data.models.Data;
+import reega.data.models.DataType;
 import reega.data.models.PriceModel;
-import reega.data.models.ServiceType;
 import reega.data.remote.models.ContractModel;
 import reega.data.remote.models.DataModel;
 import reega.data.remote.models.NewContract;
@@ -54,7 +54,7 @@ public class RemoteDatabaseAPI implements DataController {
     }
 
     @Override
-    public Long getLatestData(final int contractID, final ServiceType service) throws IOException {
+    public Long getLatestData(final int contractID, final DataType service) throws IOException {
         final Call<Date> v = connection.getService().getLatestData(service.getID(), contractID);
         final Response<Date> r = v.execute();
         final Date d = r.body();

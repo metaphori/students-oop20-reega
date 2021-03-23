@@ -2,8 +2,8 @@ package reega.data;
 
 import reega.data.models.Contract;
 import reega.data.models.Data;
+import reega.data.models.DataType;
 import reega.data.models.PriceModel;
-import reega.data.models.ServiceType;
 import reega.data.remote.models.NewContract;
 
 import java.io.IOException;
@@ -90,5 +90,5 @@ public interface DataController {
      * @return
      * @throws SQLException
      */
-    Long getLatestData(int contractID, ServiceType service) throws SQLException, IOException;
+    Long getLatestData(int contractID, DataType service) throws SQLException, IOException;
 }
