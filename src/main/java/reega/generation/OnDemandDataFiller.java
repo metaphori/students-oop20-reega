@@ -74,7 +74,7 @@ public class OnDemandDataFiller implements DataFiller {
 
         Map<Long, Double> simulations = new HashMap<>();
         Long stepping = data.getType().getServiceType() == ServiceType.GARBAGE ? GARBAGE_STEPPING : SERVICES_STEPPING;
-        Long dataDate = this.database.getLatestData(data.getContractID(), data.getType().getServiceType());
+        Long dataDate = this.database.getLatestData(data.getContractID(), data.getType());
         if (dataDate == null || dataDate == 0L) {
             dataDate = START_DATE;
         } else {
