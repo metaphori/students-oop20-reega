@@ -30,6 +30,7 @@ public class GenerationLauncher {
             LOGGER.error("couldn't access DB");
         }
 
+        System.exit(0);
     }
 
 }
