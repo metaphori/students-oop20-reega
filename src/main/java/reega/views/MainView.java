@@ -6,12 +6,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import reega.controllers.MainController;
 
-public class MainView extends GridPane {
+public class MainView extends HBox {
 
     @FXML
-    private Label testText;
+    private Label userEmail;
 
     public MainView(final MainController controller) {
         final FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemClassLoader().getResource("views/Main.fxml"));
@@ -26,10 +27,10 @@ public class MainView extends GridPane {
         }
 
         if (controller.user().isNotNull().get()) {
-            this.testText.setText(controller.user().get().getEmail());
+            this.userEmail.setText(controller.user().get().getEmail());
         }
         controller.user().addListener((observable, oldValue, newValue) -> {
-            this.testText.setText(newValue.getEmail());
+            this.userEmail.setText(newValue.getEmail());
         });
     }
 }

@@ -2,17 +2,61 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import reega.viewcomponents.*?>
 
 
 <fx:root xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
-        type="GridPane"
+        type="HBox"
         prefHeight="400.0"
         prefWidth="600.0"
-        alignment="CENTER">
+        alignment="CENTER"
+        stylesheets="@/css/Card.css">
+    <children>
+        <VBox>
+            <children>
+                <Button/>
+            </children>
+        </VBox>
+        <VBox>
+            <children>
+                <Label fx:id="userEmail"/>
+                <FlexibleGridPane VBox.vgrow="ALWAYS" fixedColumnsNumber="2">
+                    <children>
+                        <VBox>
+                            <children>
+                                <Label text="A"/>
+                            </children>
+                        </VBox>
+                        <VBox>
+                            <children>
+                                <Label text="B"/>
+                            </children>
+                        </VBox>
+                        <VBox>
+                            <children>
+                                <Label text="C"/>
+                            </children>
+                        </VBox>
+                        <VBox>
+                            <children>
+                                <Label text="D"/>
+                            </children>
+                        </VBox>
+                        <VBox>
+                            <children>
+                                <Label text="E"/>
+                            </children>
+                        </VBox>
+                        <VBox>
+                            <children>
+                                <Label text="F"/>
+                            </children>
+                        </VBox>
+                    </children>
+                </FlexibleGridPane>
+            </children>
 
-    <Label fx:id="testText"
-           layoutX="272.0"
-           layoutY="192.0"
-           text="Ci siamo :)"/>
+        </VBox>
+    </children>
 </fx:root>
