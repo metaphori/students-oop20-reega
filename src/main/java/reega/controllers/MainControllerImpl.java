@@ -5,7 +5,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import reega.users.User;
 import reega.viewutils.AbstractController;
 
-public class MainViewControllerImpl extends AbstractController implements MainViewController{
+public class MainControllerImpl extends AbstractController implements MainController{
     final ObjectProperty<User> user = new SimpleObjectProperty<>();
 
     @Override

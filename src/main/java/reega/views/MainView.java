@@ -6,14 +6,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
-import reega.controllers.MainViewController;
+import reega.controllers.MainController;
 
 public class MainView extends GridPane {
 
     @FXML
     private Label testText;
 
-    public MainView(final MainViewController controller) {
+    public MainView(final MainController controller) {
         final FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemClassLoader().getResource("views/Main.fxml"));
 
         loader.setRoot(this);

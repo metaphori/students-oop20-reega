@@ -82,7 +82,7 @@ public class LoginControllerImpl extends AbstractController implements LoginCont
     }
 
     private void jumpToNextPage(final GenericUser user) {
-        this.pushController(MainViewController.class, newController -> newController.user().setValue(user), true);
+        this.pushController(MainController.class, newController -> newController.user().setValue(user), true);
     }
 
     /**

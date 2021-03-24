@@ -67,7 +67,7 @@ public class UIAppInitializer implements AppInitializer {
     private ServiceProvider buildServiceProvider() throws ClassNotFoundException, SQLException {
         final ServiceCollection svcCollection = new ServiceCollection();
         svcCollection.addSingleton(Navigator.class, (Function<ServiceProvider, Navigator>) NavigatorImpl::new);
-        svcCollection.addSingleton(MainController.class);
+        svcCollection.addSingleton(MasterController.class);
         svcCollection.addSingleton(AuthController.class, AuthControllerFactory.getDefaultAuthController());
         svcCollection.addSingleton(IOController.class, IOControllerFactory.getDefaultIOController());
         svcCollection.addSingleton(TokenIOController.class, IOControllerFactory.getDefaultTokenIOController());
@@ -75,7 +75,7 @@ public class UIAppInitializer implements AppInitializer {
         svcCollection.addSingleton(AuthManager.class, RemindableAuthManager.class);
         svcCollection.addTransient(LoginController.class, LoginControllerImpl.class);
         svcCollection.addTransient(RegistrationController.class, RegistrationControllerImpl.class);
-        svcCollection.addSingleton(MainViewController.class, MainViewControllerImpl.class);
+        svcCollection.addSingleton(MainController.class, MainControllerImpl.class);
         svcCollection.addSingleton(BaseLayoutView.class);
         return svcCollection.buildServiceProvider();
     }
@@ -107,14 +107,14 @@ public class UIAppInitializer implements AppInitializer {
                 return () -> new LoginView(controller);
             }
         });
-        templateManager.addTemplate(new DataTemplate<MainViewControllerImpl>() {
+        templateManager.addTemplate(new DataTemplate<MainControllerImpl>() {
             @Override
-            public Class<MainViewControllerImpl> getDataObjectClass() {
-                return MainViewControllerImpl.class;
+            public Class<MainControllerImpl> getDataObjectClass() {
+                return MainControllerImpl.class;
             }
 
             @Override
-            public Supplier<? extends Parent> getControlFactory(final MainViewControllerImpl controller) {
+            public Supplier<? extends Parent> getControlFactory(final MainControllerImpl controller) {
                 return () -> new MainView(controller);
             }
         });
