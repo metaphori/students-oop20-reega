@@ -11,7 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
-import reega.controllers.MainController;
+import reega.controllers.MasterController;
 import reega.viewutils.ContentControl;
 
 /**
@@ -25,10 +25,10 @@ public class BaseLayoutView extends ScrollPane {
     @FXML
     private Button backArrowButton;
 
-    private final MainController controller;
+    private final MasterController controller;
 
     @Inject
-    public BaseLayoutView(final MainController controller) {
+    public BaseLayoutView(final MasterController controller) {
         final FXMLLoader fxmlLoader = new FXMLLoader(
                 ClassLoader.getSystemClassLoader().getResource("views/BaseLayout.fxml"));
         fxmlLoader.setRoot(this);
