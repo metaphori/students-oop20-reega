@@ -51,15 +51,6 @@ public interface ReegaService {
     @DELETE("data/contract")
     Call<Void> removeContract(@Query("id") int id);
 
-    @GET("data/price_model")
-    Call<List<PriceModel>> getPriceModels();
-
-    @POST("data/price_model")
-    Call<Void> addPriceModel(@Body PriceModel priceModel);
-
-    @DELETE("data/price_model")
-    Call<Void> removePriceModel(@Query("id") int id);
-
     @POST("data/fillUserData")
     Call<Void> pushData(@Body DataModel data);
 

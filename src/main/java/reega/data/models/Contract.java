@@ -13,7 +13,6 @@ public final class Contract {
     private final int id;
     private final String address;
     private final List<ServiceType> services;
-    private final Prices prices;
     private final Date startDate;
 
     public int getId() {
@@ -28,20 +27,14 @@ public final class Contract {
         return this.services;
     }
 
-    public Prices getPriceModel() {
-        return this.prices;
-    }
-
     public Date getStartDate() {
         return this.startDate;
     }
 
-    public Contract(final int id, final String address, final List<String> services, final Prices prices,
-                    final Date startDate) {
+    public Contract(final int id, final String address, final List<String> services, final Date startDate) {
         this.id = id;
         this.address = address;
         this.services = services.stream().map(s -> ServiceType.valueOf(s.toUpperCase())).collect(Collectors.toList());
-        this.prices = prices;
         this.startDate = startDate;
     }
 
@@ -49,7 +42,6 @@ public final class Contract {
         this(contractModel.id,
                 contractModel.address,
                 contractModel.services,
-                new Prices(contractModel.priceModel),
                 contractModel.startTime);
     }
 

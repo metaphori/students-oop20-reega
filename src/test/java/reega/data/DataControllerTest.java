@@ -11,13 +11,11 @@ import reega.data.mock.RequestDispatcher;
 import reega.data.models.Contract;
 import reega.data.models.Data;
 import reega.data.models.DataType;
-import reega.data.models.PriceModel;
 import reega.data.remote.RemoteDatabaseAPI;
 
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -29,8 +27,7 @@ public class DataControllerTest {
     @BeforeAll
     static void setup() throws IOException {
         // TODO replace this with method to add and menage contracts
-        final PriceModel pm = new PriceModel(1, "test_pm", Map.of("electricity", 1.5));
-        final Contract c = new Contract(1, "address", List.of("electricity"), pm, new Date());
+        final Contract c = new Contract(1, "address", List.of("electricity"), new Date());
         final Dispatcher dispatcher = new RequestDispatcher(new MockedDataService(c), null);
         connection = new MockConnection(dispatcher);
         databaseAPI = connection.getDatabaseAPI();
