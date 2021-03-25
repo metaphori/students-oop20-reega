@@ -1,21 +1,30 @@
 package reega.data.models;
 
+import java.util.Map;
+
 /**
  * Services supplied by Reega
  */
 public enum ServiceType {
-    ELECTRICITY("electricity", 0), GAS("gas", 1), WATER("water", 2), GARBAGE("garbage", 3);
+    ELECTRICITY(0),
+    GAS(1),
+    WATER(2),
+    GARBAGE(3);
 
-    private final String name;
+    private final Map<Integer, String> names = Map.of(
+            0, "electricity",
+            1, "gas",
+            2, "water",
+            3, "garbage"
+    );
     private final int id;
 
-    ServiceType(final String name, final int id) {
-        this.name = name;
+    ServiceType(final int id) {
         this.id = id;
     }
 
     public String getName() {
-        return this.name;
+        return this.names.get(id);
     }
 
     public int getID() {

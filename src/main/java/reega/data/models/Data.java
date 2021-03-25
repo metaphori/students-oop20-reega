@@ -1,5 +1,7 @@
 package reega.data.models;
 
+import reega.data.remote.models.DataModel;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,11 +11,22 @@ import java.util.Map;
 public final class Data {
     private final int contractID;
     private final DataType type;
-    private final Map<Long, Double> data = new HashMap<>();
+    private final Map<Long, Double> data;
+
+    public Data(final DataModel model) {
+        this.contractID = model.contractId;
+        this.data = model.data;
+        this.type = DataType.fromId(model.type);
+    }
 
     public Data(final int contractID, final DataType dataType) {
+        this(contractID, dataType, new HashMap<>());
+    }
+
+    public Data(final int contractID, final DataType dataType, Map<Long, Double> data) {
         this.contractID = contractID;
         this.type = dataType;
+        this.data = data;
     }
 
     public void addRecord(final long timestamp, final double value) {

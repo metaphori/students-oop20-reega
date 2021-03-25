@@ -6,6 +6,7 @@ import retrofit2.http.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Specify the API layout and request types
@@ -61,6 +62,9 @@ public interface ReegaService {
 
     @POST("data/fillUserData")
     Call<Void> pushData(@Body DataModel data);
+
+    @GET("data/month")
+    Call<List<DataModel>> getMonthlyData(@QueryMap Map<String, String> options);
 
     @GET("data/getLatestTimestamp")
     Call<Date> getLatestData(@Query("type") int type, @Query("contract_id") int contractId);

@@ -1,5 +1,6 @@
 package reega.data;
 
+import org.jetbrains.annotations.Nullable;
 import reega.data.models.Contract;
 import reega.data.models.Data;
 import reega.data.models.DataType;
@@ -91,4 +92,6 @@ public interface DataController {
      * @throws SQLException
      */
     Long getLatestData(int contractID, DataType service) throws SQLException, IOException;
+
+    List<Data> getMonthlyData(@Nullable Integer contractID) throws IOException;
 }

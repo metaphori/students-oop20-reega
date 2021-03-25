@@ -17,6 +17,15 @@ public enum DataType {
         this.svcType = svcType;
     }
 
+    public static DataType fromId(int id) {
+        for (DataType t : values()) {
+            if (t.id == id) {
+                return t;
+            }
+        }
+        return null;
+    }
+
     public static List<DataType> getDataTypesByService(ServiceType svcType) {
         return Arrays.stream(DataType.values()).filter(e -> e.getServiceType() == svcType).collect(Collectors.toList());
     }

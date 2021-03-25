@@ -2,6 +2,7 @@ package reega.data.local;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import org.jetbrains.annotations.Nullable;
 import reega.data.DataController;
 import reega.data.models.Contract;
 import reega.data.models.Data;
@@ -130,5 +131,10 @@ public final class LocalDatabase implements DataController {
         }
         final Calendar tzUTC = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         return new Date(rs.getTimestamp("timestamp", tzUTC).getTime()).getTime();
+    }
+
+    @Override
+    public List<Data> getMonthlyData(@Nullable Integer contractID) {
+
     }
 }

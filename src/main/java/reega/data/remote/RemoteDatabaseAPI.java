@@ -1,5 +1,6 @@
 package reega.data.remote;
 
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reega.data.DataController;
@@ -15,10 +16,7 @@ import retrofit2.Response;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -59,6 +57,21 @@ public class RemoteDatabaseAPI implements DataController {
         final Response<Date> r = v.execute();
         final Date d = r.body();
         return d == null ? 0L : d.getTime();
+    }
+
+    @Override
+    public List<Data> getMonthlyData(@Nullable Integer contractID) throws IOException {
+        final Map<String, String> options = new HashMap<>();
+        if (contractID != null) {
+            options.put("contract_id", String.valueOf(contractID));
+        }
+        final Call<List<DataModel>> v = connection.getService().getMonthlyData(options);
+        final Response<List<DataModel>> r = v.execute();
+        if (r.body() == null) {
+            //TODO
+            return new ArrayList<>();
+        }
+        return r.body().stream().map(Data::new).collect(Collectors.toList());
     }
 
     @Override
