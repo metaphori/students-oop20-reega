@@ -1,13 +1,11 @@
-package reega.data.remote.models;
+package reega.data.models.gson;
 
 import com.google.gson.annotations.SerializedName;
 
 /**
  * API data model
  */
-public class LoginResponse {
-    @SerializedName("id")
-    public Integer id;
+public class NewUserBody {
     @SerializedName("name")
     public String name;
     @SerializedName("surname")
@@ -18,17 +16,16 @@ public class LoginResponse {
     public String fiscalCode;
     @SerializedName("role")
     public String role;
-    @SerializedName("jwt")
-    public String jwt;
+    @SerializedName("password")
+    public String passwordHash;
 
-    public LoginResponse(final Integer id, final String name, final String surname, final String email,
-            final String fiscalCode, final String role, final String jwt) {
-        this.id = id;
+    public NewUserBody(final String name, final String surname, final String email, final String fiscalCode,
+            final String role, final String passwordHash) {
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.fiscalCode = fiscalCode;
         this.role = role;
-        this.jwt = jwt;
+        this.passwordHash = passwordHash;
     }
 }

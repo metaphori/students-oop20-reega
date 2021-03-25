@@ -1,4 +1,4 @@
-package reega.data.remote.models;
+package reega.data.models.gson;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

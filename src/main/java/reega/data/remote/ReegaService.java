@@ -1,6 +1,6 @@
 package reega.data.remote;
 
-import reega.data.remote.models.*;
+import reega.data.models.gson.*;
 import retrofit2.Call;
 import retrofit2.http.*;
 
@@ -52,10 +52,10 @@ public interface ReegaService {
     Call<Void> removeContract(@Query("id") int id);
 
     @GET("data/price_model")
-    Call<List<ContractModel.PriceModel>> getPriceModels();
+    Call<List<PriceModel>> getPriceModels();
 
     @POST("data/price_model")
-    Call<Void> addPriceModel(@Body ContractModel.PriceModel priceModel);
+    Call<Void> addPriceModel(@Body PriceModel priceModel);
 
     @DELETE("data/price_model")
     Call<Void> removePriceModel(@Query("id") int id);

@@ -7,8 +7,8 @@ import reega.data.DataController;
 import reega.data.models.Contract;
 import reega.data.models.Data;
 import reega.data.models.DataType;
-import reega.data.models.PriceModel;
-import reega.data.remote.models.NewContract;
+import reega.data.models.Prices;
+import reega.data.models.gson.NewContract;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -45,7 +45,7 @@ public final class LocalDatabase implements DataController {
         final List<Contract> contracts = new ArrayList<>();
         while (rs.next()) {
             final Map<String, Double> prices = new Gson().fromJson(rs.getString("prices"), pricesType);
-            final PriceModel pm = new PriceModel(rs.getInt("price_model_id"), rs.getString("price_model_name"), prices);
+            final Prices pm = new Prices(rs.getInt("price_model_id"), rs.getString("price_model_name"), prices);
             final List<String> services = new Gson().fromJson(rs.getString("services"), servicesType);
             contracts.add(new Contract(rs.getInt("contract_id"), rs.getString("address"), services, pm,
                     new Date(rs.getTimestamp("start_time", tzUTC).getTime())));
@@ -77,21 +77,21 @@ public final class LocalDatabase implements DataController {
     }
 
     @Override
-    public List<PriceModel> getPriceModels() throws SQLException {
+    public List<Prices> getPriceModels() throws SQLException {
         final Statement s = this.db.getConnection().createStatement();
         final ResultSet rs = s.executeQuery("select * from price_models");
-        final List<PriceModel> prices = new ArrayList<>();
+        final List<Prices> prices = new ArrayList<>();
         final Type pricesType = new TypeToken<Map<String, Double>>() {
         }.getType();
         while (rs.next()) {
             final Map<String, Double> p = new Gson().fromJson(rs.getString("prices"), pricesType);
-            prices.add(new PriceModel(rs.getInt("id"), rs.getString("name"), p));
+            prices.add(new Prices(rs.getInt("id"), rs.getString("name"), p));
         }
         return prices;
     }
 
     @Override
-    public void addPriceModel(final PriceModel priceModel) throws SQLException {
+    public void addPriceModel(final Prices priceModel) throws SQLException {
         final String prices = new Gson().toJson(priceModel.getPrices());
         final String sql = String.format("insert into price_models (\"name\", prices) values ('%s', '%s');",
                 priceModel.getName(), prices);

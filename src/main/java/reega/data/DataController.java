@@ -4,8 +4,8 @@ import org.jetbrains.annotations.Nullable;
 import reega.data.models.Contract;
 import reega.data.models.Data;
 import reega.data.models.DataType;
-import reega.data.models.PriceModel;
-import reega.data.remote.models.NewContract;
+import reega.data.models.Prices;
+import reega.data.models.gson.NewContract;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -57,7 +57,7 @@ public interface DataController {
      * @throws IOException
      * @throws SQLException
      */
-    List<PriceModel> getPriceModels() throws IOException, SQLException;
+    List<Prices> getPriceModels() throws IOException, SQLException;
 
     /**
      * Add price model
@@ -65,7 +65,7 @@ public interface DataController {
      * @throws IOException
      * @throws SQLException
      */
-    void addPriceModel(PriceModel priceModel) throws IOException, SQLException;
+    void addPriceModel(Prices prices) throws IOException, SQLException;
 
     /**
      * Remove the price model. DO NOT DELETE IF THERE IS A CONTRACT USING THE PRICE MODEL

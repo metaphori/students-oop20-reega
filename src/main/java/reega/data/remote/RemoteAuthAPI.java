@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 
 import reega.data.AuthController;
 import reega.data.models.UserAuth;
-import reega.data.remote.models.LoginResponse;
-import reega.data.remote.models.NewUserBody;
-import reega.data.remote.models.UserAuthToken;
+import reega.data.models.gson.LoginResponse;
+import reega.data.models.gson.NewUserBody;
+import reega.data.models.gson.UserAuthToken;
 import reega.users.GenericUser;
 import reega.users.NewUser;
 import reega.users.Role;

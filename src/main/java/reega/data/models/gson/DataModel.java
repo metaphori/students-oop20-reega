@@ -1,4 +1,4 @@
-package reega.data.remote.models;
+package reega.data.models.gson;
 
 import com.google.gson.annotations.SerializedName;
 import reega.data.models.Data;

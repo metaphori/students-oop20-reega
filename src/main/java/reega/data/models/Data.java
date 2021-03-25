@@ -1,6 +1,6 @@
 package reega.data.models;
 
-import reega.data.remote.models.DataModel;
+import reega.data.models.gson.DataModel;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +27,15 @@ public final class Data {
         this.contractID = contractID;
         this.type = dataType;
         this.data = data;
+    }
+
+    public DataModel getJsonModel() {
+        return new DataModel(this);
+    }
+
+    @Override
+    public String toString() {
+        return this.getJsonModel().toString();
     }
 
     public void addRecord(final long timestamp, final double value) {

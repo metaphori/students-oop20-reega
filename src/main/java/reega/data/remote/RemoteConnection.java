@@ -1,7 +1,7 @@
 package reega.data.remote;
 
 import okhttp3.OkHttpClient;
-import reega.data.remote.models.LoginResponse;
+import reega.data.models.gson.LoginResponse;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
