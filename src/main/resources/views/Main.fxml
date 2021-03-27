@@ -21,40 +21,7 @@
         <VBox>
             <children>
                 <Label fx:id="userEmail"/>
-                <FlexibleGridPane VBox.vgrow="ALWAYS" fixedColumnsNumber="2">
-                    <children>
-                        <VBox>
-                            <children>
-                                <Label text="A"/>
-                            </children>
-                        </VBox>
-                        <VBox>
-                            <children>
-                                <Label text="B"/>
-                            </children>
-                        </VBox>
-                        <VBox>
-                            <children>
-                                <Label text="C"/>
-                            </children>
-                        </VBox>
-                        <VBox>
-                            <children>
-                                <Label text="D"/>
-                            </children>
-                        </VBox>
-                        <VBox>
-                            <children>
-                                <Label text="E"/>
-                            </children>
-                        </VBox>
-                        <VBox>
-                            <children>
-                                <Label text="F"/>
-                            </children>
-                        </VBox>
-                    </children>
-                </FlexibleGridPane>
+                <FlexibleGridPane fx:id="servicesPane" VBox.vgrow="ALWAYS" fixedColumnsNumber="2"/>
             </children>
 
         </VBox>
