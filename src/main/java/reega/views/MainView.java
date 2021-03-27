@@ -8,11 +8,14 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import reega.controllers.MainController;
+import reega.viewcomponents.FlexibleGridPane;
 
-public class MainView extends HBox {
+public abstract class MainView extends HBox {
 
     @FXML
     private Label userEmail;
+    @FXML
+    private FlexibleGridPane servicesPane;
 
     public MainView(final MainController controller) {
         final FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemClassLoader().getResource("views/Main.fxml"));
@@ -32,5 +35,9 @@ public class MainView extends HBox {
         controller.user().addListener((observable, oldValue, newValue) -> {
             this.userEmail.setText(newValue.getEmail());
         });
+    }
+
+    protected FlexibleGridPane getServicesPane() {
+        return this.servicesPane;
     }
 }
