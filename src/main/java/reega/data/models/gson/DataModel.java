@@ -1,10 +1,9 @@
-package reega.data.remote.models;
-
-import java.util.Map;
+package reega.data.models.gson;
 
 import com.google.gson.annotations.SerializedName;
-
 import reega.data.models.Data;
+
+import java.util.Map;
 
 /**
  * API data model

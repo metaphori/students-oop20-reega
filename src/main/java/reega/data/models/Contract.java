@@ -1,5 +1,7 @@
 package reega.data.models;
 
+import reega.data.models.gson.ContractModel;
+
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,7 +13,7 @@ public final class Contract {
     private final int id;
     private final String address;
     private final List<ServiceType> services;
-    private final PriceModel priceModel;
+    private final Prices prices;
     private final Date startDate;
 
     public int getId() {
@@ -26,26 +28,37 @@ public final class Contract {
         return this.services;
     }
 
-    public PriceModel getPriceModel() {
-        return this.priceModel;
+    public Prices getPriceModel() {
+        return this.prices;
     }
 
     public Date getStartDate() {
         return this.startDate;
     }
 
-    public Contract(final int id, final String address, final List<String> services, final PriceModel priceModel,
-            final Date startDate) {
+    public Contract(final int id, final String address, final List<String> services, final Prices prices,
+                    final Date startDate) {
         this.id = id;
         this.address = address;
         this.services = services.stream().map(s -> ServiceType.valueOf(s.toUpperCase())).collect(Collectors.toList());
-        this.priceModel = priceModel;
+        this.prices = prices;
         this.startDate = startDate;
+    }
+
+    public Contract(ContractModel contractModel) {
+        this(contractModel.id,
+                contractModel.address,
+                contractModel.services,
+                new Prices(contractModel.priceModel),
+                contractModel.startTime);
+    }
+
+    public ContractModel getJsonModel() {
+        return new ContractModel(this);
     }
 
     @Override
     public String toString() {
-        return "Contract{" + "id=" + this.id + ", address='" + this.address + '\'' + ", services=" + this.services
-                + ", priceModel=" + this.priceModel + ", startDate=" + this.startDate + '}';
+        return this.getJsonModel().toString();
     }
 }

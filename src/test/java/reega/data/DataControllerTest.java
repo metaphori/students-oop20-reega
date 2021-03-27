@@ -1,18 +1,10 @@
 package reega.data;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
+import okhttp3.mockwebserver.Dispatcher;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-
-import okhttp3.mockwebserver.Dispatcher;
 import reega.data.mock.MockConnection;
 import reega.data.mock.MockedDataService;
 import reega.data.mock.RequestDispatcher;
@@ -20,8 +12,14 @@ import reega.data.models.Contract;
 import reega.data.models.Data;
 import reega.data.models.DataType;
 import reega.data.models.PriceModel;
-import reega.data.models.ServiceType;
 import reega.data.remote.RemoteDatabaseAPI;
+
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class DataControllerTest {
@@ -71,7 +69,7 @@ public class DataControllerTest {
 
         databaseAPI.putUserData(newData);
 
-        final long latestTimestamp = databaseAPI.getLatestData(1, ServiceType.ELECTRICITY);
+        final long latestTimestamp = databaseAPI.getLatestData(1, DataType.ELECTRICITY);
         // +3.600.000 because we insert data in UTC, and we get them as GMT
         assertEquals(timestamp + 3600000 + 3000, latestTimestamp);
     }

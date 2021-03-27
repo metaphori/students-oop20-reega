@@ -1,11 +1,12 @@
 package reega.data.remote;
 
-import reega.data.remote.models.*;
+import reega.data.models.gson.*;
 import retrofit2.Call;
 import retrofit2.http.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Specify the API layout and request types
@@ -51,16 +52,19 @@ public interface ReegaService {
     Call<Void> removeContract(@Query("id") int id);
 
     @GET("data/price_model")
-    Call<List<ContractModel.PriceModel>> getPriceModels();
+    Call<List<PriceModel>> getPriceModels();
 
     @POST("data/price_model")
-    Call<Void> addPriceModel(@Body ContractModel.PriceModel priceModel);
+    Call<Void> addPriceModel(@Body PriceModel priceModel);
 
     @DELETE("data/price_model")
     Call<Void> removePriceModel(@Query("id") int id);
 
     @POST("data/fillUserData")
     Call<Void> pushData(@Body DataModel data);
+
+    @GET("data/month")
+    Call<List<DataModel>> getMonthlyData(@QueryMap Map<String, String> options);
 
     @GET("data/getLatestTimestamp")
     Call<Date> getLatestData(@Query("type") int type, @Query("contract_id") int contractId);

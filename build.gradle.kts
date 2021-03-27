@@ -3,6 +3,7 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 plugins {
     id("com.github.johnrengelman.shadow") version "6.1.0"
     id("java")
+    id("jacoco")
     id("application")
     id("eclipse")
 }
@@ -19,6 +20,11 @@ java.targetCompatibility = JavaVersion.VERSION_11
 
 application {
     mainClassName = "reega.main.Launcher"
+}
+
+jacoco {
+    toolVersion = "0.8.6"
+    reportsDir = file("$buildDir/jacoco")
 }
 
 val javaFXModules = listOf("base", "controls", "fxml", "graphics", "swing")
@@ -68,10 +74,14 @@ dependencies {
     implementation("commons-validator:commons-validator:1.7")
 }
 
-defaultTasks("clean", "test", "shadowJar")
+defaultTasks("clean", "shadowJar")
 tasks {
     test {
         useJUnitPlatform()
+        finalizedBy("jacocoTestReport")
+    }
+    jacocoTestReport {
+        dependsOn("test")
     }
     jar {
         manifest {
