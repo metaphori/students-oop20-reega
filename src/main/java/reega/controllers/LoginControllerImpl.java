@@ -82,7 +82,8 @@ public class LoginControllerImpl extends AbstractController implements LoginCont
     }
 
     private void jumpToNextPage(final GenericUser user) {
-        this.pushController(MainController.class, newController -> newController.user().setValue(user), true);
+        //TODO push different controllers based on the type of the user
+        this.pushController(UserMainController.class, newController -> newController.setUser(user), true);
     }
 
     /**
