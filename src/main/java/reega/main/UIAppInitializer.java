@@ -9,16 +9,22 @@ import reega.auth.RemindableAuthManager;
 import reega.controllers.*;
 import reega.data.AuthController;
 import reega.data.AuthControllerFactory;
+import reega.data.DataController;
+import reega.data.DataControllerFactory;
+import reega.data.remote.RemoteConnection;
 import reega.io.IOController;
 import reega.io.IOControllerFactory;
 import reega.io.TokenIOController;
 import reega.logging.ExceptionHandler;
 import reega.logging.SimpleExceptionHandler;
+import reega.statistics.StatisticsController;
+import reega.statistics.StatisticsControllerImpl;
 import reega.util.ServiceCollection;
 import reega.util.ServiceProvider;
 import reega.views.LoginView;
 import reega.views.MainView;
 import reega.views.RegistrationView;
+import reega.views.UserMainView;
 import reega.viewutils.DataTemplate;
 import reega.viewutils.DataTemplateManager;
 import reega.viewutils.Navigator;
@@ -71,11 +77,13 @@ public class UIAppInitializer implements AppInitializer {
         svcCollection.addSingleton(AuthController.class, AuthControllerFactory.getDefaultAuthController());
         svcCollection.addSingleton(IOController.class, IOControllerFactory.getDefaultIOController());
         svcCollection.addSingleton(TokenIOController.class, IOControllerFactory.getDefaultTokenIOController());
+        svcCollection.addSingleton(DataController.class, DataControllerFactory.getDefaultDataController(new RemoteConnection()));
         svcCollection.addSingleton(ExceptionHandler.class, SimpleExceptionHandler.class);
         svcCollection.addSingleton(AuthManager.class, RemindableAuthManager.class);
+        svcCollection.addTransient(StatisticsController.class, StatisticsControllerImpl.class);
         svcCollection.addTransient(LoginController.class, LoginControllerImpl.class);
         svcCollection.addTransient(RegistrationController.class, RegistrationControllerImpl.class);
-        svcCollection.addSingleton(MainController.class, MainControllerImpl.class);
+        svcCollection.addTransient(UserMainController.class,UserMainControllerImpl.class);
         svcCollection.addSingleton(BaseLayoutView.class);
         return svcCollection.buildServiceProvider();
     }
@@ -107,15 +115,15 @@ public class UIAppInitializer implements AppInitializer {
                 return () -> new LoginView(controller);
             }
         });
-        templateManager.addTemplate(new DataTemplate<MainControllerImpl>() {
+        templateManager.addTemplate(new DataTemplate<UserMainControllerImpl>() {
             @Override
-            public Class<MainControllerImpl> getDataObjectClass() {
-                return MainControllerImpl.class;
+            public Class<UserMainControllerImpl> getDataObjectClass() {
+                return UserMainControllerImpl.class;
             }
 
             @Override
-            public Supplier<? extends Parent> getControlFactory(final MainControllerImpl controller) {
-                return () -> new MainView(controller);
+            public Supplier<? extends Parent> getControlFactory(final UserMainControllerImpl controller) {
+                return () -> new UserMainView(controller);
             }
         });
     }
