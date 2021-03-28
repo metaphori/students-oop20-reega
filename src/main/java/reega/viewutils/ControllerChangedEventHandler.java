@@ -13,10 +13,11 @@ import java.util.function.Consumer;
 public interface ControllerChangedEventHandler<T extends Controller> extends EventHandler<Class<? extends T>> {
     /**
      * {@inheritDoc}
+     * Calls {@link #handle(EventArgs, Consumer, boolean, ControllerChangedEventType)} with no action to execute after creation, no clearance of the navigation stack and the PUSH event type
      */
     @Override
     default void handle(final EventArgs<Class<? extends T>> eventArgs) {
-        this.handle(eventArgs, null, false);
+        this.handle(eventArgs, null, false, ControllerChangedEventType.PUSH);
     }
 
     /**
@@ -25,13 +26,16 @@ public interface ControllerChangedEventHandler<T extends Controller> extends Eve
      *
      * @param eventArgs                    event args
      * @param actionToExecuteAfterCreation action to execute after the creation of the controller
+     * @param clearNavigationStack boolean to indicate if the clearance of the navigation stack is needed
+     * @param eventType {@link ControllerChangedEventType} needed for this operation
+     * @throws IllegalArgumentException if <code>eventType</code> is {@link ControllerChangedEventType#POP} and <code>actionToExecuteAfterCreation</code> is not null
      *
      * @see ControllerChangedEventHandlerArgs
      */
     default void handle(final EventArgs<Class<? extends T>> eventArgs, final Consumer<T> actionToExecuteAfterCreation,
-            final boolean clearNavigationStack) {
+            final boolean clearNavigationStack, ControllerChangedEventType eventType) {
         this.handle(new ControllerChangedEventHandlerArgs<>(eventArgs.getEventItem(), eventArgs.getSource(),
-                actionToExecuteAfterCreation, clearNavigationStack));
+                actionToExecuteAfterCreation, clearNavigationStack, eventType));
     }
 
     /**
@@ -53,12 +57,26 @@ public interface ControllerChangedEventHandler<T extends Controller> extends Eve
 
         private final Consumer<T> actionToExecuteAfterCreation;
         private final boolean clearNavigationStack;
+        private final ControllerChangedEventType eventType;
 
+        /**
+         *
+         * @param eventItem controller class to push
+         * @param source source object
+         * @param actionToExecuteAfterCreation action to execute after the creation of the object if the <code>eventType</code> is {@link ControllerChangedEventType#PUSH}
+         * @param clearNavigationStack boolean to indicate if the clearance of the navigation stack is needed
+         * @param eventType {@link ControllerChangedEventType} needed for this operation
+         * @throws IllegalArgumentException if <code>eventType</code> is {@link ControllerChangedEventType#POP} and <code>actionToExecuteAfterCreation</code> is not null
+         */
         public ControllerChangedEventHandlerArgs(final Class<? extends T> eventItem, final Object source,
-                final Consumer<T> actionToExecuteAfterCreation, final boolean clearNavigationStack) {
+                final Consumer<T> actionToExecuteAfterCreation, final boolean clearNavigationStack, ControllerChangedEventType eventType) {
             super(eventItem, source);
+            if (eventType == ControllerChangedEventType.POP && actionToExecuteAfterCreation != null) {
+                throw new IllegalArgumentException("You cannot execute an action if the controller changed event type is a POP request");
+            }
             this.actionToExecuteAfterCreation = actionToExecuteAfterCreation;
             this.clearNavigationStack = clearNavigationStack;
+            this.eventType = eventType;
         }
 
         /**
@@ -90,5 +108,18 @@ public interface ControllerChangedEventHandler<T extends Controller> extends Eve
             return this.clearNavigationStack;
         }
 
+        /**
+         * Get the {@link ControllerChangedEventType} of the request
+         * @return a {@link ControllerChangedEventType} that is the event type of the request
+         */
+        public ControllerChangedEventType getEventType() {
+            return this.eventType;
+        }
+
+    }
+
+    public enum ControllerChangedEventType {
+        PUSH,
+        POP
     }
 }

@@ -3,7 +3,9 @@ package reega.controllers;
 import javax.inject.Inject;
 
 import reega.viewutils.Controller;
+import reega.viewutils.ControllerChangedEventHandler;
 import reega.viewutils.Navigator;
+import reega.viewutils.ControllerChangedEventHandler.ControllerChangedEventType;
 
 public class MasterController {
     private final Navigator navigator;
@@ -15,6 +17,10 @@ public class MasterController {
         this.navigator.selectedControllerProperty().addListener((observable, oldValue, newValue) -> {
             this.selectedController = newValue;
             this.selectedController.setControllerChangeEvent(evtArgs -> {
+                if (evtArgs.getEventType() == ControllerChangedEventType.POP) {
+                    this.navigator.popController();
+                    return;
+                }
                 final Controller controller = this.navigator.pushController(evtArgs.getEventItem(),
                         evtArgs.isClearNavigationStack());
                 evtArgs.executeAction(controller);
