@@ -28,7 +28,7 @@ public abstract class AbstractController implements Controller {
      *
      * @param <T>                  type of the new controller
      * @param controllerClass      class of the new controller
-     * @param actionToExecute      action to execute after its creation
+     * @param actionToExecuteAfterCreation      action to execute after its creation
      * @param clearNavigationStack clear the navigation stack before pushing the new controller
      */
     @SuppressWarnings("unchecked")
