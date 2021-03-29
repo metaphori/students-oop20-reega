@@ -17,7 +17,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class UserMainControllerImpl extends AbstractMainController implements UserMainController{
+public class UserMainControllerImpl extends MainControllerImpl implements UserMainController{
 
     private List<Contract> contracts;
     private ObservableList<Contract> selectedContracts = FXCollections.observableArrayList();
