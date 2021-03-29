@@ -4,7 +4,9 @@
 package reega.controllers;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.collections.ObservableList;
 import org.apache.commons.lang3.tuple.Pair;
+import reega.data.models.Contract;
 import reega.data.models.ServiceType;
 import reega.users.User;
 import reega.viewutils.Controller;
@@ -46,4 +48,6 @@ public interface MainController extends Controller {
     double getTotalUsage(ServiceType svcType);
 
     Set<ServiceType> getAvailableServiceTypes();
+    ObservableList<Contract> getSelectedContracts();
+    List<Contract> getContracts();
 }
