@@ -21,6 +21,7 @@
         <VBox>
             <children>
                 <Label fx:id="userEmail"/>
+                <HBox fx:id="contractsPane" visible="false"/>
                 <FlexibleGridPane fx:id="servicesPane" VBox.vgrow="ALWAYS" fixedColumnsNumber="2"/>
             </children>
 
