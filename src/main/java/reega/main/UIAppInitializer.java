@@ -83,7 +83,7 @@ public class UIAppInitializer implements AppInitializer {
         svcCollection.addTransient(StatisticsController.class, StatisticsControllerImpl.class);
         svcCollection.addTransient(LoginController.class, LoginControllerImpl.class);
         svcCollection.addTransient(RegistrationController.class, RegistrationControllerImpl.class);
-        svcCollection.addTransient(UserMainController.class,UserMainControllerImpl.class);
+        svcCollection.addTransient(MainController.class,MainControllerImpl.class);
         svcCollection.addSingleton(BaseLayoutView.class);
         return svcCollection.buildServiceProvider();
     }
@@ -115,14 +115,14 @@ public class UIAppInitializer implements AppInitializer {
                 return () -> new LoginView(controller);
             }
         });
-        templateManager.addTemplate(new DataTemplate<UserMainControllerImpl>() {
+        templateManager.addTemplate(new DataTemplate<MainControllerImpl>() {
             @Override
-            public Class<UserMainControllerImpl> getDataObjectClass() {
-                return UserMainControllerImpl.class;
+            public Class<MainControllerImpl> getDataObjectClass() {
+                return MainControllerImpl.class;
             }
 
             @Override
-            public Supplier<? extends Parent> getControlFactory(final UserMainControllerImpl controller) {
+            public Supplier<? extends Parent> getControlFactory(final MainControllerImpl controller) {
                 return () -> new UserMainView(controller);
             }
         });
