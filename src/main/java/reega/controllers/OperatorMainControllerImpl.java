@@ -21,32 +21,14 @@ import java.util.stream.Stream;
 public class OperatorMainControllerImpl extends MainControllerImpl implements OperatorMainController{
 
     private ObjectProperty<User> selectedUserProperty;
-    private ObservableList<Contract> selectedContracts = FXCollections.emptyObservableList();
-    private List<Contract> contracts;
-    private Map<Contract,List<Data>> currentDataByContract;
 
 
     public OperatorMainControllerImpl(StatisticsController statisticsController, DataController dataController, ExceptionHandler exceptionHandler) {
         super(statisticsController, dataController, exceptionHandler);
-        this.selectedContracts.addListener((ListChangeListener<Contract>) c -> {
-            if (c.wasAdded()) {
-                Stream<Data> newDataStream = c.getAddedSubList().stream().flatMap(contract -> {
-                    List<Data> monthlyData = this.getDataByContract(contract);
-                    this.currentDataByContract.put(contract,monthlyData);
-                    return monthlyData.stream();
-                });
-                List<Data> allData = Stream.concat(newDataStream, this.currentDataByContract.values().stream().flatMap(Collection::stream)).collect(Collectors.toList());
-                this.getStatisticsController().setData(allData);
-            }
-            if (c.wasRemoved()) {
-                c.getRemoved().forEach(contract -> this.currentDataByContract.remove(contract));
-                this.getStatisticsController().setData(currentDataByContract.values().stream().flatMap(Collection::stream).collect(Collectors.toList()));
-            }
-        });
     }
 
     @Override
-    protected void initializeStatistics() {
+    protected void initializeStatistics(User user) {
         try {
             List<Data> generalMonthlyData = this.getDataController().getMonthlyData(null);
             this.getStatisticsController().setData(generalMonthlyData);
@@ -69,24 +51,7 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
 
     @Override
     public void setSelectedUser(User newUser) {
-        List<Contract> contracts;
-        try {
-            //TODO Get user contracts by id
-            contracts = this.getDataController().getUserContracts();
-        } catch (IOException | SQLException e) {
-            this.getExceptionHandler().handleException(e, "Failed to load contracts for the user");
-            return;
-        }
-        this.contracts = contracts;
-        this.selectedContracts.clear();
-        this.selectedContracts.addAll(contracts);
-        this.currentDataByContract = new HashMap<>();
-        List<Data> data = contracts.stream().flatMap(contract -> {
-            List<Data> monthlyData = this.getDataByContract(contract);
-            this.currentDataByContract.put(contract,monthlyData);
-            return monthlyData.stream();
-        }).collect(Collectors.toList());
-        this.getStatisticsController().setData(data);
+        this.fetchAndLoadUserData(newUser);
         this.selectedUser().set(newUser);
     }
 
@@ -115,31 +80,12 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
         return this.selectedUserProperty;
     }
 
-    private List<Data> getDataByContract(Contract contract) {
-        try {
-            return this.getDataController().getMonthlyData(contract.getId());
-        } catch (IOException e) {
-            this.getExceptionHandler().handleException(e, "Failed to load data for the contract: " + contract.getId());
-        }
-        return Collections.emptyList();
-    }
-
-    @Override
-    public ObservableList<Contract> getSelectedContracts() {
-        return selectedContracts;
-    }
-
     @Override
     public void removeSelectedUser() {
-        initializeStatistics();
-        this.contracts = null;
-        this.selectedContracts.clear();
-        this.currentDataByContract.clear();
+        initializeStatistics(this.getUser());
+        this.getContracts().clear();
+        this.getSelectedContracts().clear();
+        this.getCurrentDataByContract().clear();
         this.selectedUser().set(null);
-    }
-
-    @Override
-    public List<Contract> getContracts() {
-        return this.contracts;
     }
 }
