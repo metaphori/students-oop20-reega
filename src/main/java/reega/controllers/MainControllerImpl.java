@@ -54,22 +54,50 @@ public class MainControllerImpl extends AbstractController implements MainContro
         });
     }
 
+    /**
+     * Get the statistics controller
+     * @return the statistics controller
+     */
     protected StatisticsController getStatisticsController() {
         return this.statisticsController;
     }
 
+    /**
+     * Get the data controller
+     * @return the data controller
+     */
     protected DataController getDataController() {
         return this.dataController;
     }
 
+    /**
+     * Get the exception handler
+     * @return the exception handler
+     */
     protected ExceptionHandler getExceptionHandler() {
         return this.exceptionHandler;
     }
 
+    /**
+     * Get the current data by contract
+     * @return the current data by contract
+     */
+    protected Map<Contract,List<Data>> getCurrentDataByContract() {
+        return this.currentDataByContract;
+    }
+
+    /**
+     * Initialize the statistics when a new user is set
+     * @param user user used for the statistics calculations
+     */
     protected void initializeStatistics(User user) {
         this.fetchAndLoadUserData(user);
     }
 
+    /**
+     * Fetch the user data (contracts and data) and load it into the fields
+     * @param user user used to load data
+     */
     protected final void fetchAndLoadUserData(User user) {
         List<Contract> contracts;
         try {
@@ -121,15 +149,6 @@ public class MainControllerImpl extends AbstractController implements MainContro
         return this.statisticsController.getTotalUsage(svcType);
     }
 
-    protected final List<Data> getDataByContract(Contract contract) {
-        try {
-            return this.getDataController().getMonthlyData(contract.getId());
-        } catch (IOException e) {
-            this.getExceptionHandler().handleException(e, "Failed to load data for the contract: " + contract.getId());
-        }
-        return Collections.emptyList();
-    }
-
     @Override
     public ObservableList<Contract> getSelectedContracts() {
         return this.selectedContracts;
@@ -145,7 +164,17 @@ public class MainControllerImpl extends AbstractController implements MainContro
         return this.currentDataByContract.keySet().stream().flatMap(elem -> elem.getServices().stream()).collect(Collectors.toUnmodifiableSet());
     }
 
-    protected Map<Contract,List<Data>> getCurrentDataByContract() {
-        return this.currentDataByContract;
+    /**
+     * Get the data by a contract
+     * @param contract contract to search
+     * @return a list of data containing data for the contract
+     */
+    protected final List<Data> getDataByContract(Contract contract) {
+        try {
+            return this.getDataController().getMonthlyData(contract.getId());
+        } catch (IOException e) {
+            this.getExceptionHandler().handleException(e, "Failed to load data for the contract: " + contract.getId());
+        }
+        return Collections.emptyList();
     }
 }

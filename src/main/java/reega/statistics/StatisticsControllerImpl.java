@@ -40,6 +40,11 @@ public class StatisticsControllerImpl implements StatisticsController {
         return groupDataByDay(svcType).collect(Collectors.summingDouble(data -> data.getValue()));
     }
 
+    /**
+     * Group the data by day
+     * @param svcType service type needed for this type of data
+     * @return a {@link Stream} containing pairs of Day-Value
+     */
     private Stream<Map.Entry<Date,Double>> groupDataByDay(ServiceType svcType) {
         // If the service type is not GARBAGE then data is produced once a day
         // Else it's produced every hour
@@ -53,6 +58,11 @@ public class StatisticsControllerImpl implements StatisticsController {
                 .stream();
     }
 
+    /**
+     * Filter data by <code>svcType</code>
+     * @param svcType svcType used for filtering data
+     * @return a {@link Stream} containing pairs of TimeStamp-Value containing all the data
+     */
     private Stream<Map.Entry<Long,Double>> filterBySvcTypeAndGetData(ServiceType svcType) {
         return this.data.stream().filter(data -> data.getType().getServiceType() == svcType)
                 .flatMap(data -> data.getData().entrySet().stream());
