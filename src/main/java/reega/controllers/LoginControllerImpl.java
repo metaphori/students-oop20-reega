@@ -9,6 +9,7 @@ import org.apache.commons.validator.routines.EmailValidator;
 
 import reega.auth.AuthManager;
 import reega.users.GenericUser;
+import reega.users.Role;
 import reega.util.FiscalCodeValidator;
 import reega.util.ValueResult;
 import reega.viewutils.AbstractController;
@@ -82,8 +83,12 @@ public class LoginControllerImpl extends AbstractController implements LoginCont
     }
 
     private void jumpToNextPage(final GenericUser user) {
-        //TODO push different controllers based on the type of the user
-        this.pushController(UserMainController.class, newController -> newController.setUser(user), true);
+        if (user.getRole() == Role.USER) {
+            this.pushController(MainController.class, newController -> newController.setUser(user), true);
+            return;
+        }
+        this.pushController(OperatorMainController.class, newController -> newController.setUser(user), true);
+
     }
 
     /**
