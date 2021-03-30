@@ -84,6 +84,7 @@ public class UIAppInitializer implements AppInitializer {
         svcCollection.addTransient(LoginController.class, LoginControllerImpl.class);
         svcCollection.addTransient(RegistrationController.class, RegistrationControllerImpl.class);
         svcCollection.addTransient(MainController.class,MainControllerImpl.class);
+        svcCollection.addTransient(OperatorMainController.class,OperatorMainControllerImpl.class);
         svcCollection.addSingleton(BaseLayoutView.class);
         return svcCollection.buildServiceProvider();
     }

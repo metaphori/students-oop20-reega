@@ -12,6 +12,7 @@ import reega.logging.ExceptionHandler;
 import reega.statistics.StatisticsController;
 import reega.users.User;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
@@ -22,7 +23,7 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
 
     private ObjectProperty<User> selectedUserProperty;
 
-
+    @Inject
     public OperatorMainControllerImpl(StatisticsController statisticsController, DataController dataController, ExceptionHandler exceptionHandler) {
         super(statisticsController, dataController, exceptionHandler);
     }
