@@ -14,8 +14,6 @@ import reega.logging.ExceptionHandler;
 import reega.statistics.StatisticsController;
 import reega.users.User;
 import reega.viewutils.AbstractController;
-import reega.viewutils.Controller;
-import reega.viewutils.ControllerChangedEventHandler;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -69,10 +67,10 @@ public class MainControllerImpl extends AbstractController implements MainContro
     }
 
     protected void initializeStatistics(User user) {
-        this.fetchUserData(user);
+        this.fetchAndLoadUserData(user);
     }
 
-    protected void fetchUserData(User user) {
+    protected final void fetchAndLoadUserData(User user) {
         List<Contract> contracts;
         try {
             contracts = this.getDataController().getUserContracts();
@@ -93,9 +91,9 @@ public class MainControllerImpl extends AbstractController implements MainContro
     }
 
     @Override
-    public void setUser(User user) {
-        initializeStatistics(user);
-        this.user().set(user);
+    public void setUser(User newUser) {
+        initializeStatistics(newUser);
+        this.user().set(newUser);
     }
 
     @Override
@@ -145,5 +143,9 @@ public class MainControllerImpl extends AbstractController implements MainContro
     @Override
     public Set<ServiceType> getAvailableServiceTypes() {
         return this.currentDataByContract.keySet().stream().flatMap(elem -> elem.getServices().stream()).collect(Collectors.toUnmodifiableSet());
+    }
+
+    protected Map<Contract,List<Data>> getCurrentDataByContract() {
+        return this.currentDataByContract;
     }
 }

@@ -23,7 +23,11 @@ import java.util.Set;
  *
  */
 public interface MainController extends Controller {
-    void setUser(User user);
+    /**
+     * Set the current user
+     * @param newUser new user to set
+     */
+    void setUser(User newUser);
     User getUser();
     ObjectProperty<User> user();
     /**
