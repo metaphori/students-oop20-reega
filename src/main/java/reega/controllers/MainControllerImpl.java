@@ -43,36 +43,39 @@ public class MainControllerImpl extends AbstractController implements MainContro
         this.dataController = dataController;
         this.exceptionHandler = exceptionHandler;
         this.selectedContracts.addListener((ListChangeListener<Contract>) c -> {
-            if (c.wasAdded()) {
-                final Stream<Data> newDataStream = c.getAddedSubList().stream().flatMap(contract -> {
-                    final List<Data> monthlyData = this.getDataByContract(contract);
-                    this.currentDataByContract.put(contract, monthlyData);
-                    return monthlyData.stream();
-                });
-                final List<Data> allData = Stream
-                        .concat(newDataStream, this.currentDataByContract.values().stream().flatMap(Collection::stream))
-                        .collect(Collectors.toList());
-                this.getStatisticsController().setData(allData);
-            }
-            if (c.wasRemoved()) {
-                c.getRemoved().forEach(contract -> this.currentDataByContract.remove(contract));
-                this.getStatisticsController()
-                        .setData(this.currentDataByContract.values()
-                                .stream()
-                                .flatMap(Collection::stream)
-                                .collect(Collectors.toList()));
+            while (c.next()) {
+                if (c.wasAdded()) {
+                    final Stream<Data> newDataStream = c.getAddedSubList().stream().flatMap(contract -> {
+                        final List<Data> monthlyData = this.getDataByContract(contract);
+                        this.currentDataByContract.put(contract, monthlyData);
+                        return monthlyData.stream();
+                    });
+                    final List<Data> allData = Stream
+                            .concat(newDataStream, this.currentDataByContract.values().stream().flatMap(Collection::stream))
+                            .collect(Collectors.toList());
+                    this.getStatisticsController().setData(allData);
+                }
+                if (c.wasRemoved()) {
+                    c.getRemoved().forEach(contract -> this.currentDataByContract.remove(contract));
+                    this.getStatisticsController()
+                            .setData(this.currentDataByContract.values()
+                                    .stream()
+                                    .flatMap(Collection::stream)
+                                    .collect(Collectors.toList()));
+                }
             }
         });
     }
 
     protected void initializeCommands() {
-        this.commands = new HashMap<>();
-        this.commands.put("Export to CSV", (args) -> {
-            //TODO Make an exporter
+        this.commands = new TreeMap<>();
+        this.commands.put("Export to CSV", args -> {
+            // TODO Make an exporter
         });
     }
 
-    public Map<String,Command> getCommands() {
+    @Override
+    public Map<String, Command> getCommands() {
         return this.commands;
     }
 
@@ -135,9 +138,9 @@ public class MainControllerImpl extends AbstractController implements MainContro
             return;
         }
         this.contracts = contracts;
+        this.currentDataByContract = new HashMap<>();
         this.selectedContracts.clear();
         this.selectedContracts.addAll(contracts);
-        this.currentDataByContract = new HashMap<>();
         final List<Data> data = contracts.stream().flatMap(contract -> {
             final List<Data> monthlyData = this.getDataByContract(contract);
             this.currentDataByContract.put(contract, monthlyData);
@@ -160,7 +163,7 @@ public class MainControllerImpl extends AbstractController implements MainContro
 
     @Override
     public ObjectProperty<User> user() {
-        return this.user();
+        return this.user;
     }
 
     @Override
