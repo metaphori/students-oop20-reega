@@ -30,6 +30,14 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
     }
 
     @Override
+    protected void initializeCommands() {
+        super.initializeCommands();
+        this.getCommands().put("Search user", (args) -> {
+           this.jumpToSearchUser();
+        });
+    }
+
+    @Override
     protected void initializeStatistics(final User user) {
         try {
             final List<Data> generalMonthlyData = this.getDataController().getMonthlyData(null);
