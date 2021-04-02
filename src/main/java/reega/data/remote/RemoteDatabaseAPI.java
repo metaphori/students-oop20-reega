@@ -7,11 +7,9 @@ import reega.data.DataController;
 import reega.data.models.Contract;
 import reega.data.models.Data;
 import reega.data.models.DataType;
-import reega.data.models.Prices;
 import reega.data.models.gson.ContractModel;
 import reega.data.models.gson.DataModel;
 import reega.data.models.gson.NewContract;
-import reega.data.models.gson.PriceModel;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -107,33 +105,6 @@ public class RemoteDatabaseAPI implements DataController {
     @Override
     public void removeContract(final int id) throws IOException {
         final Call<Void> v = connection.getService().removeContract(id);
-        final Response<Void> r = v.execute();
-        logger.info(String.valueOf(r.code()));
-        // TODO check successful state
-    }
-
-    @Override
-    public List<Prices> getPriceModels() throws IOException {
-        final Call<List<PriceModel>> v = connection.getService().getPriceModels();
-        final Response<List<PriceModel>> r = v.execute();
-        logger.info(String.valueOf(r.code()));
-        if (r.body() == null) {
-            return null;
-        }
-        return r.body().stream().map(Prices::new).collect(Collectors.toList());
-    }
-
-    @Override
-    public void addPriceModel(final Prices prices) throws IOException {
-        final Call<Void> v = connection.getService().addPriceModel(new PriceModel(prices));
-        final Response<Void> r = v.execute();
-        logger.info(String.valueOf(r.code()));
-        // TODO check successful state
-    }
-
-    @Override
-    public void removePriceModel(final int id) throws IOException {
-        final Call<Void> v = connection.getService().removePriceModel(id);
         final Response<Void> r = v.execute();
         logger.info(String.valueOf(r.code()));
         // TODO check successful state

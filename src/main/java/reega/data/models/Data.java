@@ -1,5 +1,6 @@
 package reega.data.models;
 
+import com.google.gson.Gson;
 import reega.data.models.gson.DataModel;
 
 import java.util.HashMap;
@@ -35,7 +36,7 @@ public final class Data {
 
     @Override
     public String toString() {
-        return this.getJsonModel().toString();
+        return new Gson().toJson(this.getJsonModel());
     }
 
     public void addRecord(final long timestamp, final double value) {

@@ -22,14 +22,11 @@ public class ContractModel {
     public List<String> services;
     @SerializedName("start_time")
     public Date startTime;
-    @SerializedName("price_model")
-    public PriceModel priceModel;
 
     public ContractModel(Contract contract){
         this.id = contract.getId();
         this.address = contract.getAddress();
         this.services = contract.getServices().stream().map(ServiceType::getName).collect(Collectors.toList());
         this.startTime = contract.getStartDate();
-        this.priceModel = contract.getPriceModel().getJsonModel();
     }
 }

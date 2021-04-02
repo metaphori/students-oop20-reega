@@ -11,24 +11,28 @@ import java.io.IOException;
  * Handle the connection to the server and the http methods authentication
  */
 public class RemoteConnection {
-    private static final String baseUrl = "http://52.208.47.221/";
     private static Retrofit retrofit;
     private static ReegaService service;
     private static boolean forcedService = false;
+    private String baseUrl;
     private String JWT;
 
     interface LoginMethod {
         LoginResponse login() throws IOException;
     }
 
-    public RemoteConnection() {
-        // build base retrofit
+    public RemoteConnection(final String baseUrl) {
+        this.baseUrl = baseUrl;
         if (retrofit == null) {
             retrofit = new Retrofit.Builder().baseUrl(baseUrl)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
         service = retrofit.create(ReegaService.class);
+    }
+
+    public RemoteConnection() {
+        this("http://52.208.47.221/");
     }
 
     /**
