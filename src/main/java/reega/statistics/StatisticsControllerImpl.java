@@ -33,7 +33,7 @@ public class StatisticsControllerImpl implements StatisticsController {
         Optional<Pair<Date,Double>> peekValue = this.groupDataByDay(svcType)
                 .max(Comparator.comparingDouble(Map.Entry::getValue))
                 .map(data -> Pair.of(data.getKey(), data.getValue()));
-        dataCache.setPeek(peekValue.get());
+        dataCache.setPeek(peekValue);
         return dataCache.getPeek();
     }
 
@@ -126,8 +126,8 @@ public class StatisticsControllerImpl implements StatisticsController {
          * Set the peek value
          * @param peek peek value
          */
-        public void setPeek(Pair<Date, Double> peek) {
-            this.peek = Optional.ofNullable(peek);
+        public void setPeek(Optional<Pair<Date, Double>> peek) {
+            this.peek = peek;
         }
 
         /**
