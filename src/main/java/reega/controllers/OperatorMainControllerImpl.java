@@ -2,10 +2,7 @@ package reega.controllers;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -34,6 +31,9 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
         super.initializeCommands();
         this.getCommands().put("Search user", (args) -> {
            this.jumpToSearchUser();
+        });
+        this.getCommands().put("Manage users", (args) -> {
+           //TODO Create the ManagerUsers controller
         });
     }
 
@@ -74,11 +74,10 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
         return this.getSelectedUser().map(elem -> {
             List<Contract> contracts;
             try {
-                // TODO Get user contracts by id
-                contracts = this.getDataController().getUserContracts();
-            } catch (IOException | SQLException e) {
+                contracts = this.getDataController().getContractsForUser(elem.getFiscalCode());
+            } catch (IOException e) {
                 this.getExceptionHandler().handleException(e, "Failed to load contracts for the user");
-                return null;
+                return (Set<ServiceType>)Collections.EMPTY_SET;
             }
             return contracts.stream()
                     .flatMap(contract -> contract.getServices().stream())
