@@ -45,6 +45,10 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
         this.pushController(SearchUserController.class, searchUserController -> {
             searchUserController.setUserFoundEventHandler(evtArgs -> {
                 if (evtArgs != null && evtArgs.getEventItem() != null) {
+                    /**
+                     * Pop the {@link SearchUserController}
+                     */
+                    this.popController();
                     this.setSelectedUser(evtArgs.getEventItem());
                 }
             });
