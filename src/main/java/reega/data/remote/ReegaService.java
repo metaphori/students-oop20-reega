@@ -49,11 +49,11 @@ public interface ReegaService {
     Call<List<ContractModel>> getContracts();
 
     /**
-     * @param userID
+     * @param fiscalCode
      * @return all the contracts for a specified user (must be admin)
      */
     @GET("data/user/{id}/contracts")
-    Call<List<ContractModel>> getContractsForUser(@Path("id") int userID);
+    Call<List<ContractModel>> getContractsForUser(@Path("id") String fiscalCode);
 
     /**
      * @return all the contracts (must be admin)
