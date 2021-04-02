@@ -26,11 +26,11 @@ public interface DataController {
 
     /**
      * retrieves all the contracts in the name of the specified user
-     * @param userID
+     * @param fiscalCode
      * @return
      * @throws IOException
      */
-    List<Contract> getContractsForUser(int userID) throws IOException;
+    List<Contract> getContractsForUser(String fiscalCode) throws IOException;
 
     /**
      * @return
