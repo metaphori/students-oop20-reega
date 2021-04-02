@@ -23,6 +23,7 @@ import reega.logging.ExceptionHandler;
 import reega.statistics.StatisticsController;
 import reega.users.User;
 import reega.viewutils.AbstractController;
+import reega.viewutils.Command;
 
 public class MainControllerImpl extends AbstractController implements MainController {
 
@@ -33,6 +34,7 @@ public class MainControllerImpl extends AbstractController implements MainContro
     private List<Contract> contracts;
     private final ObservableList<Contract> selectedContracts = FXCollections.observableArrayList();
     private Map<Contract, List<Data>> currentDataByContract;
+    private Map<String, Command> commands;
 
     @Inject
     public MainControllerImpl(final StatisticsController statisticsController, final DataController dataController,
@@ -61,6 +63,17 @@ public class MainControllerImpl extends AbstractController implements MainContro
                                 .collect(Collectors.toList()));
             }
         });
+    }
+
+    protected void initializeCommands() {
+        this.commands = new HashMap<>();
+        this.commands.put("Export to CSV", (args) -> {
+            //TODO Make an exporter
+        });
+    }
+
+    public Map<String,Command> getCommands() {
+        return this.commands;
     }
 
     /**
@@ -136,6 +149,7 @@ public class MainControllerImpl extends AbstractController implements MainContro
     @Override
     public void setUser(final User newUser) {
         this.initializeStatistics(newUser);
+        this.initializeCommands();
         this.user().set(newUser);
     }
 
