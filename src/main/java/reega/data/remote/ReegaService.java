@@ -42,9 +42,22 @@ public interface ReegaService {
     @POST("data/contract")
     Call<Void> addContract(@Body NewContract contract);
 
+    /**
+     * @return all the user's contracts
+     */
     @GET("data/contract")
     Call<List<ContractModel>> getContracts();
 
+    /**
+     * @param userID
+     * @return all the contracts for a specified user (must be admin)
+     */
+    @GET("data/user/{id}/contracts")
+    Call<List<ContractModel>> getContractsForUser(@Path("id") int userID);
+
+    /**
+     * @return all the contracts (must be admin)
+     */
     @GET("data/contracts")
     Call<List<ContractModel>> getAllContracts();
 
