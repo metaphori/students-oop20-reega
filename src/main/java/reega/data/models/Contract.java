@@ -1,5 +1,6 @@
 package reega.data.models;
 
+import com.google.gson.Gson;
 import reega.data.models.gson.ContractModel;
 
 import java.util.Date;
@@ -51,6 +52,6 @@ public final class Contract {
 
     @Override
     public String toString() {
-        return this.getJsonModel().toString();
+        return new Gson().toJson(this.getJsonModel());
     }
 }
