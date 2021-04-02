@@ -7,24 +7,22 @@
 
 <fx:root xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
-        type="HBox"
+        type="GridPane"
         prefHeight="400.0"
         prefWidth="600.0"
-        alignment="CENTER"
         stylesheets="@/css/Card.css">
+    <columnConstraints>
+        <ColumnConstraints percentWidth="25"/>
+        <ColumnConstraints percentWidth="75"/>
+    </columnConstraints>
     <children>
-        <VBox>
-            <children>
-                <Button/>
-            </children>
-        </VBox>
-        <VBox>
+        <VBox fx:id="buttonsPane" GridPane.columnIndex="0" GridPane.vgrow="ALWAYS" fillWidth="true"/>
+        <VBox GridPane.columnIndex="1" GridPane.vgrow="ALWAYS">
             <children>
                 <Label fx:id="userEmail"/>
                 <HBox fx:id="contractsPane" visible="false"/>
                 <FlexibleGridPane fx:id="servicesPane" VBox.vgrow="ALWAYS" fixedColumnsNumber="2"/>
             </children>
-
         </VBox>
     </children>
 </fx:root>
