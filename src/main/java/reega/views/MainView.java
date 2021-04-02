@@ -75,6 +75,7 @@ public abstract class MainView extends GridPane {
         this.getServicesPane().getChildren().clear();
         controller.getAvailableServiceTypes().forEach(svcType -> {
             final Card serviceCard = new Card();
+            serviceCard.getStyleClass().add("svc-card");
             final ObservableList<Node> serviceCardChildren = serviceCard.getChildren();
             serviceCardChildren.add(new Text(svcType.getName()));
             controller.getPeek(svcType).ifPresent(peek -> {
