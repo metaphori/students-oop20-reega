@@ -82,7 +82,7 @@ public class StatisticsControllerImpl implements StatisticsController {
                             DateUtils.truncate(new Date(elem.getKey()), Calendar.DATE), elem.getValue()));
         }
         return this.filterBySvcTypeAndGetData(svcType)
-                .collect(Collectors.groupingBy(elem -> DateUtils.truncate(elem.getKey(), Calendar.DATE),
+                .collect(Collectors.groupingBy(elem -> DateUtils.truncate(new Date(elem.getKey()), Calendar.DATE),
                         Collectors.summingDouble(Entry::getValue)))
                 .entrySet()
                 .stream();
