@@ -133,7 +133,7 @@ public class MainControllerImpl extends AbstractController implements MainContro
         List<Contract> contracts;
         try {
             contracts = this.getDataController().getUserContracts();
-        } catch (IOException | SQLException e) {
+        } catch (IOException e) {
             this.getExceptionHandler().handleException(e, "Failed to load contracts for the user");
             return;
         }
