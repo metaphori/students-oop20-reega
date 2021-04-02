@@ -3,20 +3,24 @@ package reega.views;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
+import com.jfoenix.controls.JFXButton;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import reega.controllers.MainController;
 import reega.data.models.Contract;
 import reega.viewcomponents.Card;
 import reega.viewcomponents.FlexibleGridPane;
 
-public abstract class MainView extends HBox {
+public abstract class MainView extends GridPane {
 
     @FXML
     private Label userEmail;
@@ -24,6 +28,8 @@ public abstract class MainView extends HBox {
     private FlexibleGridPane servicesPane;
     @FXML
     private HBox contractsPane;
+    @FXML
+    private VBox buttonsPane;
 
     public MainView(final MainController controller) {
         final FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemClassLoader().getResource("views/Main.fxml"));
@@ -36,13 +42,25 @@ public abstract class MainView extends HBox {
         } catch (final IOException e) {
             e.printStackTrace();
         }
-
         if (controller.user().isNotNull().get()) {
             this.userEmail.setText(controller.user().get().getEmail());
+            this.populateButtonsPane(controller);
         }
         controller.user().addListener((observable, oldValue, newValue) -> {
             this.userEmail.setText(newValue.getEmail());
+            this.populateButtonsPane(controller);
         });
+    }
+
+    private void populateButtonsPane(final MainController controller) {
+        this.buttonsPane.getChildren().addAll(controller.getCommands().entrySet().stream().map(entry -> {
+            final Button b = new Button(entry.getKey());
+            b.setMaxWidth(1.7976931348623157E308);
+            b.setOnAction(event -> {
+                entry.getValue().execute((Object) null);
+            });
+            return b;
+        }).collect(Collectors.toList()));
     }
 
     protected final FlexibleGridPane getServicesPane() {
@@ -74,6 +92,7 @@ public abstract class MainView extends HBox {
         this.getContractsPane().getChildren().addAll(controller.getContracts().stream().map(elem -> {
             final CheckBox checkBox = new CheckBox();
             checkBox.setUserData(elem);
+            checkBox.setText(elem.getAddress());
             if (controller.getSelectedContracts().indexOf(elem) != -1) {
                 checkBox.selectedProperty().set(true);
             }
