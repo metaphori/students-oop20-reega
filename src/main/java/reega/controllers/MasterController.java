@@ -3,9 +3,8 @@ package reega.controllers;
 import javax.inject.Inject;
 
 import reega.viewutils.Controller;
-import reega.viewutils.ControllerChangedEventHandler;
-import reega.viewutils.Navigator;
 import reega.viewutils.ControllerChangedEventHandler.ControllerChangedEventType;
+import reega.viewutils.Navigator;
 
 public class MasterController {
     private final Navigator navigator;

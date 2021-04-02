@@ -9,11 +9,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import reega.controllers.MainController;
-import reega.controllers.OperatorMainController;
 import reega.data.models.Contract;
 import reega.viewcomponents.Card;
 import reega.viewcomponents.FlexibleGridPane;
@@ -50,15 +48,16 @@ public abstract class MainView extends HBox {
     protected final FlexibleGridPane getServicesPane() {
         return this.servicesPane;
     }
+
     protected final HBox getContractsPane() {
         return this.contractsPane;
     }
 
-    protected final void populateServicesPane(MainController controller) {
+    protected final void populateServicesPane(final MainController controller) {
         this.getServicesPane().getChildren().clear();
         controller.getAvailableServiceTypes().forEach(svcType -> {
-            Card serviceCard = new Card();
-            ObservableList<Node> serviceCardChildren = serviceCard.getChildren();
+            final Card serviceCard = new Card();
+            final ObservableList<Node> serviceCardChildren = serviceCard.getChildren();
             serviceCardChildren.add(new Text(svcType.getName()));
             controller.getPeek(svcType).ifPresent(peek -> {
                 serviceCardChildren.add(new Text("Peek date: " + peek.getKey()));
@@ -70,17 +69,17 @@ public abstract class MainView extends HBox {
         });
     }
 
-    protected final void populateContractsPane(MainController controller) {
+    protected final void populateContractsPane(final MainController controller) {
         this.getContractsPane().getChildren().clear();
         this.getContractsPane().getChildren().addAll(controller.getContracts().stream().map(elem -> {
-            CheckBox checkBox = new CheckBox();
+            final CheckBox checkBox = new CheckBox();
             checkBox.setUserData(elem);
             if (controller.getSelectedContracts().indexOf(elem) != -1) {
                 checkBox.selectedProperty().set(true);
             }
             checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue) {
-                    controller.getSelectedContracts().add((Contract)checkBox.getUserData());
+                    controller.getSelectedContracts().add((Contract) checkBox.getUserData());
                     return;
                 }
                 controller.getSelectedContracts().remove(checkBox.getUserData());

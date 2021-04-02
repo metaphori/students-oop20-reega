@@ -1,29 +1,33 @@
 package reega.controllers;
 
+import java.util.List;
+import java.util.Optional;
+
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
 import reega.data.models.Contract;
 import reega.users.User;
 
-import java.util.List;
-import java.util.Optional;
-
 public interface OperatorMainController extends MainController {
     /**
      * Selected user property
+     *
      * @return the selected user property that contains the selected user
      */
     ObjectProperty<User> selectedUser();
 
     /**
      * Set the current selected user
+     *
      * @param newUser new selected user to set
      */
     void setSelectedUser(User newUser);
 
     /**
      * Get the selected user
-     * @return an Optional with the user inside if the {@link #selectedUser()} is not null, an empty {@link Optional} otherwise
+     *
+     * @return an Optional with the user inside if the {@link #selectedUser()} is not null, an empty {@link Optional}
+     *         otherwise
      */
     Optional<User> getSelectedUser();
 
@@ -39,6 +43,7 @@ public interface OperatorMainController extends MainController {
 
     /**
      * Get the selected contracts of the {@link #selectedUser()}
+     *
      * @return the selected contracts of the {@link #selectedUser()}, an empty list if the selected user is not set
      */
     @Override
@@ -46,6 +51,7 @@ public interface OperatorMainController extends MainController {
 
     /**
      * Get all the contracts of the {@link #selectedUser()}
+     *
      * @return all the contracts of the {@link #selectedUser()}, an empty list if the selected user is not set
      */
     @Override
