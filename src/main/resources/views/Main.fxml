@@ -10,7 +10,7 @@
         type="GridPane"
         prefHeight="400.0"
         prefWidth="600.0"
-        stylesheets="@/css/Card.css">
+        stylesheets="@/css/Card.css,@/css/Main.css">
     <columnConstraints>
         <ColumnConstraints percentWidth="25"/>
         <ColumnConstraints percentWidth="75"/>
@@ -21,7 +21,7 @@
             <children>
                 <Label fx:id="userEmail"/>
                 <HBox fx:id="contractsPane" visible="false"/>
-                <FlexibleGridPane fx:id="servicesPane" VBox.vgrow="ALWAYS" fixedColumnsNumber="2"/>
+                <FlexibleGridPane fx:id="servicesPane" VBox.vgrow="ALWAYS" fixedColumnsNumber="2" hgap="10" vgap="10"/>
             </children>
         </VBox>
     </children>
