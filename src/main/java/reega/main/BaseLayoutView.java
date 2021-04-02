@@ -39,9 +39,10 @@ public class BaseLayoutView extends ScrollPane {
             e.printStackTrace();
         }
         this.controller = controller;
-        this.controller.initializeApp();
         this.contentControl.objectProperty().bind(this.controller.getNavigator().selectedControllerProperty());
         this.backArrowButton.visibleProperty().bind(this.controller.getNavigator().navigationStackNotEmptyProperty());
+        this.controller.initializeApp();
+
     }
 
     @FXML
