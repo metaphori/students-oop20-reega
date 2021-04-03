@@ -18,6 +18,7 @@ import reega.data.models.ServiceType;
 import reega.users.User;
 import reega.viewutils.Command;
 import reega.viewutils.Controller;
+import reega.viewutils.EventHandler;
 
 /**
  * Interface for a controller that is represented by the page after the login
@@ -98,4 +99,16 @@ public interface MainController extends Controller {
      * @return a map containing the label as the key and the command as the value
      */
     Map<String, Command> getCommands();
+
+    /**
+     * Add <code>contract</code> to the selected contracts
+     * @param contract contract to be marked as selected
+     */
+    void addSelectedContract(Contract contract);
+
+    /**
+     * Remove <code>contract</code> from the selected contracts
+     * @param contract contract to be unmarked as selected
+     */
+    void removeSelectedContract(Contract contract);
 }
