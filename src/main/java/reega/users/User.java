@@ -15,4 +15,8 @@ public interface User {
     String getFiscalCode();
 
     String getPasswordHash();
+
+    default String getFullName() {
+        return String.format("%s %s",this.getName(),this.getSurname());
+    }
 }
