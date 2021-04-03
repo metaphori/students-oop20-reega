@@ -16,11 +16,11 @@
         <ColumnConstraints percentWidth="75"/>
     </columnConstraints>
     <children>
-        <VBox fx:id="buttonsPane" GridPane.columnIndex="0" GridPane.vgrow="ALWAYS" fillWidth="true"/>
-        <VBox GridPane.columnIndex="1" GridPane.vgrow="ALWAYS">
+        <VBox fx:id="buttonsPane" GridPane.columnIndex="0" GridPane.vgrow="ALWAYS"/>
+        <VBox GridPane.columnIndex="1" GridPane.vgrow="ALWAYS" alignment="CENTER">
             <children>
                 <Label fx:id="userEmail"/>
-                <HBox fx:id="contractsPane" visible="false"/>
+                <HBox fx:id="contractsPane" visible="false" alignment="CENTER" spacing="10"/>
                 <FlexibleGridPane fx:id="servicesPane" VBox.vgrow="ALWAYS" fixedColumnsNumber="2" hgap="10" vgap="10"/>
             </children>
         </VBox>

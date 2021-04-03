@@ -1,8 +1,28 @@
 .svc-card {
     -fx-padding: 13px;
+    -fx-alignment: center center;
 }
 
 .svc-header {
-    -fx-font-size: 20px;
+    -fx-font-size: 32px;
     -fx-font-weight: bold;
 }
+
+#servicesPane {
+    -fx-padding: 10px;
+}
+
+#contractsPane > .check-box {
+    -fx-font-size: 15px;
+    -fx-text-fill: #ffffff;
+}
+
+#userEmail {
+    -fx-font-size: 32px;
+    -fx-text-fill: #ffffff;
+}
+
+.svc-peek, .svc-avg, .svc-tot {
+    -fx-font-size: 18px;
+}
+
