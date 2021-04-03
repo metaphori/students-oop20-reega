@@ -175,7 +175,7 @@ public class FlexibleGridPane extends GridPane {
         final ObservableList<Node> children = this.getChildren();
         this.getRowConstraints().clear();
         // Rows needed
-        final int neededRows = (int) Math.floor(children.size() / newColNumber);
+        final int neededRows = (int) Math.ceil(children.size() / (double)newColNumber);
         // Height percentage for each row
         final double percentHeight = 100.0 / neededRows;
         this.getRowConstraints().addAll(IntStream.range(0, neededRows).mapToObj(elem -> {
@@ -203,7 +203,7 @@ public class FlexibleGridPane extends GridPane {
         final ObservableList<Node> children = this.getChildren();
         this.getColumnConstraints().clear();
         // Rows needed
-        final int neededRows = (int) Math.floor(children.size() / newRowNumber);
+        final int neededRows = (int) Math.ceil(children.size() / (double)newRowNumber);
         // Height percentage for each column
         final double percentWidth = 100.0 / neededRows;
         // Add all the column constraints
