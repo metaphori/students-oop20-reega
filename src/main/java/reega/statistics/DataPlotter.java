@@ -25,5 +25,5 @@ public interface DataPlotter {
      * @return
      *      Map of time and usage values
      */
-    Map<Date, Double> getData(ServiceType service);
+    Map<Date, Double> getData(ServiceType service) throws Exception;
 }
