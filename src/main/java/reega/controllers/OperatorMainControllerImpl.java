@@ -71,18 +71,7 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
 
     @Override
     public Set<ServiceType> getAvailableServiceTypes() {
-        return this.getSelectedUser().map(elem -> {
-            List<Contract> contracts;
-            try {
-                contracts = this.getDataController().getContractsForUser(elem.getFiscalCode());
-            } catch (IOException e) {
-                this.getExceptionHandler().handleException(e, "Failed to load contracts for the user");
-                return (Set<ServiceType>)Collections.EMPTY_SET;
-            }
-            return contracts.stream()
-                    .flatMap(contract -> contract.getServices().stream())
-                    .collect(Collectors.toUnmodifiableSet());
-        }).orElse(Arrays.stream(ServiceType.values()).collect(Collectors.toUnmodifiableSet()));
+        return this.getSelectedUser().map(elem -> super.getAvailableServiceTypes()).orElse(Arrays.stream(ServiceType.values()).collect(Collectors.toUnmodifiableSet()));
     }
 
     @Override
