@@ -1,5 +1,7 @@
 package reega.users;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * Basic use interface containing the minimum user's info
  */
@@ -17,6 +19,6 @@ public interface User {
     String getPasswordHash();
 
     default String getFullName() {
-        return String.format("%s %s",this.getName(),this.getSurname());
+        return String.format("%s %s", StringUtils.capitalize(this.getName()),StringUtils.capitalize(this.getSurname()));
     }
 }
