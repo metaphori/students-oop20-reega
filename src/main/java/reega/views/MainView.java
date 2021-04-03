@@ -24,6 +24,7 @@ import reega.controllers.MainController;
 import reega.data.models.Contract;
 import reega.viewcomponents.Card;
 import reega.viewcomponents.FlexibleGridPane;
+import reega.viewutils.ViewUtils;
 
 public abstract class MainView extends GridPane {
 
@@ -48,11 +49,11 @@ public abstract class MainView extends GridPane {
             e.printStackTrace();
         }
         if (controller.user().isNotNull().get()) {
-            this.userEmail.setText(controller.user().get().getEmail());
+            this.userEmail.setText("Logged in as: " + controller.user().get().getFullName());
             this.populateButtonsPane(controller);
         }
         controller.user().addListener((observable, oldValue, newValue) -> {
-            this.userEmail.setText(newValue.getEmail());
+            this.userEmail.setText("Logged in as: " + newValue.getFullName());
             this.populateButtonsPane(controller);
         });
     }
@@ -82,18 +83,14 @@ public abstract class MainView extends GridPane {
             final Card serviceCard = new Card();
             serviceCard.getStyleClass().add("svc-card");
             final ObservableList<Node> serviceCardChildren = serviceCard.getChildren();
-            final Text serviceHeader = new Text(StringUtils.capitalize(svcType.getName()));
-            serviceHeader.getStyleClass().add("svc-header");
-            serviceCardChildren.add(serviceHeader);
+            serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(new Text(StringUtils.capitalize(svcType.getName())),"svc-header"));
             controller.getPeek(svcType).ifPresent(peek -> {
                 DateFormat usDateFormat = new SimpleDateFormat("yyyy/MM/dd");
-
-                serviceCardChildren.add(new Text("Peek date: " + usDateFormat.format(peek.getKey())));
-
-                serviceCardChildren.add(new Text(String.format(Locale.US,"Peek value: %.2f", peek.getValue())));
+                serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(new Text("Peek date: " + usDateFormat.format(peek.getKey())), "svc-peek"));
+                serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(new Text(String.format(Locale.US,"Peek value: %.2f", peek.getValue())), "svc-peek"));
             });
-            serviceCardChildren.add(new Text(String.format(Locale.US,"Average usage: %.2f",controller.getAverageUsage(svcType))));
-            serviceCardChildren.add(new Text(String.format(Locale.US,"Total usage: %.2f",controller.getTotalUsage(svcType))));
+            serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(new Text(String.format(Locale.US,"Average usage: %.2f",controller.getAverageUsage(svcType))), "svc-avg"));
+            serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(new Text(String.format(Locale.US,"Total usage: %.2f",controller.getTotalUsage(svcType))),"svc-tot"));
             this.getServicesPane().getChildren().add(serviceCard);
         });
     }
@@ -114,7 +111,6 @@ public abstract class MainView extends GridPane {
                 }
                 else {
                     controller.removeSelectedContract((Contract)checkBox.getUserData());
-                    System.out.println("Removed contract: " + ((Contract) checkBox.getUserData()).getAddress());
                 }
                 this.populateServicesPane(controller);
             });
