@@ -3,6 +3,8 @@ package reega.controllers;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -24,6 +26,7 @@ import reega.statistics.StatisticsController;
 import reega.users.User;
 import reega.viewutils.AbstractController;
 import reega.viewutils.Command;
+import reega.viewutils.EventHandler;
 
 public class MainControllerImpl extends AbstractController implements MainController {
 
@@ -33,8 +36,9 @@ public class MainControllerImpl extends AbstractController implements MainContro
     private final ExceptionHandler exceptionHandler;
     private List<Contract> contracts;
     private final ObservableList<Contract> selectedContracts = FXCollections.observableArrayList();
-    private Map<Contract, List<Data>> currentDataByContract;
+    private ConcurrentMap<Contract, List<Data>> currentDataByContract;
     private Map<String, Command> commands;
+    private EventHandler<Void> dataChangedEventHandler;
 
     @Inject
     public MainControllerImpl(final StatisticsController statisticsController, final DataController dataController,
@@ -42,29 +46,10 @@ public class MainControllerImpl extends AbstractController implements MainContro
         this.statisticsController = statisticsController;
         this.dataController = dataController;
         this.exceptionHandler = exceptionHandler;
-        this.selectedContracts.addListener((ListChangeListener<Contract>) c -> {
-            while (c.next()) {
-                if (c.wasAdded()) {
-                    final Stream<Data> newDataStream = c.getAddedSubList().stream().flatMap(contract -> {
-                        final List<Data> monthlyData = this.getDataByContract(contract);
-                        this.currentDataByContract.put(contract, monthlyData);
-                        return monthlyData.stream();
-                    });
-                    final List<Data> allData = Stream
-                            .concat(newDataStream, this.currentDataByContract.values().stream().flatMap(Collection::stream))
-                            .collect(Collectors.toList());
-                    this.getStatisticsController().setData(allData);
-                }
-                if (c.wasRemoved()) {
-                    c.getRemoved().forEach(contract -> this.currentDataByContract.remove(contract));
-                    this.getStatisticsController()
-                            .setData(this.currentDataByContract.values()
-                                    .stream()
-                                    .flatMap(Collection::stream)
-                                    .collect(Collectors.toList()));
-                }
-            }
-        });
+    }
+
+    public void setDataChangedEventHandler(EventHandler<Void> evtHandler) {
+        this.dataChangedEventHandler = evtHandler;
     }
 
     protected void initializeCommands() {
@@ -77,6 +62,25 @@ public class MainControllerImpl extends AbstractController implements MainContro
     @Override
     public Map<String, Command> getCommands() {
         return this.commands;
+    }
+
+    @Override
+    public void addSelectedContract(Contract contract) {
+        final List<Data> monthlyData = this.getDataByContract(contract);
+        final Stream<Data> newDataStream = monthlyData.stream();
+        final List<Data> allData = Stream
+                .concat(newDataStream, this.currentDataByContract.values().stream().flatMap(Collection::stream))
+                .collect(Collectors.toList());
+        this.currentDataByContract.put(contract,monthlyData);
+        this.getStatisticsController().setData(allData);
+        this.selectedContracts.add(contract);
+    }
+
+    @Override
+    public void removeSelectedContract(Contract contract) {
+        this.currentDataByContract.remove(contract);
+        this.getStatisticsController().setData(this.currentDataByContract.values().stream().flatMap(Collection::stream).collect(Collectors.toList()));
+        this.selectedContracts.remove(contract);
     }
 
     /**
@@ -138,7 +142,7 @@ public class MainControllerImpl extends AbstractController implements MainContro
             return;
         }
         this.contracts = contracts;
-        this.currentDataByContract = new HashMap<>();
+        this.currentDataByContract = new ConcurrentHashMap<>();
         this.selectedContracts.clear();
         this.selectedContracts.addAll(contracts);
         final List<Data> data = contracts.stream().flatMap(contract -> {
@@ -196,7 +200,7 @@ public class MainControllerImpl extends AbstractController implements MainContro
         return this.currentDataByContract.keySet()
                 .stream()
                 .flatMap(elem -> elem.getServices().stream())
-                .collect(Collectors.toUnmodifiableSet());
+                .collect(Collectors.toCollection(TreeSet::new));
     }
 
     /**

@@ -1,9 +1,13 @@
 package reega.views;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import com.jfoenix.controls.JFXButton;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,6 +19,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import org.apache.commons.lang3.StringUtils;
 import reega.controllers.MainController;
 import reega.data.models.Contract;
 import reega.viewcomponents.Card;
@@ -77,13 +82,18 @@ public abstract class MainView extends GridPane {
             final Card serviceCard = new Card();
             serviceCard.getStyleClass().add("svc-card");
             final ObservableList<Node> serviceCardChildren = serviceCard.getChildren();
-            serviceCardChildren.add(new Text(svcType.getName()));
+            final Text serviceHeader = new Text(StringUtils.capitalize(svcType.getName()));
+            serviceHeader.getStyleClass().add("svc-header");
+            serviceCardChildren.add(serviceHeader);
             controller.getPeek(svcType).ifPresent(peek -> {
-                serviceCardChildren.add(new Text("Peek date: " + peek.getKey()));
-                serviceCardChildren.add(new Text("Peek value: " + peek.getValue()));
+                DateFormat usDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+
+                serviceCardChildren.add(new Text("Peek date: " + usDateFormat.format(peek.getKey())));
+
+                serviceCardChildren.add(new Text(String.format(Locale.US,"Peek value: %.2f", peek.getValue())));
             });
-            serviceCardChildren.add(new Text("Average usage: " + controller.getAverageUsage(svcType)));
-            serviceCardChildren.add(new Text("Total usage: " + controller.getTotalUsage(svcType)));
+            serviceCardChildren.add(new Text(String.format(Locale.US,"Average usage: %.2f",controller.getAverageUsage(svcType))));
+            serviceCardChildren.add(new Text(String.format(Locale.US,"Total usage: %.2f",controller.getTotalUsage(svcType))));
             this.getServicesPane().getChildren().add(serviceCard);
         });
     }
@@ -99,10 +109,14 @@ public abstract class MainView extends GridPane {
             }
             checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue) {
-                    controller.getSelectedContracts().add((Contract) checkBox.getUserData());
-                    return;
+                    //controller.getSelectedContracts().add((Contract) checkBox.getUserData());
+                    controller.addSelectedContract((Contract) checkBox.getUserData());
                 }
-                controller.getSelectedContracts().remove(checkBox.getUserData());
+                else {
+                    controller.removeSelectedContract((Contract)checkBox.getUserData());
+                    System.out.println("Removed contract: " + ((Contract) checkBox.getUserData()).getAddress());
+                }
+                this.populateServicesPane(controller);
             });
             return checkBox;
         }).collect(Collectors.toList()));
