@@ -17,14 +17,18 @@ public class RemoteConnection {
     private String baseUrl;
     private String JWT;
 
-    public RemoteConnection(final String baseUrl) {
+    public RemoteConnection(final String baseUrl, boolean forceNewInstance) {
         this.baseUrl = baseUrl;
-        if (retrofit == null) {
+        if (forceNewInstance || retrofit == null) {
             retrofit = new Retrofit.Builder().baseUrl(baseUrl)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
         service = retrofit.create(ReegaService.class);
+    }
+
+    public RemoteConnection(String baseUrl) {
+        this(baseUrl, false);
     }
 
     public RemoteConnection() {
