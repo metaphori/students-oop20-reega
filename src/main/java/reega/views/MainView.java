@@ -16,6 +16,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -23,6 +24,7 @@ import javafx.scene.text.Text;
 import org.apache.commons.lang3.StringUtils;
 import reega.controllers.MainController;
 import reega.data.models.Contract;
+import reega.data.models.ServiceType;
 import reega.viewcomponents.Card;
 import reega.viewcomponents.FlexibleGridPane;
 import reega.viewutils.ViewUtils;
@@ -112,6 +114,12 @@ public abstract class MainView extends GridPane {
         this.getServicesPane().getChildren().clear();
         controller.getAvailableServiceTypes().forEach(svcType -> {
             final Card serviceCard = ViewUtils.wrapNodeWithStyleClasses(new Card(), "svc-card");
+            //Set the service card mouse clicked event
+            serviceCard.setOnMouseClicked(e -> {
+                if (e.getButton() == MouseButton.PRIMARY){
+                    this.populateGraphPane(svcType, controller);
+                }
+            });
             final ObservableList<Node> serviceCardChildren = serviceCard.getChildren();
             //Add the header of the card
             serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(new Text(StringUtils.capitalize(svcType.getName())),"svc-header"));
@@ -157,5 +165,14 @@ public abstract class MainView extends GridPane {
             return checkBox;
         }).collect(Collectors.toList()));
         this.getContractsPane().visibleProperty().set(this.getContractsPane().getChildren().size() >= 1);
+    }
+
+    /**
+     * Populate the {@link #graphPane}
+     * @param svcType service type used
+     * @param controller controller used to populate the {@link #graphPane}
+     */
+    protected final void populateGraphPane(ServiceType svcType, MainController controller) {
+        this.graphPane.setVisible(true);
     }
 }
