@@ -83,5 +83,5 @@ public interface ReegaService {
     @POST("terminate")
     Call<Void> terminateTest();
 
-    // end region
+    // endregion
 }
