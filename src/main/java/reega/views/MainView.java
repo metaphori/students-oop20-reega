@@ -71,6 +71,26 @@ public abstract class MainView extends GridPane {
         this.servicesPane.managedProperty().bind(this.servicesPane.visibleProperty());
     }
 
+    /**
+     * Get the services pane
+     * @return the services pane
+     */
+    protected final FlexibleGridPane getServicesPane() {
+        return this.servicesPane;
+    }
+
+    /**
+     * Get the contracts pane
+     * @return the contracts pane
+     */
+    protected final HBox getContractsPane() {
+        return this.contractsPane;
+    }
+
+    /**
+     * Populate the {@link #buttonsPane}
+     * @param controller controller used to populate the {@link #buttonsPane}
+     */
     private void populateButtonsPane(final MainController controller) {
         this.buttonsPane.getChildren().addAll(controller.getCommands().entrySet().stream().map(entry -> {
             final Button b = new Button(entry.getKey());
@@ -82,48 +102,55 @@ public abstract class MainView extends GridPane {
         }).collect(Collectors.toList()));
     }
 
-    protected final FlexibleGridPane getServicesPane() {
-        return this.servicesPane;
-    }
 
-    protected final HBox getContractsPane() {
-        return this.contractsPane;
-    }
 
+    /**
+     * Populate the {@link #servicesPane}
+     * @param controller controller used to populate the {@link #servicesPane}
+     */
     protected final void populateServicesPane(final MainController controller) {
         this.getServicesPane().getChildren().clear();
         controller.getAvailableServiceTypes().forEach(svcType -> {
-            final Card serviceCard = new Card();
-            serviceCard.getStyleClass().add("svc-card");
+            final Card serviceCard = ViewUtils.wrapNodeWithStyleClasses(new Card(), "svc-card");
             final ObservableList<Node> serviceCardChildren = serviceCard.getChildren();
+            //Add the header of the card
             serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(new Text(StringUtils.capitalize(svcType.getName())),"svc-header"));
+            //Add the peek if it's present
             controller.getPeek(svcType).ifPresent(peek -> {
                 DateFormat usDateFormat = new SimpleDateFormat("yyyy/MM/dd");
                 serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(new Text("Peek date: " + usDateFormat.format(peek.getKey())), "svc-peek"));
                 serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(new Text(String.format(Locale.US,"Peek value: %.2f", peek.getValue())), "svc-peek"));
             });
+            //Add the average usage
             serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(new Text(String.format(Locale.US,"Average usage: %.2f",controller.getAverageUsage(svcType))), "svc-avg"));
+            //Add the total usage
             serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(new Text(String.format(Locale.US,"Total usage: %.2f",controller.getTotalUsage(svcType))),"svc-tot"));
             this.getServicesPane().getChildren().add(serviceCard);
         });
     }
 
+    /**
+     * Populate the {@link #contractsPane}
+     * @param controller controller used to populate the {@link #contractsPane}
+     */
     protected final void populateContractsPane(final MainController controller) {
         this.getContractsPane().getChildren().clear();
         this.getContractsPane().getChildren().addAll(controller.getContracts().stream().map(elem -> {
             final CheckBox checkBox = new CheckBox();
             checkBox.setUserData(elem);
             checkBox.setText(elem.getAddress());
-            if (controller.getSelectedContracts().indexOf(elem) != -1) {
-                checkBox.selectedProperty().set(true);
-            }
+            //If the selectedContracts contain the element then set the selected property to true
+            final boolean contractIsSelected = controller.getSelectedContracts().indexOf(elem) != -1;
+            checkBox.selectedProperty().set(contractIsSelected);
             checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+                Contract contract = (Contract) checkBox.getUserData();
+                //Add the contract if the selectedProperty is true
                 if (newValue) {
-                    //controller.getSelectedContracts().add((Contract) checkBox.getUserData());
-                    controller.addSelectedContract((Contract) checkBox.getUserData());
+                    controller.addSelectedContract(contract);
                 }
+                //Remove the contract if the selectedProperty is false
                 else {
-                    controller.removeSelectedContract((Contract)checkBox.getUserData());
+                    controller.removeSelectedContract(contract);
                 }
                 this.populateServicesPane(controller);
             });
