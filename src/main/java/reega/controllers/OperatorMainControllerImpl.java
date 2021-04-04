@@ -60,6 +60,18 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
                     this.setSelectedUser(evtArgs.getEventItem());
                 }
             });
+            searchUserController.setContractFoundEventHandler(evtArgs -> {
+                if (evtArgs != null && evtArgs.getEventItem() != null) {
+                    /**
+                     * Pop the {@link SearchUserController}
+                     */
+                    this.popController();
+                    //Search the user by the contractID
+                    //Set the user as selected
+                    this.getSelectedContracts().clear();
+                    this.getSelectedContracts().add(evtArgs.getEventItem());
+                }
+            });
         }, false);
     }
 
