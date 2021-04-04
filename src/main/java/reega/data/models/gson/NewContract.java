@@ -7,6 +7,7 @@ import reega.data.models.ServiceType;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 public class NewContract {
@@ -25,6 +26,7 @@ public class NewContract {
         this.services = new Gson().toJson(services.stream().map(ServiceType::getName).collect(Collectors.toList()));
         this.userFiscalCode = userFiscalCode;
         final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+        format.setTimeZone(TimeZone.getTimeZone("UTC"));
         this.startTime = format.format(startTime);
     }
 }

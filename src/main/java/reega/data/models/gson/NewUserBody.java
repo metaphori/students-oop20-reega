@@ -20,7 +20,7 @@ public class NewUserBody {
     public String passwordHash;
 
     public NewUserBody(final String name, final String surname, final String email, final String fiscalCode,
-            final String role, final String passwordHash) {
+                       final String role, final String passwordHash) {
         this.name = name;
         this.surname = surname;
         this.email = email;

@@ -1,18 +1,7 @@
 package reega.data;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
-import java.io.IOException;
-
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-
 import okhttp3.mockwebserver.Dispatcher;
+import org.junit.jupiter.api.*;
 import reega.data.mock.MockConnection;
 import reega.data.mock.MockedAuthService;
 import reega.data.mock.RequestDispatcher;
@@ -21,6 +10,10 @@ import reega.data.remote.RemoteAuthAPI;
 import reega.users.GenericUser;
 import reega.users.NewUser;
 import reega.users.Role;
+
+import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AuthControllerTest {

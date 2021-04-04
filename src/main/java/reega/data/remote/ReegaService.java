@@ -74,4 +74,14 @@ public interface ReegaService {
     Call<Date> getLatestData(@Query("type") int type, @Query("contract_id") int contractId);
 
     // endregion
+
+    // region test
+
+    @GET("init")
+    Call<String> initTest();
+
+    @POST("terminate")
+    Call<Void> terminateTest();
+
+    // end region
 }

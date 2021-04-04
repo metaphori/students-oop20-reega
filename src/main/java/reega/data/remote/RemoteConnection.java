@@ -17,10 +17,6 @@ public class RemoteConnection {
     private String baseUrl;
     private String JWT;
 
-    interface LoginMethod {
-        LoginResponse login() throws IOException;
-    }
-
     public RemoteConnection(final String baseUrl) {
         this.baseUrl = baseUrl;
         if (retrofit == null) {
@@ -77,7 +73,11 @@ public class RemoteConnection {
         service = retrofit.create(ReegaService.class);
     }
 
-    ReegaService getService() {
+    public ReegaService getService() {
         return service;
+    }
+
+    public interface LoginMethod {
+        LoginResponse login() throws IOException;
     }
 }

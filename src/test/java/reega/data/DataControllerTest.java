@@ -26,9 +26,7 @@ public class DataControllerTest {
 
     @BeforeAll
     static void setup() throws IOException {
-        // TODO replace this with method to add and menage contracts
-        final Contract c = new Contract(1, "address", List.of("electricity"), new Date());
-        final Dispatcher dispatcher = new RequestDispatcher(new MockedDataService(c), null);
+        final Dispatcher dispatcher = new RequestDispatcher(new MockedDataService(), null);
         connection = new MockConnection(dispatcher);
         databaseAPI = connection.getDatabaseAPI();
     }

@@ -15,6 +15,7 @@ public class MockConnection implements AutoCloseable {
     private static MockWebServer server;
     private static RemoteDatabaseAPI databaseAPI;
     private static RemoteAuthAPI authAPI;
+    private static Retrofit retrofit;
 
     public MockConnection(final Dispatcher dispatcher) throws IOException {
         server = new MockWebServer();
@@ -23,11 +24,16 @@ public class MockConnection implements AutoCloseable {
 
         final ReegaService service = new Retrofit.Builder().baseUrl(server.url("/"))
                 .addConverterFactory(GsonConverterFactory.create())
-                .build()
-                .create(ReegaService.class);
+                .build().create(ReegaService.class);
         final RemoteConnection connection = new RemoteConnection(service);
         databaseAPI = RemoteDatabaseAPI.getInstance(connection);
-        authAPI = RemoteAuthAPI.getInstanceWithConnection(connection);
+        authAPI = RemoteAuthAPI.getInstance(connection);
+    }
+
+    public MockConnection(final String remoteURL) {
+        RemoteConnection connection = new RemoteConnection(remoteURL);
+        databaseAPI = RemoteDatabaseAPI.getInstance(connection);
+        authAPI = RemoteAuthAPI.getInstance(connection);
     }
 
     public RemoteDatabaseAPI getDatabaseAPI() {
@@ -40,6 +46,8 @@ public class MockConnection implements AutoCloseable {
 
     @Override
     public void close() throws IOException {
-        server.shutdown();
+        if (server != null) {
+            server.shutdown();
+        }
     }
 }

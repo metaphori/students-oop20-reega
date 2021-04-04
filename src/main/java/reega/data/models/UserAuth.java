@@ -1,11 +1,10 @@
 package reega.data.models;
 
-import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
-
+import com.google.common.hash.Hashing;
 import org.apache.commons.lang3.RandomStringUtils;
 
-import com.google.common.hash.Hashing;
+import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 
 /**
  * This object is used to represent everything you need to implement the "remind-me" mechanism.

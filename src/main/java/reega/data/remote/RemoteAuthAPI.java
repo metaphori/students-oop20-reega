@@ -1,11 +1,7 @@
 package reega.data.remote;
 
-import java.io.IOException;
-import java.util.Objects;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import reega.data.AuthController;
 import reega.data.models.UserAuth;
 import reega.data.models.gson.LoginResponse;
@@ -16,6 +12,9 @@ import reega.users.NewUser;
 import reega.users.Role;
 import retrofit2.Call;
 import retrofit2.Response;
+
+import java.io.IOException;
+import java.util.Objects;
 
 /**
  * AuthController implementation, using remote database via http requests
@@ -36,7 +35,7 @@ public final class RemoteAuthAPI implements AuthController {
         return INSTANCE;
     }
 
-    public static synchronized RemoteAuthAPI getInstanceWithConnection(final RemoteConnection conn) {
+    public static synchronized RemoteAuthAPI getInstance(final RemoteConnection conn) {
         if (INSTANCE == null) {
             INSTANCE = new RemoteAuthAPI(conn);
         }

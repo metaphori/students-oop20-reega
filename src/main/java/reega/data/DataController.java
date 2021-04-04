@@ -7,7 +7,6 @@ import reega.data.models.DataType;
 import reega.data.models.gson.NewContract;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -20,12 +19,12 @@ public interface DataController {
      *
      * @return List<Contract>
      * @throws IOException
-     * @throws SQLException
      */
     List<Contract> getUserContracts() throws IOException;
 
     /**
      * retrieves all the contracts in the name of the specified user
+     *
      * @param fiscalCode
      * @return
      * @throws IOException
@@ -35,44 +34,39 @@ public interface DataController {
     /**
      * @return
      * @throws IOException
-     * @throws SQLException
      */
-    List<Contract> getAllContracts() throws IOException, SQLException;
+    List<Contract> getAllContracts() throws IOException;
 
     /**
      * Add contract
      *
      * @param contract
      * @throws IOException
-     * @throws SQLException
      */
-    void addContract(NewContract contract) throws IOException, SQLException;
+    void addContract(NewContract contract) throws IOException;
 
     /**
      * Delete contract with REEGA. It will also delete all the related data
      *
      * @param id
      * @throws IOException
-     * @throws SQLException
      */
-    void removeContract(int id) throws IOException, SQLException;
+    void removeContract(int id) throws IOException;
 
     /**
      * Push data to the database (implementation specific)
      *
      * @param data
-     * @throws SQLException
      */
-    void putUserData(Data data) throws SQLException, IOException;
+    void putUserData(Data data) throws IOException;
 
     /**
      * Get the latest timestamp for the specific contract and metric present in the database
      *
      * @param contractID
      * @return
-     * @throws SQLException
      */
-    Long getLatestData(int contractID, DataType service) throws SQLException, IOException;
+    Long getLatestData(int contractID, DataType service) throws IOException;
 
     List<Data> getMonthlyData(@Nullable Integer contractID) throws IOException;
 }
