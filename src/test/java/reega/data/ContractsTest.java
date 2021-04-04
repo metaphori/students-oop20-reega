@@ -28,8 +28,8 @@ public class ContractsTest {
     }
 
     @AfterAll
-    public void cleanup() {
-        connection.getService().terminateTest();
+    public void cleanup() throws IOException {
+        connection.getService().terminateTest().execute();
     }
 
     @Test
