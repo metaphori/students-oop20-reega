@@ -19,7 +19,7 @@ public class TestConnection {
         final String testDB = tmpService.initTest().execute().body();
         baseUrl += testDB + "/";
 
-        RemoteConnection connection = new RemoteConnection(baseUrl);
+        RemoteConnection connection = new RemoteConnection(baseUrl, true);
         System.out.println("connection created with base url " + baseUrl);
         connection.login(connection.getService().emailLogin(email, psk).execute()::body);
         return connection;
