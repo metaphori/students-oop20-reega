@@ -4,7 +4,7 @@ package reega.users;
  * User role types. The roleName value is the same as what is stored into the database
  */
 public enum Role {
-    ADMIN("admin"), OPERATOR("operator"), USER("user");
+    ADMIN("admin"), USER("user");
 
     private final String roleName;
 
