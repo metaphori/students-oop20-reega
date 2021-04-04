@@ -21,7 +21,10 @@
             <children>
                 <Label fx:id="userEmail"/>
                 <HBox fx:id="contractsPane" visible="false" alignment="CENTER" spacing="10"/>
-                <FlexibleGridPane fx:id="servicesPane" VBox.vgrow="ALWAYS" fixedColumnsNumber="2" hgap="10" vgap="10"/>
+                <StackPane VBox.vgrow="ALWAYS">
+                    <FlexibleGridPane fx:id="servicesPane" fixedColumnsNumber="2" hgap="10" vgap="10"/>
+                    <VBox fx:id="graphPane"/>
+                </StackPane>
             </children>
         </VBox>
     </children>

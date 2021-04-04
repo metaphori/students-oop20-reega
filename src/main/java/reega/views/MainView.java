@@ -7,6 +7,7 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 import com.jfoenix.controls.JFXButton;
+import javafx.beans.binding.Bindings;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -33,6 +34,8 @@ public abstract class MainView extends GridPane {
     @FXML
     private FlexibleGridPane servicesPane;
     @FXML
+    private VBox graphPane;
+    @FXML
     private HBox contractsPane;
     @FXML
     private VBox buttonsPane;
@@ -56,6 +59,16 @@ public abstract class MainView extends GridPane {
             this.userEmail.setText("Logged in as: " + newValue.getFullName());
             this.populateButtonsPane(controller);
         });
+        this.graphPane.setVisible(false);
+        this.graphPane.visibleProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                this.servicesPane.setVisible(false);
+                return;
+            }
+            this.servicesPane.setVisible(true);
+        });
+        this.graphPane.managedProperty().bind(this.graphPane.visibleProperty());
+        this.servicesPane.managedProperty().bind(this.servicesPane.visibleProperty());
     }
 
     private void populateButtonsPane(final MainController controller) {
