@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import java.io.IOException;
 
 public class TestConnection {
-    private String baseUrl = "http://52.208.47.221/test/";
+    private String baseUrl = "http://52.208.47.221:1958/test/";
 
     public RemoteConnection getTestConnection(String email, String psk) throws IOException {
         final ReegaService tmpService = new Retrofit.Builder()

@@ -28,7 +28,7 @@ public class RemoteConnection {
     }
 
     public RemoteConnection() {
-        this("http://52.208.47.221/");
+        this("http://52.208.47.221:1958/");
     }
 
     /**
