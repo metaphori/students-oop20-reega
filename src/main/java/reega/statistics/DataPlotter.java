@@ -1,13 +1,8 @@
 package reega.statistics;
 
-import javafx.scene.chart.XYChart;
-import reega.data.models.Data;
-import reega.data.models.ServiceType;
-import reega.statistics.StatisticsController;
-
-import java.util.Date;
-import java.util.List;
 import java.util.Map;
+
+import reega.data.models.ServiceType;
 
 public interface DataPlotter {
 
@@ -20,10 +15,9 @@ public interface DataPlotter {
 
     /**
      * returns data based on the given statistic controller filtered by {@link ServiceType}
-     * @param service
-     *      {@link ServiceType} to filter by
-     * @return
-     *      Map of time and usage values
+     *
+     * @param svcType {@link ServiceType} to filter by
+     * @return Map of time and usage values
      */
-    Map<Date, Double> getData(ServiceType service) throws Exception;
+    Map<Long, Double> getData(ServiceType svcType);
 }
