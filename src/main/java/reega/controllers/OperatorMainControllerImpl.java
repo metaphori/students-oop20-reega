@@ -1,39 +1,42 @@
 package reega.controllers;
 
 import java.io.IOException;
-import java.sql.SQLException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import reega.data.DataController;
-import reega.data.models.Contract;
 import reega.data.models.Data;
 import reega.data.models.ServiceType;
 import reega.logging.ExceptionHandler;
+import reega.statistics.DataPlotter;
 import reega.statistics.StatisticsController;
 import reega.users.User;
 
 public class OperatorMainControllerImpl extends MainControllerImpl implements OperatorMainController {
 
-    private ObjectProperty<User> selectedUserProperty;
+    private ObjectProperty<User> selectedUserProperty = new SimpleObjectProperty<>();
 
     @Inject
-    public OperatorMainControllerImpl(final StatisticsController statisticsController,
+    public OperatorMainControllerImpl(final StatisticsController statisticsController, final DataPlotter dataPlotter,
             final DataController dataController, final ExceptionHandler exceptionHandler) {
-        super(statisticsController, dataController, exceptionHandler);
+        super(statisticsController, dataPlotter, dataController, exceptionHandler);
     }
 
     @Override
     protected void initializeCommands() {
         super.initializeCommands();
         this.getCommands().put("Search user", (args) -> {
-           this.jumpToSearchUser();
+            this.jumpToSearchUser();
         });
         this.getCommands().put("Manage users", (args) -> {
-           //TODO Create the ManagerUsers controller
+            // TODO Create the ManagerUsers controller
         });
     }
 
@@ -66,8 +69,8 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
                      * Pop the {@link SearchUserController}
                      */
                     this.popController();
-                    //Search the user by the contractID
-                    //Set the user as selected
+                    // Search the user by the contractID
+                    // Set the user as selected
                     this.getSelectedContracts().clear();
                     this.getSelectedContracts().add(evtArgs.getEventItem());
                 }
@@ -83,7 +86,9 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
 
     @Override
     public Set<ServiceType> getAvailableServiceTypes() {
-        return this.getSelectedUser().map(elem -> super.getAvailableServiceTypes()).orElse(Arrays.stream(ServiceType.values()).collect(Collectors.toUnmodifiableSet()));
+        return this.getSelectedUser()
+                .map(elem -> super.getAvailableServiceTypes())
+                .orElse(Arrays.stream(ServiceType.values()).collect(Collectors.toUnmodifiableSet()));
     }
 
     @Override

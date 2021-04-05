@@ -3,6 +3,10 @@
  */
 package reega.main;
 
+import java.sql.SQLException;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 import javafx.scene.Parent;
 import reega.auth.AuthManager;
 import reega.auth.RemindableAuthManager;
@@ -17,22 +21,20 @@ import reega.io.IOControllerFactory;
 import reega.io.TokenIOController;
 import reega.logging.ExceptionHandler;
 import reega.logging.SimpleExceptionHandler;
+import reega.statistics.DataPlotter;
+import reega.statistics.DataPlotterImpl;
 import reega.statistics.StatisticsController;
 import reega.statistics.StatisticsControllerImpl;
 import reega.util.ServiceCollection;
 import reega.util.ServiceProvider;
 import reega.views.LoginView;
-import reega.views.MainView;
+import reega.views.OperatorMainView;
 import reega.views.RegistrationView;
 import reega.views.UserMainView;
 import reega.viewutils.DataTemplate;
 import reega.viewutils.DataTemplateManager;
 import reega.viewutils.Navigator;
 import reega.viewutils.NavigatorImpl;
-
-import java.sql.SQLException;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * App initializer for the UI main class
@@ -77,14 +79,36 @@ public class UIAppInitializer implements AppInitializer {
         svcCollection.addSingleton(AuthController.class, AuthControllerFactory.getDefaultAuthController());
         svcCollection.addSingleton(IOController.class, IOControllerFactory.getDefaultIOController());
         svcCollection.addSingleton(TokenIOController.class, IOControllerFactory.getDefaultTokenIOController());
-        svcCollection.addSingleton(DataController.class, DataControllerFactory.getDefaultDataController(new RemoteConnection()));
+        svcCollection.addSingleton(DataController.class,
+                DataControllerFactory.getDefaultDataController(new RemoteConnection()));
         svcCollection.addSingleton(ExceptionHandler.class, SimpleExceptionHandler.class);
         svcCollection.addSingleton(AuthManager.class, RemindableAuthManager.class);
         svcCollection.addTransient(StatisticsController.class, StatisticsControllerImpl.class);
+        svcCollection.addTransient(DataPlotter.class, DataPlotterImpl.class);
         svcCollection.addTransient(LoginController.class, LoginControllerImpl.class);
         svcCollection.addTransient(RegistrationController.class, RegistrationControllerImpl.class);
-        svcCollection.addTransient(MainController.class,MainControllerImpl.class);
-        svcCollection.addTransient(OperatorMainController.class,OperatorMainControllerImpl.class);
+        svcCollection.addTransient(MainController.class, (svcProvider) -> {
+            final StatisticsController statisticsController = svcProvider
+                    .getRequiredService(StatisticsController.class);
+            final DataPlotter dataPlotter = svcProvider.getRequiredService(DataPlotter.class);
+            final DataController dataController = svcProvider.getRequiredService(DataController.class);
+            final ExceptionHandler exceptionHandler = svcProvider.getRequiredService(ExceptionHandler.class);
+
+            dataPlotter.setStatisticController(statisticsController);
+
+            return new MainControllerImpl(statisticsController, dataPlotter, dataController, exceptionHandler);
+        });
+        svcCollection.addTransient(OperatorMainController.class, (svcProvider) -> {
+            final StatisticsController statisticsController = svcProvider
+                    .getRequiredService(StatisticsController.class);
+            final DataPlotter dataPlotter = svcProvider.getRequiredService(DataPlotter.class);
+            final DataController dataController = svcProvider.getRequiredService(DataController.class);
+            final ExceptionHandler exceptionHandler = svcProvider.getRequiredService(ExceptionHandler.class);
+
+            dataPlotter.setStatisticController(statisticsController);
+
+            return new OperatorMainControllerImpl(statisticsController, dataPlotter, dataController, exceptionHandler);
+        });
         svcCollection.addSingleton(BaseLayoutView.class);
         return svcCollection.buildServiceProvider();
     }
@@ -126,6 +150,19 @@ public class UIAppInitializer implements AppInitializer {
             public Supplier<? extends Parent> getControlFactory(final MainControllerImpl controller) {
                 return () -> new UserMainView(controller);
             }
+        });
+        templateManager.addTemplate(new DataTemplate<OperatorMainControllerImpl>() {
+
+            @Override
+            public Class<OperatorMainControllerImpl> getDataObjectClass() {
+                return OperatorMainControllerImpl.class;
+            }
+
+            @Override
+            public Supplier<? extends Parent> getControlFactory(OperatorMainControllerImpl controller) {
+                return () -> new OperatorMainView(controller);
+            }
+
         });
     }
 
