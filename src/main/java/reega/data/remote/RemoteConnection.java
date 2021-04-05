@@ -19,10 +19,8 @@ public class RemoteConnection {
 
     public RemoteConnection(final String baseUrl, boolean forceNewInstance) {
         this.baseUrl = baseUrl;
-        if (forceNewInstance || retrofit == null) {
-            retrofit = new Retrofit.Builder().baseUrl(baseUrl)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
+        if (forceNewInstance) {
+            createPlainClient();
         }
         service = retrofit.create(ReegaService.class);
     }
@@ -57,6 +55,19 @@ public class RemoteConnection {
             this.setClientAuth();
         }
         return response;
+    }
+
+    public void logout() {
+        createPlainClient();
+        service = retrofit.create(ReegaService.class);
+    }
+
+    private void createPlainClient() {
+        if ( retrofit == null) {
+            retrofit = new Retrofit.Builder().baseUrl(baseUrl)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+        }
     }
 
     private void setClientAuth() {
