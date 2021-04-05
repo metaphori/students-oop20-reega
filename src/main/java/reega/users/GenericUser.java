@@ -11,12 +11,22 @@ public class GenericUser implements User {
     private final String fiscalCode;
 
     public GenericUser(final Role role, final String name, final String surname, final String email,
-            final String fiscalCode) {
+                       final String fiscalCode) {
         this.role = role;
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.fiscalCode = fiscalCode;
+    }
+
+    public GenericUser(reega.data.models.gson.User user) {
+        this(
+                Role.valueOf(user.role.toUpperCase()),
+                user.name,
+                user.surname,
+                user.email,
+                user.fiscalCode
+        );
     }
 
     @Override
