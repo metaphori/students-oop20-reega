@@ -3,28 +3,19 @@
  */
 package reega.auth;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Optional;
-
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
-
 import okhttp3.mockwebserver.Dispatcher;
-import reega.data.mock.MockConnection;
-import reega.data.mock.MockedAuthService;
-import reega.data.mock.RequestDispatcher;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import reega.io.IOControllerFactory;
 import reega.io.MockIOController;
 import reega.io.TokenIOController;
 import reega.users.GenericUser;
 import reega.users.NewUser;
 import reega.users.Role;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Optional;
 
 /**
  * @author Marco

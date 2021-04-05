@@ -10,6 +10,7 @@ import reega.data.models.DataType;
 import reega.data.models.gson.ContractModel;
 import reega.data.models.gson.DataModel;
 import reega.data.models.gson.NewContract;
+import reega.users.GenericUser;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -74,6 +75,15 @@ public class RemoteDatabaseAPI implements DataController {
     public List<Contract> getUserContracts() throws IOException {
         final Call<List<ContractModel>> v = connection.getService().getContracts();
         return parseContractCall(v);
+    }
+
+    @Override
+    public GenericUser getUserFromContract(int contractID) throws IOException {
+        Response<reega.data.models.gson.User> r = connection.getService().getUserFromContract(contractID).execute();
+        if (r.body() == null) {
+            return null;
+        }
+        return new GenericUser(r.body());
     }
 
     @Override
