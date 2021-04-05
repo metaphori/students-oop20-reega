@@ -14,7 +14,7 @@ public final class RequestDispatcher extends Dispatcher {
     private final MockedAuthService authService;
 
     public RequestDispatcher(@Nullable final MockedDataService dataService,
-            @Nullable final MockedAuthService authService) {
+                             @Nullable final MockedAuthService authService) {
         this.dataService = dataService;
         this.authService = authService;
     }

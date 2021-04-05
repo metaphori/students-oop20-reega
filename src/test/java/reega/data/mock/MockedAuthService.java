@@ -1,6 +1,13 @@
 package reega.data.mock;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import com.google.gson.Gson;
+import okhttp3.HttpUrl;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.RecordedRequest;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import reega.data.models.gson.LoginResponse;
+import reega.data.models.gson.NewUserBody;
+import reega.data.models.gson.UserAuthToken;
 
 import java.util.HashMap;
 import java.util.List;
@@ -8,16 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.springframework.security.crypto.bcrypt.BCrypt;
-
-import com.google.gson.Gson;
-
-import okhttp3.HttpUrl;
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.RecordedRequest;
-import reega.data.remote.models.LoginResponse;
-import reega.data.remote.models.NewUserBody;
-import reega.data.remote.models.UserAuthToken;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class MockedAuthService {
     private Map<Integer, NewUserBody> users = new HashMap<>();

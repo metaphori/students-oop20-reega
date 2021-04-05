@@ -17,22 +17,18 @@ public class RemoteConnection {
     private String baseUrl;
     private String JWT;
 
-    interface LoginMethod {
-        LoginResponse login() throws IOException;
-    }
-
-    public RemoteConnection(final String baseUrl) {
+    public RemoteConnection(final String baseUrl, boolean forceNewInstance) {
         this.baseUrl = baseUrl;
-        if (retrofit == null) {
-            retrofit = new Retrofit.Builder().baseUrl(baseUrl)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-        }
+        createPlainClient(forceNewInstance);
         service = retrofit.create(ReegaService.class);
     }
 
+    public RemoteConnection(String baseUrl) {
+        this(baseUrl, false);
+    }
+
     public RemoteConnection() {
-        this("http://52.208.47.221/");
+        this("http://52.208.47.221:1958/");
     }
 
     /**
@@ -40,11 +36,13 @@ public class RemoteConnection {
      *
      * @param s
      */
+    @Deprecated
     public RemoteConnection(final ReegaService s) {
         forcedService = true;
         service = s;
     }
 
+    @Deprecated
     public void overrideToken(final String JWT) {
         this.JWT = JWT;
         this.setClientAuth();
@@ -57,6 +55,20 @@ public class RemoteConnection {
             this.setClientAuth();
         }
         return response;
+    }
+
+    public void logout() {
+        this.JWT = null;
+        createPlainClient(true);
+        service = retrofit.create(ReegaService.class);
+    }
+
+    private void createPlainClient(boolean forceNewInstance) {
+        if (forceNewInstance || retrofit == null) {
+            retrofit = new Retrofit.Builder().baseUrl(baseUrl)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+        }
     }
 
     private void setClientAuth() {
@@ -77,7 +89,11 @@ public class RemoteConnection {
         service = retrofit.create(ReegaService.class);
     }
 
-    ReegaService getService() {
+    public ReegaService getService() {
         return service;
+    }
+
+    public interface LoginMethod {
+        LoginResponse login() throws IOException;
     }
 }

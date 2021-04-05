@@ -45,12 +45,10 @@ dependencies {
     // Implementation to make MockWebServer work with JUnit 5 in Eclipse 
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
 
-    // DB driver (local development purpose only)
-    implementation("org.postgresql:postgresql:42.2.18")
-
     // HTTP client library - stick to 2.7.0 to avoid illegal reflections (should upgrade to Java 14)
     implementation("com.squareup.retrofit2:retrofit:2.7.0")
     implementation("com.squareup.retrofit2:converter-gson:2.7.0")
+    implementation("com.squareup.retrofit2:converter-scalars:2.1.0")
 
     // Gson for JSON parsing
     implementation("com.google.code.gson:gson:2.8.6")

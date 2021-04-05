@@ -5,28 +5,18 @@ import okhttp3.HttpUrl;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.RecordedRequest;
 import org.apache.commons.io.IOUtils;
-import reega.data.models.Contract;
-import reega.data.remote.models.DataModel;
+import reega.data.models.gson.DataModel;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class MockedDataService {
     private final Map<Integer, Map<Long, Double>> dataValues = new HashMap<>();
-    private final Contract defaultContract;
-
-    // TODO implement methods to add and manage contracts
-    public MockedDataService(final Contract defaultContract) {
-        this.defaultContract = defaultContract;
-    }
 
     MockResponse contracts() throws IOException {
         final String body = this.getResponse("contracts.json");
@@ -36,9 +26,9 @@ public class MockedDataService {
     MockResponse fillData(final RecordedRequest recordedRequest) {
         final DataModel d = new Gson().fromJson(recordedRequest.getBody().readUtf8(), DataModel.class);
         assertNotNull(d);
-        if (d.contractId == this.defaultContract.getId()) {
+        /*if (d.contractId == this.defaultContract.getId()) {
             this.dataValues.put(d.type, d.data);
-        }
+        }*/
         return new MockResponse().setResponseCode(200);
     }
 
@@ -52,14 +42,15 @@ public class MockedDataService {
         }
         final int typeId = Integer.parseInt(type);
         final int contractId = Integer.parseInt(contract);
-        if (contractId != this.defaultContract.getId()) {
+        return new MockResponse().setResponseCode(500);
+        /*if (contractId != this.defaultContract.getId()) {
             return new MockResponse().setResponseCode(400);
         }
         final Map<Long, Double> val = this.dataValues.get(typeId);
         final Optional<Long> latest = val.keySet().stream().reduce(Math::max);
         final Date d = new Date(latest.orElse(0L));
         final String resp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(d);
-        return new MockResponse().setResponseCode(200).setBody("\"" + resp + "\"");
+        return new MockResponse().setResponseCode(200).setBody("\"" + resp + "\"");*/
     }
 
     private String getResponse(final String response) throws IOException {

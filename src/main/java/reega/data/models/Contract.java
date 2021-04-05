@@ -16,6 +16,20 @@ public final class Contract {
     private final List<ServiceType> services;
     private final Date startDate;
 
+    public Contract(final int id, final String address, final List<String> services, final Date startDate) {
+        this.id = id;
+        this.address = address;
+        this.services = services.stream().map(s -> ServiceType.valueOf(s.toUpperCase())).collect(Collectors.toList());
+        this.startDate = startDate;
+    }
+
+    public Contract(ContractModel contractModel) {
+        this(contractModel.id,
+                contractModel.address,
+                contractModel.services,
+                contractModel.startTime);
+    }
+
     public int getId() {
         return this.id;
     }
@@ -30,20 +44,6 @@ public final class Contract {
 
     public Date getStartDate() {
         return this.startDate;
-    }
-
-    public Contract(final int id, final String address, final List<String> services, final Date startDate) {
-        this.id = id;
-        this.address = address;
-        this.services = services.stream().map(s -> ServiceType.valueOf(s.toUpperCase())).collect(Collectors.toList());
-        this.startDate = startDate;
-    }
-
-    public Contract(ContractModel contractModel) {
-        this(contractModel.id,
-                contractModel.address,
-                contractModel.services,
-                contractModel.startTime);
     }
 
     public ContractModel getJsonModel() {

@@ -3,20 +3,18 @@
  */
 package reega.auth;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.BiFunction;
-
-import javax.inject.Inject;
-
 import reega.data.AuthController;
 import reega.data.models.UserAuth;
 import reega.io.TokenIOController;
 import reega.logging.ExceptionHandler;
 import reega.users.GenericUser;
 import reega.users.NewUser;
+
+import javax.inject.Inject;
+import java.io.IOException;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.BiFunction;
 
 /**
  * @author Marco
@@ -61,7 +59,7 @@ public class RemindableAuthManager implements AuthManager {
         Optional<GenericUser> loggedInUser = Optional.empty();
         try {
             loggedInUser = Optional.ofNullable(this.authController.tokenLogin(uAuth.get()));
-        } catch (final SQLException | IOException e) {
+        } catch (final IOException e) {
             this.exceptionHandler.handleException(e);
         }
 
@@ -80,7 +78,7 @@ public class RemindableAuthManager implements AuthManager {
     public boolean createUser(final NewUser user) {
         try {
             this.authController.addUser(user);
-        } catch (final SQLException | IOException e) {
+        } catch (final IOException e) {
             this.exceptionHandler.handleException(e, "createUser");
             return false;
         }
@@ -96,7 +94,7 @@ public class RemindableAuthManager implements AuthManager {
             Optional<GenericUser> loggedInUser;
             try {
                 loggedInUser = Optional.ofNullable(this.authController.emailLogin(userMethod, hash));
-            } catch (final SQLException | IOException e) {
+            } catch (final IOException e) {
                 this.exceptionHandler.handleException(e, "emailLogin -> Login call");
                 return Optional.empty();
             }
@@ -113,7 +111,7 @@ public class RemindableAuthManager implements AuthManager {
             Optional<GenericUser> loggedInUser;
             try {
                 loggedInUser = Optional.ofNullable(this.authController.fiscalCodeLogin(userMethod, hash));
-            } catch (final SQLException | IOException e) {
+            } catch (final IOException e) {
                 this.exceptionHandler.handleException(e, "fiscalCodeLogin -> Login call");
                 return Optional.empty();
             }
@@ -160,7 +158,7 @@ public class RemindableAuthManager implements AuthManager {
     private void storeUserAuthentication(final UserAuth userAuth) {
         try {
             this.authController.storeUserCredentials(userAuth.getSelector(), userAuth.getValidator());
-        } catch (final SQLException | IOException e) {
+        } catch (final IOException e) {
             this.exceptionHandler.handleException(e);
             return;
         }
@@ -181,7 +179,7 @@ public class RemindableAuthManager implements AuthManager {
     private boolean deleteUserAuthentication() {
         try {
             this.authController.userLogout();
-        } catch (final SQLException | IOException e) {
+        } catch (final IOException e) {
             this.exceptionHandler.handleException(e, "logout -> db logout");
             return false;
         }

@@ -1,17 +1,12 @@
 package reega.data;
 
-import okhttp3.mockwebserver.Dispatcher;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import reega.data.mock.MockConnection;
-import reega.data.mock.MockedDataService;
-import reega.data.mock.RequestDispatcher;
-import reega.data.models.Contract;
+import org.junit.jupiter.api.*;
+import reega.data.mock.TestConnection;
 import reega.data.models.Data;
 import reega.data.models.DataType;
-import reega.data.remote.RemoteDatabaseAPI;
+import reega.data.models.ServiceType;
+import reega.data.models.gson.NewContract;
+import reega.data.remote.RemoteConnection;
 
 import java.io.IOException;
 import java.util.Date;
@@ -20,54 +15,73 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class DataControllerTest {
-    private static MockConnection connection;
-    private static RemoteDatabaseAPI databaseAPI;
+    private RemoteConnection connection;
+    private DataController controller;
 
     @BeforeAll
-    static void setup() throws IOException {
-        // TODO replace this with method to add and menage contracts
-        final Contract c = new Contract(1, "address", List.of("electricity"), new Date());
-        final Dispatcher dispatcher = new RequestDispatcher(new MockedDataService(c), null);
-        connection = new MockConnection(dispatcher);
-        databaseAPI = connection.getDatabaseAPI();
+    public void setup() throws IOException {
+        connection = new TestConnection().getTestConnection("admin@reega.it", "AES_PASSWORD");
+        controller = DataControllerFactory.getRemoteDatabaseController(connection);
+
+        addContrct("Test Address", 1614942000000L);
     }
 
     @AfterAll
-    static void cleanup() throws IOException {
-        connection.close();
+    public void cleanup() throws IOException {
+        connection.getService().terminateTest().execute();
     }
 
     @Test
-    public void getContractsTest() throws IOException {
-        final List<Contract> contracts = databaseAPI.getUserContracts();
-
-        // test the contract has been parsed successfully
-        assertEquals(contracts.size(), 1);
-
-        // test the date parsing (timezone, etc)
-        final Date startTime = new Date(1610959389000L);
-        assertEquals(startTime, contracts.get(0).getStartDate());
-
-        // general test
-        assertEquals(contracts.get(0).toString(),
-                "Contract{id=1, address='Casa sua', services=[GARBAGE, ELECTRICITY, GAS, WATER], "
-                        + "priceModel=PriceModel{id=1, name='base plan', prices={electricity=1.4, garbage=1.3, "
-                        + "gas=1.1, water=1.2}}, startDate=Mon Jan 18 09:43:09 CET 2021}");
-    }
-
-    @Test
+    @Order(1)
     public void userDataTest() throws IOException {
+        var contracts = controller.getUserContracts();
+        assertEquals(1, contracts.size());
+        var contract = contracts.get(0);
+
+        var latestTimestamp = controller.getLatestData(contract.getId(), DataType.ELECTRICITY);
+        // most be the contract start-time
+        assertEquals(1614942000000L, latestTimestamp);
+
         final long timestamp = (System.currentTimeMillis() / 1000) * 1000;
-        final Data newData = new Data(1, DataType.ELECTRICITY);
+        final Data newData = new Data(contract.getId(), DataType.ELECTRICITY);
         newData.addRecord(timestamp + 1000, 5.5);
         newData.addRecord(timestamp + 2000, 6.4);
         newData.addRecord(timestamp + 3000, 7.3);
 
-        databaseAPI.putUserData(newData);
+        controller.putUserData(newData);
 
-        final long latestTimestamp = databaseAPI.getLatestData(1, DataType.ELECTRICITY);
-        // +3.600.000 because we insert data in UTC, and we get them as GMT
-        assertEquals(timestamp + 3600000 + 3000, latestTimestamp);
+        latestTimestamp = controller.getLatestData(1, DataType.ELECTRICITY);
+        assertEquals(timestamp + 3000, latestTimestamp);
+
+        addContrct("Address 2", 1615000000000L);
+        // using same data, not relevant
+        final Data data2 = new Data(contract.getId() + 1, DataType.ELECTRICITY, newData.getData());
+        controller.putUserData(data2);
+    }
+
+    @Test
+    @Order(2)
+    public void monthlyDataTest() throws IOException {
+        var contracts = controller.getUserContracts();
+        assertEquals(2, contracts.size());
+
+        // with contractID null should return data of all user contracts
+        var data = controller.getMonthlyData(null);
+        var sum = data.stream().map(Data::getData).flatMap(k -> k.values().stream()).reduce(.0, Double::sum);
+        assertEquals(2.0 * (5.5 + 6.4 + 7.3), sum);
+
+        data = controller.getMonthlyData(contracts.get(0).getId());
+        sum = data.stream().map(Data::getData).flatMap(k -> k.values().stream()).reduce(.0, Double::sum);
+        assertEquals(5.5 + 6.4 + 7.3, sum);
+    }
+
+    private void addContrct(String address, long startTime) throws IOException {
+        List<ServiceType> services = List.of(
+                ServiceType.ELECTRICITY
+        );
+        NewContract newContract = new NewContract(address, services, "ABC123", new Date(startTime));
+        controller.addContract(newContract);
     }
 }

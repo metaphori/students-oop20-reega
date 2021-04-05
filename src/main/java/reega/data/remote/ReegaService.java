@@ -48,6 +48,9 @@ public interface ReegaService {
     @GET("data/contract")
     Call<List<ContractModel>> getContracts();
 
+    @GET("data/user_from_contract")
+    Call<User> getUserFromContract(@Query("contract_id") int contractID);
+
     /**
      * @param fiscalCode
      * @return all the contracts for a specified user (must be admin)
@@ -72,6 +75,16 @@ public interface ReegaService {
 
     @GET("data/getLatestTimestamp")
     Call<Date> getLatestData(@Query("type") int type, @Query("contract_id") int contractId);
+
+    // endregion
+
+    // region test
+
+    @GET("init")
+    Call<String> initTest();
+
+    @POST("terminate")
+    Call<Void> terminateTest();
 
     // endregion
 }

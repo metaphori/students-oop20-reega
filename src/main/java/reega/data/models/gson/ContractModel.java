@@ -23,7 +23,7 @@ public class ContractModel {
     @SerializedName("start_time")
     public Date startTime;
 
-    public ContractModel(Contract contract){
+    public ContractModel(Contract contract) {
         this.id = contract.getId();
         this.address = contract.getAddress();
         this.services = contract.getServices().stream().map(ServiceType::getName).collect(Collectors.toList());
