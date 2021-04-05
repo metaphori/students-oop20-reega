@@ -48,6 +48,9 @@ public interface ReegaService {
     @GET("data/contract")
     Call<List<ContractModel>> getContracts();
 
+    @GET("data/user_from_contract")
+    Call<User> getUserFromContract(@Query("contract_id") int contractID);
+
     /**
      * @param fiscalCode
      * @return all the contracts for a specified user (must be admin)
