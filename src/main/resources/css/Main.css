@@ -1,28 +1,28 @@
 .svc-card {
-    -fx-padding: 13px;
+    -fx-padding: 0.8125em;
     -fx-alignment: center center;
 }
 
 .svc-header {
-    -fx-font-size: 32px;
+    -fx-font-size: 2em;
     -fx-font-weight: bold;
 }
 
 #servicesPane {
-    -fx-padding: 10px;
+    -fx-padding: 0.8125em;
 }
 
 #contractsPane > .check-box {
-    -fx-font-size: 15px;
+    -fx-font-size: 0.875em;
     -fx-text-fill: #ffffff;
 }
 
 #userEmail {
-    -fx-font-size: 32px;
+    -fx-font-size: 2em;
     -fx-text-fill: #ffffff;
 }
 
 .svc-peek, .svc-avg, .svc-tot {
-    -fx-font-size: 18px;
+    -fx-font-size: 1.125em;
 }
 

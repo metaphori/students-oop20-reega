@@ -14,13 +14,13 @@
 
 
 .commonDialog > *.label.content{
-    -fx-font-size: 14px;
+    -fx-font-size: 0.875em;
 }
 .commonDialog:header *.header-panel{
 	-fx-background-color: transparent;
 }
 .commonDialog:header *.header-panel *.label{
-    -fx-font-size: 18px;
+    -fx-font-size: 1.125em;
     -fx-font-style: italic;
     -fx-fill: #ffffff;
 }
