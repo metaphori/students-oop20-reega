@@ -3,7 +3,6 @@ package reega.views;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
@@ -12,6 +11,8 @@ import org.apache.commons.lang3.StringUtils;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.NumberAxis;
@@ -100,7 +101,7 @@ public abstract class MainView extends GridPane {
     /**
      * Get the graphPane pane
      *
-     * @return the contracts pane
+     * @return the graph pane
      */
     protected final VBox getGraphPane() {
         return this.graphPane;
@@ -186,6 +187,10 @@ public abstract class MainView extends GridPane {
                     controller.removeSelectedContract(contract);
                 }
                 this.populateServicesPane(controller);
+                // TODO trova un modo per aggiornare il grafico cambiando i contratti
+                if (this.graphPane.isVisible()) {
+                    this.graphPane.setVisible(false);
+                }
             });
             return checkBox;
         }).collect(Collectors.toList()));
@@ -200,24 +205,53 @@ public abstract class MainView extends GridPane {
      */
     protected final void populateGraphPane() {
         this.getGraphPane().getChildren().clear();
+        // prepare axis
         NumberAxis xAxis = new NumberAxis();
         xAxis.setLabel("day of the month");
         xAxis.setTickLabelFormatter(ViewUtils.getDateStringConverter());
         NumberAxis yAxis = new NumberAxis();
-        xAxis.setAutoRanging(false);
-        xAxis.setMinorTickVisible(false);
-        // first day of the month
-        xAxis.setLowerBound(ViewUtils.getDayOfTheMonth(1));
-        // last day of the month
-        xAxis.setUpperBound(ViewUtils.getDayOfTheMonth(Calendar.getInstance().getActualMaximum(Calendar.DATE)));
-        xAxis.setTickUnit(86_400_000);
+        // auto ranging is true by default
+        yAxis.setForceZeroInRange(false);
+        xAxis.setForceZeroInRange(false);
+        // prepare chart
         AreaChart<Number, Number> chart = new AreaChart<>(xAxis, yAxis);
         chart.setLegendVisible(false);
+        chart.setMinSize(500.0, 300.0);
         this.graphPane.getChildren().add(chart);
+        // prepare button
+        Button button = new Button();
+        button.setText("back to usage");
+        button.setOnMouseClicked((e) -> {
+            if (e.getButton() == MouseButton.PRIMARY) {
+                this.graphPane.setVisible(false);
+            }
+        });
+        // prepare box
+        HBox innerbox = new HBox(button);
+        innerbox.setAlignment(Pos.BOTTOM_RIGHT);
+        innerbox.setPadding(new Insets(0, 10.0, 5.0, 5.0));
+        this.graphPane.getChildren().add(innerbox);
         VBox.setVgrow(this.graphPane, Priority.ALWAYS);
     }
 
+    /**
+     * updates data to be shown and sets the graphPane visible
+     *
+     * @param svcType
+     * @param dataPlotter
+     */
     protected void updateAndShowGraph(ServiceType svcType, DataPlotter dataPlotter) {
+        this.updateGraph(svcType, dataPlotter);
+        this.graphPane.setVisible(true);
+    }
+
+    /**
+     * updates graph based on the given data type and dataPlotter
+     *
+     * @param svcType
+     * @param dataPlotter
+     */
+    protected void updateGraph(ServiceType svcType, DataPlotter dataPlotter) {
         AreaChart<Number, Number> chart = (AreaChart<Number, Number>) this.graphPane.getChildren().get(0);
         // set chart title
         chart.setTitle(StringUtils.capitalize(svcType.getName()));
@@ -233,7 +267,7 @@ public abstract class MainView extends GridPane {
                         .map(elem -> new XYChart.Data<Number, Number>(elem.getKey(), elem.getValue()))
                         .collect(Collectors.toList()));
         chart.getData().add(dataSeries);
-        this.graphPane.setVisible(true);
+        chart.layout();
     }
 
 }
