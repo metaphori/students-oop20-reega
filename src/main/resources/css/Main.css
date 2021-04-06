@@ -26,3 +26,16 @@
     -fx-font-size: 1.125em;
 }
 
+#logoutButton {
+    -fx-pref-height: 32px;
+    -fx-pref-width: 32px;
+    -fx-background-color: transparent;
+    -fx-background-image: url("/images/logoutIcon.png");
+    -fx-background-size: cover;
+    -fx-background-position: center bottom;
+    -fx-background-repeat: no-repeat no-repeat;
+}
+
+#logoutHBox {
+    -fx-padding: 0.8125em 0.8125em 0 0;
+}

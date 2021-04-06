@@ -25,6 +25,7 @@ import reega.statistics.StatisticsController;
 import reega.users.User;
 import reega.viewutils.AbstractController;
 import reega.viewutils.Command;
+import reega.viewutils.EventArgs;
 import reega.viewutils.EventHandler;
 
 public class MainControllerImpl extends AbstractController implements MainController {
@@ -38,7 +39,7 @@ public class MainControllerImpl extends AbstractController implements MainContro
     private final ObservableList<Contract> selectedContracts = FXCollections.observableArrayList();
     private ConcurrentMap<Contract, List<Data>> currentDataByContract;
     private Map<String, Command> commands;
-    private EventHandler<Void> dataChangedEventHandler;
+    private EventHandler<Void> logoutEventHandler;
 
     @Inject
     public MainControllerImpl(final StatisticsController statisticsController, final DataPlotter dataPlotter,
@@ -47,10 +48,6 @@ public class MainControllerImpl extends AbstractController implements MainContro
         this.dataPlotter = dataPlotter;
         this.dataController = dataController;
         this.exceptionHandler = exceptionHandler;
-    }
-
-    public void setDataChangedEventHandler(EventHandler<Void> evtHandler) {
-        this.dataChangedEventHandler = evtHandler;
     }
 
     protected void initializeCommands() {
@@ -214,6 +211,17 @@ public class MainControllerImpl extends AbstractController implements MainContro
                 .stream()
                 .flatMap(elem -> elem.getServices().stream())
                 .collect(Collectors.toCollection(TreeSet::new));
+    }
+
+    @Override
+    public void setOnLogout(EventHandler<Void> evtHandler) {
+        this.logoutEventHandler = evtHandler;
+    }
+
+    @Override
+    public void logout() {
+        this.logoutEventHandler.handle(null);
+        this.pushController(LoginController.class, true);
     }
 
     /**

@@ -1,6 +1,7 @@
 package reega.controllers;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import javax.inject.Inject;
 
@@ -15,6 +16,7 @@ import reega.util.ValueResult;
 import reega.viewutils.AbstractController;
 import reega.viewutils.Controller;
 import reega.viewutils.ControllerChangedEventHandler;
+import reega.viewutils.EventHandler;
 
 public class LoginControllerImpl extends AbstractController implements LoginController {
 
@@ -83,11 +85,19 @@ public class LoginControllerImpl extends AbstractController implements LoginCont
     }
 
     private void jumpToNextPage(final GenericUser user) {
+        final EventHandler<Void> logoutEvtHandler = (evtArgs) -> this.authManager.logout();
+        final Consumer<MainController> setUserConsumer = (newController) -> newController.setUser(user);
         if (user.getRole() == Role.USER) {
-            this.pushController(MainController.class, newController -> newController.setUser(user), true);
+            this.pushController(MainController.class, newController -> {
+                newController.setUser(user);
+                newController.setOnLogout(logoutEvtHandler);
+            }, true);
             return;
         }
-        this.pushController(OperatorMainController.class, newController -> newController.setUser(user), true);
+        this.pushController(OperatorMainController.class, newController -> {
+            newController.setUser(user);
+            newController.setOnLogout(logoutEvtHandler);
+        }, true);
 
     }
 

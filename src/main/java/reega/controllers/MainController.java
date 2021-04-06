@@ -13,12 +13,14 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
+import reega.auth.AuthManager;
 import reega.data.models.Contract;
 import reega.data.models.ServiceType;
 import reega.statistics.DataPlotter;
 import reega.users.User;
 import reega.viewutils.Command;
 import reega.viewutils.Controller;
+import reega.viewutils.EventHandler;
 
 /**
  * Interface for a controller that is represented by the page after the login
@@ -120,4 +122,15 @@ public interface MainController extends Controller {
      * @return the {@link DataPlotter}
      */
     DataPlotter getDataPlotter();
+
+    /**
+     * Set the event handler when the user wants to logout
+     * @param evtHandler event handler for logout
+     */
+    void setOnLogout(EventHandler<Void> evtHandler);
+
+    /**
+     * Logout from the current application
+     */
+    void logout();
 }
