@@ -78,16 +78,16 @@ public class UserControllerTest {
     @Order(3)
     public void searchForUserTest() throws IOException {
         var users = userController.searchUser("Zamboni");
-        assertEquals(1, users.size());
+        assertEquals(0, users.size());
 
         users = userController.searchUser("zamboni");
-        assertEquals(1, users.size());
+        assertEquals(0, users.size());
 
         users = userController.searchUser("TTT");
         assertEquals(1, users.size());
 
         users = userController.searchUser("reega");
-        assertEquals(2, users.size());
+        assertEquals(3, users.size());
 
         users = userController.searchUser("test");
         assertEquals(1, users.size());
