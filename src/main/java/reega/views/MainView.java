@@ -6,13 +6,11 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-import javafx.scene.control.ToggleButton;
 import org.apache.commons.lang3.StringUtils;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.chart.AreaChart;
@@ -22,6 +20,7 @@ import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -49,6 +48,7 @@ public abstract class MainView extends GridPane {
     @FXML
     private VBox buttonsPane;
     @FXML
+
     private ToggleButton logoutButton;
 
     public MainView(final MainController controller) {
@@ -139,7 +139,8 @@ public abstract class MainView extends GridPane {
             // Set the service card mouse clicked event
             serviceCard.setOnMouseClicked(e -> {
                 if (e.getButton() == MouseButton.PRIMARY) {
-                    this.updateAndShowGraph(svcType, controller.getDataPlotter());
+                    controller.getDataPlotter().setServiceType(svcType);
+                    this.updateAndShowGraph(controller.getDataPlotter());
                 }
             });
             final ObservableList<Node> serviceCardChildren = serviceCard.getChildren();
@@ -191,9 +192,8 @@ public abstract class MainView extends GridPane {
                     controller.removeSelectedContract(contract);
                 }
                 this.populateServicesPane(controller);
-                // TODO trova un modo per aggiornare il grafico cambiando i contratti
                 if (this.graphPane.isVisible()) {
-                    this.graphPane.setVisible(false);
+                    this.updateGraph(controller.getDataPlotter());
                 }
             });
             return checkBox;
@@ -211,7 +211,7 @@ public abstract class MainView extends GridPane {
         this.getGraphPane().getChildren().clear();
         // prepare axis
         NumberAxis xAxis = new NumberAxis();
-        xAxis.setLabel("day of the month");
+        xAxis.setLabel("Day of the month");
         xAxis.setTickLabelFormatter(ViewUtils.getDateStringConverter());
         NumberAxis yAxis = new NumberAxis();
         // auto ranging is true by default
@@ -224,16 +224,15 @@ public abstract class MainView extends GridPane {
         this.graphPane.getChildren().add(chart);
         // prepare button
         Button button = new Button();
-        button.setText("back to usage");
+        button.setText("Back to usage");
         button.setOnMouseClicked((e) -> {
             if (e.getButton() == MouseButton.PRIMARY) {
                 this.graphPane.setVisible(false);
             }
         });
         // prepare box
-        HBox innerbox = new HBox(button);
+        HBox innerbox = ViewUtils.wrapNodeWithStyleClasses(new HBox(button), "back-button");
         innerbox.setAlignment(Pos.BOTTOM_RIGHT);
-        innerbox.setPadding(new Insets(0, 10.0, 5.0, 5.0));
         this.graphPane.getChildren().add(innerbox);
         VBox.setVgrow(this.graphPane, Priority.ALWAYS);
     }
@@ -244,8 +243,8 @@ public abstract class MainView extends GridPane {
      * @param svcType
      * @param dataPlotter
      */
-    protected void updateAndShowGraph(ServiceType svcType, DataPlotter dataPlotter) {
-        this.updateGraph(svcType, dataPlotter);
+    protected void updateAndShowGraph(DataPlotter dataPlotter) {
+        this.updateGraph(dataPlotter);
         this.graphPane.setVisible(true);
     }
 
@@ -255,17 +254,17 @@ public abstract class MainView extends GridPane {
      * @param svcType
      * @param dataPlotter
      */
-    protected void updateGraph(ServiceType svcType, DataPlotter dataPlotter) {
+    protected void updateGraph(DataPlotter dataPlotter) {
         AreaChart<Number, Number> chart = (AreaChart<Number, Number>) this.graphPane.getChildren().get(0);
         // set chart title
-        chart.setTitle(StringUtils.capitalize(svcType.getName()));
+        chart.setTitle(StringUtils.capitalize(dataPlotter.getServiceType().getName()));
         // set
-        chart.getYAxis().setLabel("Usage in " + ServiceType.getMeasurementUnit(svcType));
+        chart.getYAxis().setLabel("Usage in " + ServiceType.getMeasurementUnit(dataPlotter.getServiceType()));
         // remove, create and add data to the chart
         chart.getData().clear();
         Series<Number, Number> dataSeries = new Series<>();
         dataSeries.getData()
-                .addAll(dataPlotter.getData(svcType)
+                .addAll(dataPlotter.getData()
                         .entrySet()
                         .stream()
                         .map(elem -> new XYChart.Data<Number, Number>(elem.getKey(), elem.getValue()))

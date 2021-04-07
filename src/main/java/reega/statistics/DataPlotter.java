@@ -14,10 +14,23 @@ public interface DataPlotter {
     void setStatisticController(StatisticsController statisticsController);
 
     /**
+     * sets the type of data to gather
+     *
+     * @param svcType {@link ServiceType}
+     */
+    void setServiceType(ServiceType svcType);
+
+    /**
+     * gets the currently set serviceType
+     *
+     * @return {@link ServiceType}
+     */
+    ServiceType getServiceType();
+
+    /**
      * returns data based on the given statistic controller filtered by {@link ServiceType}
      *
-     * @param svcType {@link ServiceType} to filter by
      * @return Map of time and usage values
      */
-    Map<Long, Double> getData(ServiceType svcType);
+    Map<Long, Double> getData();
 }
