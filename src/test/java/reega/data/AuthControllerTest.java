@@ -4,7 +4,6 @@ import org.junit.jupiter.api.*;
 import reega.data.mock.TestConnection;
 import reega.data.models.UserAuth;
 import reega.data.remote.RemoteConnection;
-import reega.users.GenericUser;
 import reega.users.NewUser;
 import reega.users.Role;
 
@@ -17,11 +16,13 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AuthControllerTest {
     private RemoteConnection connection;
     private AuthController authController;
+    private UserController userController;
 
     @BeforeAll
     public void setup() throws IOException {
         connection = new TestConnection().getTestConnection("admin@reega.it", "AES_PASSWORD");
         authController = AuthControllerFactory.getRemoteAuthController(connection);
+        userController = UserControllerFactory.getRemoteUserController(connection);
 
         authController.userLogout();
         connection.logout();
@@ -37,14 +38,14 @@ public class AuthControllerTest {
     @Order(1)
     public void addUserAndLoginTest() throws IOException {
         // test null on user not present in DB
-        GenericUser u = authController.emailLogin("not_present@reega.it", "AES_PASSWORD");
+        var u = authController.emailLogin("not_present@reega.it", "AES_PASSWORD");
         assertNull(u);
         u = authController.fiscalCodeLogin("ZZZ999", "PASSWORD");
         assertNull(u);
 
         // add user as not autenticated
         NewUser newUser = new NewUser(Role.USER, "test", "surname", "test@reega.it", "TTT111", "PASSWORD");
-        authController.addUser(newUser);
+        userController.addUser(newUser);
         var user = authController.emailLogin("test@reega.it", "PASSWORD");
         assertNotNull(user);
         assertEquals("test", user.getName());
@@ -55,7 +56,7 @@ public class AuthControllerTest {
         connection.logout();
 
         newUser = new NewUser(Role.USER, "test", "surname", "test2@reega.it", "ZZZ999", "PASSWORD");
-        authController.addUser(newUser);
+        userController.addUser(newUser);
         user = authController.fiscalCodeLogin("ZZZ999", "PASSWORD");
         assertNotNull(user);
         assertEquals("test", user.getName());
@@ -71,7 +72,7 @@ public class AuthControllerTest {
     public void removeUserTest() throws IOException {
         authController.emailLogin("admin@reega.it", "AES_PASSWORD");
 
-        authController.removeUser("ZZZ999");
+        userController.removeUser("ZZZ999");
         var user = authController.fiscalCodeLogin("ZZZ999", "PASSWORD");
         assertNull(user);
 
@@ -83,9 +84,9 @@ public class AuthControllerTest {
     public void removeUserWithToken() throws IOException {
         // create new user and store "remind-me" token
         NewUser newUser = new NewUser(Role.USER, "name", "surname", "remind@reega.it", "BBB222", "PASSWORD");
-        authController.addUser(newUser);
+        userController.addUser(newUser);
 
-        GenericUser u = authController.emailLogin("remind@reega.it", "PASSWORD");
+        var u = authController.emailLogin("remind@reega.it", "PASSWORD");
         assertNotNull(u);
 
         // store token for the default user (0)
@@ -96,7 +97,7 @@ public class AuthControllerTest {
         u = authController.emailLogin("admin@reega.it", "AES_PASSWORD");
         assertNotNull(u);
 
-        authController.removeUser("BBB222");
+        userController.removeUser("BBB222");
         connection.logout();
 
         u = authController.fiscalCodeLogin("BBB222", "PASSWORD");
@@ -112,7 +113,7 @@ public class AuthControllerTest {
     @Order(4)
     public void tokenLoginTest() throws IOException {
         final NewUser newUser = new NewUser(Role.USER, "test", "surname", "token_login@reega.it", "CCC333", "PASSWORD");
-        authController.addUser(newUser);
+        userController.addUser(newUser);
         var user = authController.emailLogin("token_login@reega.it", "PASSWORD");
         assertNotNull(user);
         assertEquals("token_login@reega.it", user.getEmail());
@@ -133,7 +134,7 @@ public class AuthControllerTest {
     public void logoutTest() throws IOException {
         // simulate login with remember-me
         UserAuth auth = new UserAuth("abcd", "efgh");
-        GenericUser user = authController.tokenLogin(auth);
+        var user = authController.tokenLogin(auth);
         assertNotNull(user);
         assertEquals("token_login@reega.it", user.getEmail());
 

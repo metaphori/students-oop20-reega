@@ -7,7 +7,6 @@ import reega.data.models.Contract;
 import reega.data.models.ServiceType;
 import reega.data.models.gson.NewContract;
 import reega.data.remote.RemoteConnection;
-import reega.users.User;
 
 import java.io.IOException;
 import java.util.Date;
@@ -78,16 +77,6 @@ public class ContractsTest {
         var contracts = controller.getContractsForUser("ABC123");
         assertEquals(1, contracts.size());
         assertEquals(new Date(1614942000000L), contracts.get(0).getStartDate());
-    }
-
-    @Test
-    @Order(6)
-    public void getUserFromContract() throws IOException {
-        var contract = controller.getUserContracts().get(0);
-        User user = controller.getUserFromContract(contract.getId());
-        assertNotNull(user);
-        assertNotNull(user.getEmail());
-        assertEquals("admin@reega.it", user.getEmail());
     }
 
     @Test

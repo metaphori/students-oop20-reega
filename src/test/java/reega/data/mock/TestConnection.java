@@ -21,7 +21,7 @@ public class TestConnection {
 
         RemoteConnection connection = new RemoteConnection(baseUrl, true);
         System.out.println("connection created with base url " + baseUrl);
-        connection.login(connection.getService().emailLogin(email, psk).execute()::body);
+        connection.login(() -> connection.getService().emailLogin(email, psk).execute());
         return connection;
     }
 }

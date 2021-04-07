@@ -25,7 +25,7 @@ public class DataControllerTest {
         connection = new TestConnection().getTestConnection("admin@reega.it", "AES_PASSWORD");
         controller = DataControllerFactory.getRemoteDatabaseController(connection);
 
-        addContrct("Test Address", 1614942000000L);
+        addContract("Test Address", 1614942000000L);
     }
 
     @AfterAll
@@ -56,7 +56,7 @@ public class DataControllerTest {
         latestTimestamp = controller.getLatestData(1, DataType.ELECTRICITY);
         assertEquals(timestamp + 3000, latestTimestamp);
 
-        addContrct("Address 2", 1615000000000L);
+        addContract("Address 2", 1615000000000L);
         // using same data, not relevant
         final Data data2 = new Data(contract.getId() + 1, DataType.ELECTRICITY, newData.getData());
         controller.putUserData(data2);
@@ -78,7 +78,7 @@ public class DataControllerTest {
         assertEquals(5.5 + 6.4 + 7.3, sum);
     }
 
-    private void addContrct(String address, long startTime) throws IOException {
+    private void addContract(String address, long startTime) throws IOException {
         List<ServiceType> services = List.of(
                 ServiceType.ELECTRICITY
         );

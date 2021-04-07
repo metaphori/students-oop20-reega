@@ -3,10 +3,6 @@
  */
 package reega.main;
 
-import java.sql.SQLException;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
 import javafx.scene.Parent;
 import reega.auth.AuthManager;
 import reega.auth.RemindableAuthManager;
@@ -35,6 +31,9 @@ import reega.viewutils.DataTemplate;
 import reega.viewutils.DataTemplateManager;
 import reega.viewutils.Navigator;
 import reega.viewutils.NavigatorImpl;
+
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * App initializer for the UI main class
@@ -69,14 +68,12 @@ public class UIAppInitializer implements AppInitializer {
      * Build the service provider for the app
      *
      * @return the service provider for the app
-     * @throws ClassNotFoundException exception raised in {@link AuthControllerFactory#getDefaultAuthController()}
-     * @throws SQLException           exception raised in {@link AuthControllerFactory#getDefaultAuthController()}
      */
-    private ServiceProvider buildServiceProvider() throws ClassNotFoundException, SQLException {
+    private ServiceProvider buildServiceProvider() {
         final ServiceCollection svcCollection = new ServiceCollection();
         svcCollection.addSingleton(Navigator.class, (Function<ServiceProvider, Navigator>) NavigatorImpl::new);
         svcCollection.addSingleton(MasterController.class);
-        svcCollection.addSingleton(AuthController.class, AuthControllerFactory.getDefaultAuthController());
+        svcCollection.addSingleton(AuthController.class, AuthControllerFactory.getDefaultAuthController(null));
         svcCollection.addSingleton(IOController.class, IOControllerFactory.getDefaultIOController());
         svcCollection.addSingleton(TokenIOController.class, IOControllerFactory.getDefaultTokenIOController());
         svcCollection.addSingleton(DataController.class,

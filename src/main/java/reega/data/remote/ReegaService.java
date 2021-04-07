@@ -26,14 +26,24 @@ public interface ReegaService {
     @POST("auth/storeUserToken")
     Call<Void> storeUserToken(@Body UserAuthToken userAuthToken);
 
+    @POST("auth/logout")
+    Call<Void> logout();
+
+    // endregion
+
+    // region user
+
     @POST("auth/addUser")
     Call<Void> addUser(@Body NewUserBody newUser);
 
     @DELETE("auth/removeUser")
     Call<Void> removeUser(@Query("fc") String fiscalCode);
 
-    @POST("auth/logout")
-    Call<Void> logout();
+    @GET("data/user_from_contract")
+    Call<User> getUserFromContract(@Query("contract_id") int contractID);
+
+    @GET("data/user_search")
+    Call<List<User>> searchUser(@Query("keyword") String keyword);
 
     // endregion
 
@@ -47,9 +57,6 @@ public interface ReegaService {
      */
     @GET("data/contract")
     Call<List<ContractModel>> getContracts();
-
-    @GET("data/user_from_contract")
-    Call<User> getUserFromContract(@Query("contract_id") int contractID);
 
     /**
      * @param fiscalCode

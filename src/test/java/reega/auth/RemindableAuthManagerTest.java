@@ -6,14 +6,15 @@ package reega.auth;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import reega.data.AuthControllerFactory;
+import reega.data.UserControllerFactory;
 import reega.data.mock.TestConnection;
 import reega.data.remote.RemoteConnection;
 import reega.io.IOControllerFactory;
 import reega.io.MockIOController;
 import reega.io.TokenIOController;
-import reega.users.GenericUser;
 import reega.users.NewUser;
 import reega.users.Role;
+import reega.users.User;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +35,10 @@ class RemindableAuthManagerTest {
     public void setup() throws IOException {
         connection = new TestConnection().getTestConnection("admin@reega.it", "AES_PASSWORD");
         ioController = IOControllerFactory.createTokenIOController(new MockIOController());
-        authManager = new RemindableAuthManager(AuthControllerFactory.getRemoteAuthController(connection),new MockExceptionHandler(), ioController);
+        authManager = new RemindableAuthManager(
+                AuthControllerFactory.getRemoteAuthController(connection),
+                UserControllerFactory.getRemoteUserController(connection),
+                new MockExceptionHandler(), ioController);
         authManager.logout();
         connection.logout();
     }
@@ -57,7 +61,7 @@ class RemindableAuthManagerTest {
     @Test
     public void addUserAndLoginTest() {
         // Try to login with email or fiscal code, without having created credentials
-        Optional<GenericUser> u = this.authManager.emailLogin("test@reega.it", "PASSWORD", false);
+        Optional<User> u = this.authManager.emailLogin("test@reega.it", "PASSWORD", false);
         Assertions.assertTrue(u.isEmpty());
         u = this.authManager.fiscalCodeLogin("ZZZ999", "PASSWORD", false);
         Assertions.assertTrue(u.isEmpty());
@@ -92,7 +96,7 @@ class RemindableAuthManagerTest {
         this.connection.logout();
 
         // Try the login without password
-        Optional<GenericUser> usr = this.authManager.tryLoginWithoutPassword();
+        Optional<User> usr = this.authManager.tryLoginWithoutPassword();
         Assertions.assertTrue(usr.isPresent());
         Assertions.assertEquals(newUser2.getEmail(), usr.get().getEmail());
         this.authManager.logout();
@@ -107,7 +111,7 @@ class RemindableAuthManagerTest {
         // Login and store the token
         this.authManager.emailLogin("logouttest@reega.it", "PASSWORD", true);
         this.connection.logout();
-        Optional<GenericUser> user = this.authManager.tryLoginWithoutPassword();
+        Optional<User> user = this.authManager.tryLoginWithoutPassword();
         Assertions.assertTrue(user.isPresent());
 
         // Logout (so that if a token exists, it gets deleted)
