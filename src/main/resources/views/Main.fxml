@@ -24,7 +24,7 @@
                 <HBox fx:id="contractsPane" visible="false" alignment="CENTER" spacing="10"/>
                 <StackPane VBox.vgrow="ALWAYS">
                     <FlexibleGridPane fx:id="servicesPane" fixedColumnsNumber="2" hgap="10" vgap="10"/>
-                    <VBox fx:id="graphPane"/>
+                    <VBox fx:id="graphPane" alignment="TOP_CENTER"/>
                 </StackPane>
             </children>
         </VBox>
