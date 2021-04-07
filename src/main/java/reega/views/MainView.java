@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+import javafx.scene.control.ToggleButton;
 import org.apache.commons.lang3.StringUtils;
 
 import javafx.collections.ObservableList;
@@ -47,6 +48,8 @@ public abstract class MainView extends GridPane {
     private HBox contractsPane;
     @FXML
     private VBox buttonsPane;
+    @FXML
+    private ToggleButton logoutButton;
 
     public MainView(final MainController controller) {
         final FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemClassLoader().getResource("views/Main.fxml"));
@@ -78,6 +81,7 @@ public abstract class MainView extends GridPane {
         this.graphPane.managedProperty().bind(this.graphPane.visibleProperty());
         this.servicesPane.managedProperty().bind(this.servicesPane.visibleProperty());
         this.populateGraphPane();
+        this.logoutButton.setOnAction(e -> controller.logout());
     }
 
     /**
