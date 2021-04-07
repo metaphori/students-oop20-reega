@@ -29,9 +29,7 @@ public final class RemoteAuthAPI implements AuthController {
     }
 
     public synchronized static RemoteAuthAPI getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new RemoteAuthAPI(null);
-        }
+        getInstance(null);
         return INSTANCE;
     }
 

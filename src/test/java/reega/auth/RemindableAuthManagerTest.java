@@ -3,15 +3,9 @@
  */
 package reega.auth;
 
-import okhttp3.mockwebserver.Dispatcher;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import reega.data.AuthControllerFactory;
-import reega.data.DataController;
-import reega.data.DataControllerFactory;
-import reega.data.mock.MockConnection;
-import reega.data.mock.MockedAuthService;
-import reega.data.mock.RequestDispatcher;
 import reega.data.mock.TestConnection;
 import reega.data.remote.RemoteConnection;
 import reega.io.IOControllerFactory;

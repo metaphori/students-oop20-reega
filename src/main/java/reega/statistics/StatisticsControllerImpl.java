@@ -6,17 +6,23 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.time.DateUtils;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 
 import reega.data.models.Data;
 import reega.data.models.ServiceType;
-
 import javax.swing.text.html.Option;
-
 public class StatisticsControllerImpl implements StatisticsController {
 
     private List<Data> data;
-    private Map<ServiceType,DataCache> dataCacheMap;
+    private Map<ServiceType, DataCache> dataCacheMap;
 
     @Override
     public void setData(final List<Data> data) {
@@ -30,7 +36,7 @@ public class StatisticsControllerImpl implements StatisticsController {
         if (dataCache.getPeek().isPresent()) {
             return dataCache.getPeek();
         }
-        Optional<Pair<Date,Double>> peekValue = this.groupDataByDay(svcType)
+        Optional<Pair<Date, Double>> peekValue = StatisticsUtils.groupDataByDay(this.data, svcType)
                 .max(Comparator.comparingDouble(Map.Entry::getValue))
                 .map(data -> Pair.of(data.getKey(), data.getValue()));
         dataCache.setPeek(peekValue);
@@ -43,7 +49,8 @@ public class StatisticsControllerImpl implements StatisticsController {
         if (dataCache.getAverageUsage().isPresent()) {
             return dataCache.getAverageUsage().get();
         }
-        double averageUsage = this.groupDataByDay(svcType).collect(Collectors.averagingDouble(Entry::getValue));
+        double averageUsage = StatisticsUtils.groupDataByDay(this.data, svcType)
+                .collect(Collectors.averagingDouble(Entry::getValue));
         dataCache.setAverageUsage(averageUsage);
         return dataCache.getAverageUsage().get();
     }
@@ -54,7 +61,8 @@ public class StatisticsControllerImpl implements StatisticsController {
         if (dataCache.getTotalUsage().isPresent()) {
             return dataCache.getTotalUsage().get();
         }
-        double totalUsage = this.filterBySvcTypeAndGetData(svcType).collect(Collectors.summingDouble(Entry::getValue));
+        double totalUsage = StatisticsUtils.filterBySvcTypeAndGetData(this.data, svcType)
+                .collect(Collectors.summingDouble(Entry::getValue));
         dataCache.setTotalUsage(totalUsage);
         return dataCache.getTotalUsage().get();
     }
@@ -101,7 +109,9 @@ public class StatisticsControllerImpl implements StatisticsController {
     }
 
     /**
-     * Get the {@link DataCache} object corresponding to the <code>svcType</code> or create it and store it into the {@link #dataCacheMap}
+     * Get the {@link DataCache} object corresponding to the <code>svcType</code> or create it and store it into the
+     * {@link #dataCacheMap}
+     *
      * @param svcType {@link ServiceType} needed
      * @return the {@link DataCache} in the map
      */
@@ -118,7 +128,7 @@ public class StatisticsControllerImpl implements StatisticsController {
      * Caching class for the data in order to perform the operation only once
      */
     private static class DataCache {
-        private Optional<Pair<Date,Double>> peek = Optional.empty();
+        private Optional<Pair<Date, Double>> peek = Optional.empty();
         private Optional<Double> averageUsage = Optional.empty();
         private Optional<Double> totalUsage = Optional.empty();
 

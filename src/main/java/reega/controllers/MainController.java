@@ -15,10 +15,10 @@ import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
 import reega.data.models.Contract;
 import reega.data.models.ServiceType;
+import reega.statistics.DataPlotter;
 import reega.users.User;
 import reega.viewutils.Command;
 import reega.viewutils.Controller;
-import reega.viewutils.EventHandler;
 
 /**
  * Interface for a controller that is represented by the page after the login
@@ -102,13 +102,22 @@ public interface MainController extends Controller {
 
     /**
      * Add <code>contract</code> to the selected contracts
+     *
      * @param contract contract to be marked as selected
      */
     void addSelectedContract(Contract contract);
 
     /**
      * Remove <code>contract</code> from the selected contracts
+     *
      * @param contract contract to be unmarked as selected
      */
     void removeSelectedContract(Contract contract);
+
+    /**
+     * Get data plotter
+     *
+     * @return the {@link DataPlotter}
+     */
+    DataPlotter getDataPlotter();
 }

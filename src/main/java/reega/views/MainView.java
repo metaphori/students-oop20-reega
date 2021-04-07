@@ -6,13 +6,24 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-import com.jfoenix.controls.JFXButton;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import org.apache.commons.lang3.StringUtils;
+
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.chart.AreaChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
+import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -21,10 +32,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import org.apache.commons.lang3.StringUtils;
 import reega.controllers.MainController;
 import reega.data.models.Contract;
 import reega.data.models.ServiceType;
+import javafx.scene.layout.Priority;
+import reega.statistics.DataPlotter;
 import reega.viewcomponents.Card;
 import reega.viewcomponents.FlexibleGridPane;
 import reega.viewutils.ViewUtils;
@@ -75,6 +87,7 @@ public abstract class MainView extends GridPane {
 
     /**
      * Get the services pane
+     *
      * @return the services pane
      */
     protected final FlexibleGridPane getServicesPane() {
@@ -83,6 +96,7 @@ public abstract class MainView extends GridPane {
 
     /**
      * Get the contracts pane
+     *
      * @return the contracts pane
      */
     protected final HBox getContractsPane() {
@@ -90,7 +104,17 @@ public abstract class MainView extends GridPane {
     }
 
     /**
+     * Get the graphPane pane
+     *
+     * @return the graph pane
+     */
+    protected final VBox getGraphPane() {
+        return this.graphPane;
+    }
+
+    /**
      * Populate the {@link #buttonsPane}
+     *
      * @param controller controller used to populate the {@link #buttonsPane}
      */
     private void populateButtonsPane(final MainController controller) {
@@ -104,41 +128,48 @@ public abstract class MainView extends GridPane {
         }).collect(Collectors.toList()));
     }
 
-
-
     /**
      * Populate the {@link #servicesPane}
+     *
      * @param controller controller used to populate the {@link #servicesPane}
      */
     protected final void populateServicesPane(final MainController controller) {
         this.getServicesPane().getChildren().clear();
         controller.getAvailableServiceTypes().forEach(svcType -> {
             final Card serviceCard = ViewUtils.wrapNodeWithStyleClasses(new Card(), "svc-card");
-            //Set the service card mouse clicked event
+            // Set the service card mouse clicked event
             serviceCard.setOnMouseClicked(e -> {
-                if (e.getButton() == MouseButton.PRIMARY){
-                    this.populateGraphPane(svcType, controller);
+                if (e.getButton() == MouseButton.PRIMARY) {
+                    this.updateAndShowGraph(svcType, controller.getDataPlotter());
                 }
             });
             final ObservableList<Node> serviceCardChildren = serviceCard.getChildren();
-            //Add the header of the card
-            serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(new Text(StringUtils.capitalize(svcType.getName())),"svc-header"));
-            //Add the peek if it's present
+            // Add the header of the card
+            serviceCardChildren.add(ViewUtils
+                    .wrapNodeWithStyleClasses(new Text(StringUtils.capitalize(svcType.getName())), "svc-header"));
+            // Add the peek if it's present
             controller.getPeek(svcType).ifPresent(peek -> {
                 DateFormat usDateFormat = new SimpleDateFormat("yyyy/MM/dd");
-                serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(new Text("Peek date: " + usDateFormat.format(peek.getKey())), "svc-peek"));
-                serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(new Text(String.format(Locale.US,"Peek value: %.2f", peek.getValue())), "svc-peek"));
+                serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(
+                        new Text("Peek date: " + usDateFormat.format(peek.getKey())), "svc-peek"));
+                serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(
+                        new Text(String.format(Locale.US, "Peek value: %.2f", peek.getValue())), "svc-peek"));
             });
-            //Add the average usage
-            serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(new Text(String.format(Locale.US,"Average usage: %.2f",controller.getAverageUsage(svcType))), "svc-avg"));
-            //Add the total usage
-            serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(new Text(String.format(Locale.US,"Total usage: %.2f",controller.getTotalUsage(svcType))),"svc-tot"));
+            // Add the average usage
+            serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(
+                    new Text(String.format(Locale.US, "Average usage: %.2f", controller.getAverageUsage(svcType))),
+                    "svc-avg"));
+            // Add the total usage
+            serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(
+                    new Text(String.format(Locale.US, "Total usage: %.2f", controller.getTotalUsage(svcType))),
+                    "svc-tot"));
             this.getServicesPane().getChildren().add(serviceCard);
         });
     }
 
     /**
      * Populate the {@link #contractsPane}
+     *
      * @param controller controller used to populate the {@link #contractsPane}
      */
     protected final void populateContractsPane(final MainController controller) {
@@ -147,20 +178,24 @@ public abstract class MainView extends GridPane {
             final CheckBox checkBox = new CheckBox();
             checkBox.setUserData(elem);
             checkBox.setText(elem.getAddress());
-            //If the selectedContracts contain the element then set the selected property to true
+            // If the selectedContracts contain the element then set the selected property to true
             final boolean contractIsSelected = controller.getSelectedContracts().indexOf(elem) != -1;
             checkBox.selectedProperty().set(contractIsSelected);
             checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
                 Contract contract = (Contract) checkBox.getUserData();
-                //Add the contract if the selectedProperty is true
+                // Add the contract if the selectedProperty is true
                 if (newValue) {
                     controller.addSelectedContract(contract);
                 }
-                //Remove the contract if the selectedProperty is false
+                // Remove the contract if the selectedProperty is false
                 else {
                     controller.removeSelectedContract(contract);
                 }
                 this.populateServicesPane(controller);
+                // TODO trova un modo per aggiornare il grafico cambiando i contratti
+                if (this.graphPane.isVisible()) {
+                    this.graphPane.setVisible(false);
+                }
             });
             return checkBox;
         }).collect(Collectors.toList()));
@@ -169,10 +204,72 @@ public abstract class MainView extends GridPane {
 
     /**
      * Populate the {@link #graphPane}
-     * @param svcType service type used
-     * @param controller controller used to populate the {@link #graphPane}
      */
-    protected final void populateGraphPane(ServiceType svcType, MainController controller) {
+    protected final void populateGraphPane() {
+        this.getGraphPane().getChildren().clear();
+        // prepare axis
+        NumberAxis xAxis = new NumberAxis();
+        xAxis.setLabel("day of the month");
+        xAxis.setTickLabelFormatter(ViewUtils.getDateStringConverter());
+        NumberAxis yAxis = new NumberAxis();
+        // auto ranging is true by default
+        yAxis.setForceZeroInRange(false);
+        xAxis.setForceZeroInRange(false);
+        // prepare chart
+        AreaChart<Number, Number> chart = new AreaChart<>(xAxis, yAxis);
+        chart.setLegendVisible(false);
+        chart.setMinSize(500.0, 300.0);
+        this.graphPane.getChildren().add(chart);
+        // prepare button
+        Button button = new Button();
+        button.setText("back to usage");
+        button.setOnMouseClicked((e) -> {
+            if (e.getButton() == MouseButton.PRIMARY) {
+                this.graphPane.setVisible(false);
+            }
+        });
+        // prepare box
+        HBox innerbox = new HBox(button);
+        innerbox.setAlignment(Pos.BOTTOM_RIGHT);
+        innerbox.setPadding(new Insets(0, 10.0, 5.0, 5.0));
+        this.graphPane.getChildren().add(innerbox);
+        VBox.setVgrow(this.graphPane, Priority.ALWAYS);
+    }
+
+    /**
+     * updates data to be shown and sets the graphPane visible
+     *
+     * @param svcType
+     * @param dataPlotter
+     */
+    protected void updateAndShowGraph(ServiceType svcType, DataPlotter dataPlotter) {
+        this.updateGraph(svcType, dataPlotter);
         this.graphPane.setVisible(true);
     }
+
+    /**
+     * updates graph based on the given data type and dataPlotter
+     *
+     * @param svcType
+     * @param dataPlotter
+     */
+    protected void updateGraph(ServiceType svcType, DataPlotter dataPlotter) {
+        AreaChart<Number, Number> chart = (AreaChart<Number, Number>) this.graphPane.getChildren().get(0);
+        // set chart title
+        chart.setTitle(StringUtils.capitalize(svcType.getName()));
+        // set
+        chart.getYAxis().setLabel("Usage in " + ServiceType.getMeasurementUnit(svcType));
+        // remove, create and add data to the chart
+        chart.getData().clear();
+        Series<Number, Number> dataSeries = new Series<>();
+        dataSeries.getData()
+                .addAll(dataPlotter.getData(svcType)
+                        .entrySet()
+                        .stream()
+                        .map(elem -> new XYChart.Data<Number, Number>(elem.getKey(), elem.getValue()))
+                        .collect(Collectors.toList()));
+        chart.getData().add(dataSeries);
+        chart.layout();
+    }
+
 }

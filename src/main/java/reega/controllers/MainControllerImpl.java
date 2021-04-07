@@ -1,7 +1,6 @@
 package reega.controllers;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -15,13 +14,13 @@ import org.apache.commons.lang3.tuple.Pair;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import reega.data.DataController;
 import reega.data.models.Contract;
 import reega.data.models.Data;
 import reega.data.models.ServiceType;
 import reega.logging.ExceptionHandler;
+import reega.statistics.DataPlotter;
 import reega.statistics.StatisticsController;
 import reega.users.User;
 import reega.viewutils.AbstractController;
@@ -32,6 +31,7 @@ public class MainControllerImpl extends AbstractController implements MainContro
 
     final ObjectProperty<User> user = new SimpleObjectProperty<>();
     private final StatisticsController statisticsController;
+    private final DataPlotter dataPlotter;
     private final DataController dataController;
     private final ExceptionHandler exceptionHandler;
     private List<Contract> contracts;
@@ -41,9 +41,10 @@ public class MainControllerImpl extends AbstractController implements MainContro
     private EventHandler<Void> dataChangedEventHandler;
 
     @Inject
-    public MainControllerImpl(final StatisticsController statisticsController, final DataController dataController,
-            final ExceptionHandler exceptionHandler) {
+    public MainControllerImpl(final StatisticsController statisticsController, final DataPlotter dataPlotter,
+            final DataController dataController, final ExceptionHandler exceptionHandler) {
         this.statisticsController = statisticsController;
+        this.dataPlotter = dataPlotter;
         this.dataController = dataController;
         this.exceptionHandler = exceptionHandler;
     }
@@ -79,7 +80,11 @@ public class MainControllerImpl extends AbstractController implements MainContro
     @Override
     public void removeSelectedContract(Contract contract) {
         this.currentDataByContract.remove(contract);
-        this.getStatisticsController().setData(this.currentDataByContract.values().stream().flatMap(Collection::stream).collect(Collectors.toList()));
+        this.getStatisticsController()
+                .setData(this.currentDataByContract.values()
+                        .stream()
+                        .flatMap(Collection::stream)
+                        .collect(Collectors.toList()));
         this.selectedContracts.remove(contract);
     }
 
@@ -90,6 +95,14 @@ public class MainControllerImpl extends AbstractController implements MainContro
      */
     protected StatisticsController getStatisticsController() {
         return this.statisticsController;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public DataPlotter getDataPlotter() {
+        return this.dataPlotter;
     }
 
     /**

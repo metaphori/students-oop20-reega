@@ -36,11 +36,13 @@ public class RemoteConnection {
      *
      * @param s
      */
+    @Deprecated
     public RemoteConnection(final ReegaService s) {
         forcedService = true;
         service = s;
     }
 
+    @Deprecated
     public void overrideToken(final String JWT) {
         this.JWT = JWT;
         this.setClientAuth();
@@ -56,6 +58,7 @@ public class RemoteConnection {
     }
 
     public void logout() {
+        this.JWT = null;
         createPlainClient(true);
         service = retrofit.create(ReegaService.class);
     }
