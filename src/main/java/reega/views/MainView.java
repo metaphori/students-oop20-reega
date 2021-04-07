@@ -1,19 +1,5 @@
 package reega.views;
 
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-import java.util.stream.Collectors;
-
-import javafx.beans.binding.Bindings;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import org.apache.commons.lang3.StringUtils;
-
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -30,16 +16,23 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import org.apache.commons.lang3.StringUtils;
 import reega.controllers.MainController;
 import reega.data.models.Contract;
 import reega.data.models.ServiceType;
-import javafx.scene.layout.Priority;
 import reega.statistics.DataPlotter;
 import reega.viewcomponents.Card;
 import reega.viewcomponents.FlexibleGridPane;
 import reega.viewutils.ViewUtils;
+
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 public abstract class MainView extends GridPane {
 
@@ -83,6 +76,7 @@ public abstract class MainView extends GridPane {
         });
         this.graphPane.managedProperty().bind(this.graphPane.visibleProperty());
         this.servicesPane.managedProperty().bind(this.servicesPane.visibleProperty());
+        populateGraphPane();
     }
 
     /**

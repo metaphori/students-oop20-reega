@@ -3,9 +3,7 @@
  */
 package reega.main;
 
-import com.sun.javafx.tk.Toolkit;
 import javafx.application.Application;
-import javafx.geometry.Dimension2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.stage.Screen;
@@ -36,11 +34,19 @@ public class Main extends Application {
         double aspectRatio = getScreenAspectRatio(primaryScreen);
         Rectangle2D bounds = primaryScreen.getVisualBounds();
         //Use the 75% of the width
-        double minWidth = bounds.getWidth() * 0.25;
+        double minWidth = bounds.getWidth() * 0.4;
         //Keep the 16/9 proportion
-        double minHeight = minWidth * (1/aspectRatio);
+        double minHeight = minWidth / aspectRatio;
         primaryStage.setMinHeight(minHeight);
         primaryStage.setMinWidth(minWidth);
+
+        //Use the 75% of the width
+        double prefWidth = bounds.getWidth() * 0.7;
+        //Keep the 16/9 proportion
+        double prefHeight = prefWidth / aspectRatio;
+        primaryStage.setHeight(prefHeight);
+        primaryStage.setWidth(prefWidth);
+
         primaryStage.setScene(new Scene(svcProvider.getRequiredService(BaseLayoutView.class)));
         primaryStage.show();
     }
