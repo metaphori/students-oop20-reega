@@ -42,6 +42,7 @@ class RemindableAuthManagerTest {
     @AfterAll
     public void cleanup() throws IOException {
         connection.getService().terminateTest().execute();
+        connection.logout();
     }
 
     @AfterEach
