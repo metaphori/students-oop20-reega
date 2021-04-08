@@ -7,10 +7,7 @@ import javafx.scene.Parent;
 import reega.auth.AuthManager;
 import reega.auth.RemindableAuthManager;
 import reega.controllers.*;
-import reega.data.AuthController;
-import reega.data.AuthControllerFactory;
-import reega.data.DataController;
-import reega.data.DataControllerFactory;
+import reega.data.*;
 import reega.data.remote.RemoteConnection;
 import reega.io.IOController;
 import reega.io.IOControllerFactory;
@@ -79,6 +76,7 @@ public class UIAppInitializer implements AppInitializer {
         svcCollection.addSingleton(DataController.class,
                 DataControllerFactory.getDefaultDataController(new RemoteConnection()));
         svcCollection.addSingleton(ExceptionHandler.class, SimpleExceptionHandler.class);
+        svcCollection.addSingleton(UserController.class, UserControllerFactory.getDefaultUserController(null));
         svcCollection.addSingleton(AuthManager.class, RemindableAuthManager.class);
         svcCollection.addTransient(StatisticsController.class, StatisticsControllerImpl.class);
         svcCollection.addTransient(DataPlotter.class, DataPlotterImpl.class);
