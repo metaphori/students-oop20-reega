@@ -1,6 +1,7 @@
 package reega.data.export;
 
 import com.google.gson.JsonParser;
+import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.*;
 import reega.data.DataController;
 import reega.data.DataControllerFactory;
@@ -58,8 +59,12 @@ public class DataExportTest {
     @Order(1)
     public void exportEmptyData() throws IOException, URISyntaxException {
         ReegaExporterFactory.export(ExportFormat.JSON, null, basePath + "json0.json");
-        checkOutput("json0.json");
+        checkJsonOutput("json0.json");
         deleteFile("json0.json");
+
+        ReegaExporterFactory.export(ExportFormat.CSV, null, basePath + "csv0.csv");
+        checkFileContent("csv0.csv");
+        deleteFile("csv0.csv");
     }
 
     @Test
@@ -78,11 +83,21 @@ public class DataExportTest {
         var data = controller.getMonthlyData(null);
 
         ReegaExporterFactory.export(ExportFormat.JSON, data, basePath + "json1.json");
-        checkOutput("json1.json");
+        checkJsonOutput("json1.json");
         deleteFile("json1.json");
     }
 
-    private void checkOutput(final String fileName) throws URISyntaxException, IOException {
+    @Test
+    @Order(4)
+    public void exportCSV() throws IOException, URISyntaxException {
+        var data = controller.getMonthlyData(null);
+
+        ReegaExporterFactory.export(ExportFormat.CSV, data, basePath + "csv1.csv");
+        checkFileContent("csv1.csv");
+        deleteFile("csv1.csv");
+    }
+
+    private void checkJsonOutput(final String fileName) throws URISyntaxException, IOException {
         final File file = new File(basePath + fileName);
         assertTrue(file.exists());
         String fileContent = new String(Files.readAllBytes(file.toPath()));
@@ -94,6 +109,14 @@ public class DataExportTest {
         assertEquals(parser.parse(testContent), parser.parse(fileContent));
     }
 
+    private void checkFileContent(final String fileName) throws IOException, URISyntaxException {
+        final File file = new File(basePath + fileName);
+        assertTrue(file.exists());
+
+        File testFile = getFileFromResource(fileName);
+        assertTrue(FileUtils.contentEquals(testFile, file));
+    }
+
     private void deleteFile(final String fileName) {
         File file = new File(basePath + fileName);
         if (!file.exists() || !file.isFile() || !file.delete()) {
@@ -103,7 +126,7 @@ public class DataExportTest {
 
     private File getFileFromResource(String fileName) throws URISyntaxException {
         ClassLoader classLoader = getClass().getClassLoader();
-        URL resource = classLoader.getResource("json/" + fileName);
+        URL resource = classLoader.getResource("exporter/" + fileName);
         if (resource == null) {
             throw new IllegalArgumentException("file " + fileName + " not found");
         } else {
