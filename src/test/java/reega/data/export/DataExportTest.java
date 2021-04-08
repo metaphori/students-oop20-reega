@@ -105,8 +105,7 @@ public class DataExportTest {
         File testFile = getFileFromResource(fileName);
         String testContent = new String(Files.readAllBytes(testFile.toPath()));
 
-        JsonParser parser = new JsonParser();
-        assertEquals(parser.parse(testContent), parser.parse(fileContent));
+        assertEquals(JsonParser.parseString(testContent), JsonParser.parseString(fileContent));
     }
 
     private void checkFileContent(final String fileName) throws IOException, URISyntaxException {
