@@ -54,6 +54,15 @@ public interface DataController {
     void removeContract(int id) throws IOException;
 
     /**
+     * Search for contracts with keyword matching in name, surname and fiscal code
+     * of the accountholder and contract address
+     * @param keyword to match, case insensitive
+     * @return list of contracts matching the keyword
+     * @throws IOException
+     */
+    List<Contract> searchContract(final String keyword) throws IOException;
+
+    /**
      * Push data to the database (implementation specific)
      *
      * @param data

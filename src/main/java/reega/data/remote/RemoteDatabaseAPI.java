@@ -96,6 +96,14 @@ public class RemoteDatabaseAPI implements DataController {
         return parseContractResponse(r);
     }
 
+    @Override
+    @Nonnull
+    public List<Contract> searchContract(String keyword) throws IOException {
+        logger.info("searching for contracts with keyword " + keyword);
+        final Response<List<ContractModel>> r = connection.getService().searchContract(keyword).execute();
+        return parseContractResponse(r);
+    }
+
     private List<Contract> parseContractResponse(final Response<List<ContractModel>> r) {
         logger.info("response: " + r.code());
         if (r.code() > 299 || r.body() == null) {
