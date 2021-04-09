@@ -12,16 +12,21 @@ jobs:
       with:
         java-version: '11'
         distribution: 'adopt'
+        
     - name: Build
       run: ./gradlew shadowJar
     - uses: actions/upload-artifact@v2
       with:
         name: reega.jar
         path: build/libs/reega.jar
+        
     - name: Release
-      uses: "marvinpinto/action-automatic-releases@latest"
+      uses: ncipollo/release-action@v1
       with:
-        title: Reega
-        repo_token: "${{ secrets.GITHUB_TOKEN }}"
-        prerelease: false
-        files: ./build/libs/reega.jar
+        tag: "latest"
+        commit: master
+        allowUpdates: true
+        body: "Reega application"
+        artifactErrorsFailBuild: true
+        artifacts: ./build/libs/reega.jar
+        token: "${{ secrets.GITHUB_TOKEN }}"
