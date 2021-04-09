@@ -7,7 +7,6 @@ import reega.data.models.Contract;
 import reega.data.models.ServiceType;
 import reega.data.models.gson.NewContract;
 import reega.data.remote.RemoteConnection;
-import reega.users.User;
 
 import java.io.IOException;
 import java.util.Date;
@@ -31,12 +30,17 @@ public class ContractsTest {
     @AfterAll
     public void cleanup() throws IOException {
         connection.getService().terminateTest().execute();
+        connection.logout();
     }
 
     @Test
     @Order(1)
     public void ensureEmpty() throws IOException {
         var contracts = controller.getUserContracts();
+        assertNotNull(contracts);
+        assertEquals(0, contracts.size());
+
+        contracts = controller.searchContract("reega");
         assertNotNull(contracts);
         assertEquals(0, contracts.size());
     }
@@ -56,6 +60,34 @@ public class ContractsTest {
 
     @Test
     @Order(3)
+    public void searchContracts()throws IOException{
+        var contracts = controller.searchContract("ABC123");
+        assertNotNull(contracts);
+        assertEquals(1, contracts.size());
+
+        contracts = controller.searchContract("test");
+        assertNotNull(contracts);
+        assertEquals(1, contracts.size());
+
+        contracts = controller.searchContract("test address");
+        assertNotNull(contracts);
+        assertEquals(1, contracts.size());
+
+        contracts = controller.searchContract("ABC123");
+        assertNotNull(contracts);
+        assertEquals(1, contracts.size());
+
+        contracts = controller.searchContract("reega");
+        assertNotNull(contracts);
+        assertEquals(1, contracts.size());
+
+        contracts = controller.searchContract("admin");
+        assertNotNull(contracts);
+        assertEquals(1, contracts.size());
+    }
+
+    @Test
+    @Order(4)
     public void getUserContracts() throws IOException {
         var contracts = controller.getUserContracts();
         assertNotNull(contracts);
@@ -65,28 +97,18 @@ public class ContractsTest {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     public void getAllContracts() throws IOException {
         var contracts = controller.getAllContracts();
         assertEquals(1, contracts.size());
     }
 
     @Test
-    @Order(5)
+    @Order(6)
     public void getSpecificUserContracts() throws IOException {
         var contracts = controller.getContractsForUser("ABC123");
         assertEquals(1, contracts.size());
         assertEquals(new Date(1614942000000L), contracts.get(0).getStartDate());
-    }
-
-    @Test
-    @Order(6)
-    public void getUserFromContract() throws IOException {
-        var contract = controller.getUserContracts().get(0);
-        User user = controller.getUserFromContract(contract.getId());
-        assertNotNull(user);
-        assertNotNull(user.getEmail());
-        assertEquals("admin@reega.it", user.getEmail());
     }
 
     @Test

@@ -69,7 +69,7 @@ public class MainControllerImpl extends AbstractController implements MainContro
         final List<Data> allData = Stream
                 .concat(newDataStream, this.currentDataByContract.values().stream().flatMap(Collection::stream))
                 .collect(Collectors.toList());
-        this.currentDataByContract.put(contract, monthlyData);
+        this.currentDataByContract.put(contract,monthlyData);
         this.getStatisticsController().setData(allData);
         this.selectedContracts.add(contract);
     }

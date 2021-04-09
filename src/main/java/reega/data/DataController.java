@@ -1,12 +1,11 @@
 package reega.data;
 
-import org.jetbrains.annotations.Nullable;
 import reega.data.models.Contract;
 import reega.data.models.Data;
 import reega.data.models.DataType;
 import reega.data.models.gson.NewContract;
-import reega.users.User;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.List;
 
@@ -22,15 +21,6 @@ public interface DataController {
      * @throws IOException
      */
     List<Contract> getUserContracts() throws IOException;
-
-    /**
-     * Find and return a user by a specified contract ID.
-     * Admin only
-     * @param contractID id of the contract
-     * @return the accountholder user
-     * @throws IOException
-     */
-    User getUserFromContract(int contractID) throws IOException;
 
     /**
      * retrieves all the contracts in the name of the specified user
@@ -62,6 +52,15 @@ public interface DataController {
      * @throws IOException
      */
     void removeContract(int id) throws IOException;
+
+    /**
+     * Search for contracts with keyword matching in name, surname and fiscal code
+     * of the accountholder and contract address
+     * @param keyword to match, case insensitive
+     * @return list of contracts matching the keyword
+     * @throws IOException
+     */
+    List<Contract> searchContract(final String keyword) throws IOException;
 
     /**
      * Push data to the database (implementation specific)
