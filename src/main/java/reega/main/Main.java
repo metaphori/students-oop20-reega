@@ -6,6 +6,7 @@ package reega.main;
 import javafx.application.Application;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import reega.util.ServiceProvider;
@@ -46,6 +47,14 @@ public class Main extends Application {
         double prefHeight = prefWidth / aspectRatio;
         primaryStage.setHeight(prefHeight);
         primaryStage.setWidth(prefWidth);
+
+        primaryStage.getIcons().addAll(new Image("icons/Reega_Icon16x16.png"),
+                new Image("icons/Reega_Icon24x24.png"),
+                new Image("icons/Reega_Icon32x32.png"),
+                new Image("icons/Reega_Icon48x48.png"),
+                new Image("icons/Reega_Icon64x64.png"),
+                new Image("icons/Reega_Icon128x128.png"),
+                new Image("icons/Reega_Icon256x256.png"));
 
         primaryStage.setScene(new Scene(svcProvider.getRequiredService(BaseLayoutView.class)));
         primaryStage.show();
