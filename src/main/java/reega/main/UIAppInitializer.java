@@ -9,9 +9,7 @@ import reega.auth.RemindableAuthManager;
 import reega.controllers.*;
 import reega.data.*;
 import reega.data.remote.RemoteConnection;
-import reega.io.IOController;
-import reega.io.IOControllerFactory;
-import reega.io.TokenIOController;
+import reega.io.*;
 import reega.logging.ExceptionHandler;
 import reega.logging.SimpleExceptionHandler;
 import reega.statistics.DataPlotter;
@@ -78,6 +76,7 @@ public class UIAppInitializer implements AppInitializer {
         svcCollection.addSingleton(ExceptionHandler.class, SimpleExceptionHandler.class);
         svcCollection.addSingleton(UserController.class, UserControllerFactory.getDefaultUserController(null));
         svcCollection.addSingleton(AuthManager.class, RemindableAuthManager.class);
+        svcCollection.addSingleton(SaveDialogController.class, JavaFXSaveDialogController.class);
         svcCollection.addTransient(StatisticsController.class, StatisticsControllerImpl.class);
         svcCollection.addTransient(DataPlotter.class, DataPlotterImpl.class);
         svcCollection.addTransient(LoginController.class, LoginControllerImpl.class);
@@ -88,10 +87,11 @@ public class UIAppInitializer implements AppInitializer {
             final DataPlotter dataPlotter = svcProvider.getRequiredService(DataPlotter.class);
             final DataController dataController = svcProvider.getRequiredService(DataController.class);
             final ExceptionHandler exceptionHandler = svcProvider.getRequiredService(ExceptionHandler.class);
+            final SaveDialogController saveDialogController = svcProvider.getRequiredService(SaveDialogController.class);
 
             dataPlotter.setStatisticController(statisticsController);
 
-            return new MainControllerImpl(statisticsController, dataPlotter, dataController, exceptionHandler);
+            return new MainControllerImpl(statisticsController, dataPlotter, dataController, exceptionHandler, saveDialogController);
         });
         svcCollection.addTransient(OperatorMainController.class, (svcProvider) -> {
             final StatisticsController statisticsController = svcProvider
@@ -99,10 +99,11 @@ public class UIAppInitializer implements AppInitializer {
             final DataPlotter dataPlotter = svcProvider.getRequiredService(DataPlotter.class);
             final DataController dataController = svcProvider.getRequiredService(DataController.class);
             final ExceptionHandler exceptionHandler = svcProvider.getRequiredService(ExceptionHandler.class);
+            final SaveDialogController saveDialogController = svcProvider.getRequiredService(SaveDialogController.class);
 
             dataPlotter.setStatisticController(statisticsController);
 
-            return new OperatorMainControllerImpl(statisticsController, dataPlotter, dataController, exceptionHandler);
+            return new OperatorMainControllerImpl(statisticsController, dataPlotter, dataController, exceptionHandler, saveDialogController);
         });
         svcCollection.addSingleton(BaseLayoutView.class);
         return svcCollection.buildServiceProvider();
