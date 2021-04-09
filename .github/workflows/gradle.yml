@@ -1,0 +1,48 @@
+name: Reega CI
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+        distribution: 'adopt'
+    
+    - name: Load Cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ubuntu-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ubuntu-gradle-
+        
+    - name: Build
+      run: ./gradlew shadowJar
+    - uses: actions/upload-artifact@v2
+      with:
+        name: reega.jar
+        path: build/libs/reega.jar
+        
+    - name: Clean Cache
+      run: |
+        rm -f ~/.gradle/caches/modules-2/modules-2.lock
+        rm -f ~/.gradle/caches/modules-2/gc.properties
+        
+    - name: Release
+      uses: ncipollo/release-action@v1
+      with:
+        tag: "latest"
+        commit: master
+        allowUpdates: true
+        body: "Reega application"
+        artifactErrorsFailBuild: true
+        artifacts: ./build/libs/reega.jar
+        token: "${{ secrets.GITHUB_TOKEN }}"
+
