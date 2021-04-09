@@ -37,7 +37,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./reega.jar
+        asset_path: ./build/libs/reega.jar
         asset_name: reega.jar
         asset_content_type: application/jar
         
