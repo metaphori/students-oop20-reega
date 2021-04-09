@@ -1,0 +1,16 @@
+name: Reega CI
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: gradle:jdk11-openj9
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build
+      run: ./gradlew shadowJar
+    - uses: actions/upload-artifact@v2
+      with:
+        name: reega.jar
+        path: build/libs/reega.jar
