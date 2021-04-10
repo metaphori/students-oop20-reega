@@ -76,6 +76,8 @@ defaultTasks("clean", "shadowJar")
 tasks {
     test {
         useJUnitPlatform()
+        setForkEvery(2)
+        maxParallelForks = 1
         finalizedBy("jacocoTestReport")
     }
     jacocoTestReport {

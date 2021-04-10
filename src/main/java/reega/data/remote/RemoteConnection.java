@@ -1,16 +1,21 @@
 package reega.data.remote;
 
 import okhttp3.OkHttpClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import reega.data.models.gson.LoginResponse;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 
 /**
  * Handle the connection to the server and the http methods authentication
  */
 public class RemoteConnection {
+    private static final Logger logger = LoggerFactory.getLogger(RemoteConnection.class);
     private static Retrofit retrofit;
     private static ReegaService service;
     private static boolean forcedService = false;
@@ -19,7 +24,7 @@ public class RemoteConnection {
 
     public RemoteConnection(final String baseUrl, boolean forceNewInstance) {
         this.baseUrl = baseUrl;
-        createPlainClient(forceNewInstance);
+        buildRetrofit(forceNewInstance, null);
         service = retrofit.create(ReegaService.class);
     }
 
@@ -49,23 +54,32 @@ public class RemoteConnection {
     }
 
     public LoginResponse login(final LoginMethod loginMethod) throws IOException {
-        final LoginResponse response = loginMethod.login();
-        if (response != null) {
-            JWT = response.jwt;
-            this.setClientAuth();
+        logger.info("logging-in...");
+        Response<LoginResponse> loginResponse = loginMethod.login();
+        logger.info("response: " + loginResponse.code());
+        if (loginResponse.code() > 299 || loginResponse.body() == null) {
+            logger.info("error: " + loginResponse.errorBody());
+            return null;
         }
-        return response;
+        JWT = loginResponse.body().jwt;
+        this.setClientAuth();
+
+        return loginResponse.body();
     }
 
     public void logout() {
         this.JWT = null;
-        createPlainClient(true);
+        buildRetrofit(true, null);
         service = retrofit.create(ReegaService.class);
     }
 
-    private void createPlainClient(boolean forceNewInstance) {
+    private void buildRetrofit(boolean forceNewInstance, @Nullable OkHttpClient client) {
         if (forceNewInstance || retrofit == null) {
-            retrofit = new Retrofit.Builder().baseUrl(baseUrl)
+            var builder = new Retrofit.Builder();
+            if (client != null) {
+                builder.client(client);
+            }
+            retrofit = builder.baseUrl(baseUrl)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
@@ -80,12 +94,8 @@ public class RemoteConnection {
                 .addInterceptor(chain -> chain
                         .proceed(chain.request().newBuilder().addHeader("Authorization", "Bearer " + JWT).build()))
                 .build();
-        // building retrofit service with authenticator
-        retrofit = new Retrofit.Builder().client(client)
-                .baseUrl(baseUrl)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
 
+        buildRetrofit(true, client);
         service = retrofit.create(ReegaService.class);
     }
 
@@ -94,6 +104,6 @@ public class RemoteConnection {
     }
 
     public interface LoginMethod {
-        LoginResponse login() throws IOException;
+        Response<LoginResponse> login() throws IOException;
     }
 }

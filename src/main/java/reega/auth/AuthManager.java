@@ -3,10 +3,11 @@
  */
 package reega.auth;
 
-import java.util.Optional;
-
 import reega.users.GenericUser;
 import reega.users.NewUser;
+import reega.users.User;
+
+import java.util.Optional;
 
 /**
  * @author Marco
@@ -19,7 +20,7 @@ public interface AuthManager {
      *
      * @return an empty Optional if the operation didn't succeed, filled in with the logged in user otherwise
      */
-    Optional<GenericUser> tryLoginWithoutPassword();
+    Optional<User> tryLoginWithoutPassword();
 
     /**
      * Create a new user
@@ -37,7 +38,7 @@ public interface AuthManager {
      * @param saveToken true if there's desire to save a token for a no password login, false otherwise
      * @return an Optional filled in with logged in user if the login succeded, an empty Optional otherwise
      */
-    Optional<GenericUser> emailLogin(String email, String pwd, boolean saveToken);
+    Optional<User> emailLogin(String email, String pwd, boolean saveToken);
 
     /**
      * Login with the fiscal code and the password
@@ -47,7 +48,7 @@ public interface AuthManager {
      * @param saveToken  true if there's desire to save a token for a no password login, false otherwise
      * @return an Optional filled in with logged in user if the login succeded, an empty Optional otherwise
      */
-    Optional<GenericUser> fiscalCodeLogin(String fiscalCode, String pwd, boolean saveToken);
+    Optional<User> fiscalCodeLogin(String fiscalCode, String pwd, boolean saveToken);
 
     /**
      * Log out the user represented by {@code userID} from the current application, and delete token if exists

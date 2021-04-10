@@ -10,6 +10,12 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import javafx.beans.property.ObjectProperty;
+import reega.data.DataController;
+import reega.data.models.Contract;
+import reega.data.models.Data;
+import reega.data.models.ServiceType;
+import reega.io.SaveDialogController;
+import reega.logging.ExceptionHandler;
 import javafx.beans.property.SimpleObjectProperty;
 import reega.data.DataController;
 import reega.data.models.Data;
@@ -20,19 +26,22 @@ import reega.statistics.StatisticsController;
 import reega.users.User;
 
 public class OperatorMainControllerImpl extends MainControllerImpl implements OperatorMainController {
-
     private ObjectProperty<User> selectedUserProperty = new SimpleObjectProperty<>();
 
     @Inject
     public OperatorMainControllerImpl(final StatisticsController statisticsController, final DataPlotter dataPlotter,
-            final DataController dataController, final ExceptionHandler exceptionHandler) {
-        super(statisticsController, dataPlotter, dataController, exceptionHandler);
+                                      final DataController dataController, final ExceptionHandler exceptionHandler, final SaveDialogController saveDialogController) {
+        super(statisticsController, dataPlotter, dataController, exceptionHandler, saveDialogController);
     }
 
     @Override
     protected void initializeCommands() {
         super.initializeCommands();
         this.getCommands().put("Search user", (args) -> {
+           this.jumpToSearchUser();
+        });
+        this.getCommands().put("Manage users", (args) -> {
+           //TODO Create the ManagerUsers controller
             this.jumpToSearchUser();
         });
         this.getCommands().put("Manage users", (args) -> {

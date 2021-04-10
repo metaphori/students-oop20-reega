@@ -5,16 +5,22 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public enum DataType {
-    ELECTRICITY(0, ServiceType.ELECTRICITY), GAS(1, ServiceType.GAS), WATER(2, ServiceType.WATER),
-    PAPER(3, ServiceType.GARBAGE), GLASS(4, ServiceType.GARBAGE), PLASTIC(5, ServiceType.GARBAGE),
-    MIXED(6, ServiceType.GARBAGE);
+    ELECTRICITY(0, "electricity", ServiceType.ELECTRICITY),
+    GAS(1, "gas", ServiceType.GAS),
+    WATER(2, "water", ServiceType.WATER),
+    PAPER(3, "paper", ServiceType.GARBAGE),
+    GLASS(4, "glass", ServiceType.GARBAGE),
+    PLASTIC(5, "plastic", ServiceType.GARBAGE),
+    MIXED(6, "mixed", ServiceType.GARBAGE);
 
     private final ServiceType svcType;
     private final int id;
+    private final String name;
 
-    DataType(int id, ServiceType svcType) {
+    DataType(int id, String name, ServiceType svcType) {
         this.id = id;
         this.svcType = svcType;
+        this.name = name;
     }
 
     public static DataType fromId(int id) {
@@ -36,5 +42,9 @@ public enum DataType {
 
     public int getID() {
         return this.id;
+    }
+
+    public String getName() {
+        return this.name;
     }
 }

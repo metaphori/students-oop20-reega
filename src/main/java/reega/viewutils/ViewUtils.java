@@ -1,12 +1,12 @@
 package reega.viewutils;
 
+import javafx.scene.Node;
 import java.sql.Date;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 
-import javafx.scene.Node;
 import javafx.util.StringConverter;
 
 /**

@@ -1,5 +1,6 @@
 package reega.controllers;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,9 +17,12 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import reega.data.DataController;
+import reega.data.exporter.ExportFormat;
+import reega.data.exporter.ReegaExporterFactory;
 import reega.data.models.Contract;
 import reega.data.models.Data;
 import reega.data.models.ServiceType;
+import reega.io.SaveDialogController;
 import reega.logging.ExceptionHandler;
 import reega.statistics.DataPlotter;
 import reega.statistics.StatisticsController;
@@ -40,21 +44,38 @@ public class MainControllerImpl extends AbstractController implements MainContro
     private ConcurrentMap<Contract, List<Data>> currentDataByContract;
     private Map<String, Command> commands;
     private EventHandler<Void> logoutEventHandler;
+    private SaveDialogController saveDialogController;
 
     @Inject
     public MainControllerImpl(final StatisticsController statisticsController, final DataPlotter dataPlotter,
-            final DataController dataController, final ExceptionHandler exceptionHandler) {
+                              final DataController dataController, final ExceptionHandler exceptionHandler, SaveDialogController saveDialogController) {
         this.statisticsController = statisticsController;
         this.dataPlotter = dataPlotter;
         this.dataController = dataController;
         this.exceptionHandler = exceptionHandler;
+        this.saveDialogController = saveDialogController;
     }
 
     protected void initializeCommands() {
         this.commands = new TreeMap<>();
         this.commands.put("Export to CSV", args -> {
-            // TODO Make an exporter
+            this.saveDialogController.openSaveDialog("CSV Files", ".csv").ifPresent(file -> {
+                this.exportDataToFile(ExportFormat.CSV, file);
+            });
         });
+        this.commands.put("Export to JSON", args -> {
+            this.saveDialogController.openSaveDialog("JSON Files", ".json").ifPresent(file -> {
+                this.exportDataToFile(ExportFormat.JSON, file);
+            });
+        });
+    }
+
+    private void exportDataToFile(ExportFormat format, File file) {
+        try {
+            ReegaExporterFactory.export(format, this.statisticsController.getCurrentData(), file.getAbsolutePath());
+        } catch (IOException e) {
+            this.exceptionHandler.handleException(e);
+        }
     }
 
     @Override
@@ -69,7 +90,7 @@ public class MainControllerImpl extends AbstractController implements MainContro
         final List<Data> allData = Stream
                 .concat(newDataStream, this.currentDataByContract.values().stream().flatMap(Collection::stream))
                 .collect(Collectors.toList());
-        this.currentDataByContract.put(contract, monthlyData);
+        this.currentDataByContract.put(contract,monthlyData);
         this.getStatisticsController().setData(allData);
         this.selectedContracts.add(contract);
     }

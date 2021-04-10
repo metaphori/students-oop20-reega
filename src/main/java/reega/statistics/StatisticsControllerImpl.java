@@ -1,5 +1,11 @@
 package reega.statistics;
 
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.apache.commons.lang3.time.DateUtils;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -8,12 +14,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import org.apache.commons.lang3.tuple.Pair;
 
 import reega.data.models.Data;
 import reega.data.models.ServiceType;
-
+import javax.swing.text.html.Option;
 public class StatisticsControllerImpl implements StatisticsController {
 
     private List<Data> data;
@@ -71,6 +76,39 @@ public class StatisticsControllerImpl implements StatisticsController {
     }
 
     /**
+     * Group the data by day
+     *
+     * @param svcType service type needed for this type of data
+     * @return a {@link Stream} containing pairs of Day-Value
+     */
+    private Stream<Map.Entry<Date, Double>> groupDataByDay(final ServiceType svcType) {
+        // If the service type is not GARBAGE then data is produced once a day
+        // Else it's produced every hour
+        if (svcType != ServiceType.GARBAGE) {
+            return this.filterBySvcTypeAndGetData(svcType)
+                    .map(elem -> new AbstractMap.SimpleEntry<>(
+                            DateUtils.truncate(new Date(elem.getKey()), Calendar.DATE), elem.getValue()));
+        }
+        return this.filterBySvcTypeAndGetData(svcType)
+                .collect(Collectors.groupingBy(elem -> DateUtils.truncate(new Date(elem.getKey()), Calendar.DATE),
+                        Collectors.summingDouble(Entry::getValue)))
+                .entrySet()
+                .stream();
+    }
+
+    /**
+     * Filter data by <code>svcType</code>
+     *
+     * @param svcType svcType used for filtering data
+     * @return a {@link Stream} containing pairs of TimeStamp-Value containing all the data
+     */
+    private Stream<Map.Entry<Long, Double>> filterBySvcTypeAndGetData(final ServiceType svcType) {
+        return this.data.stream()
+                .filter(data -> data.getType().getServiceType() == svcType)
+                .flatMap(data -> data.getData().entrySet().stream());
+    }
+
+    /**
      * Get the {@link DataCache} object corresponding to the <code>svcType</code> or create it and store it into the
      * {@link #dataCacheMap}
      *
@@ -82,7 +120,7 @@ public class StatisticsControllerImpl implements StatisticsController {
             return this.dataCacheMap.get(svcType);
         }
         DataCache dCache = new DataCache();
-        this.dataCacheMap.put(svcType, dCache);
+        this.dataCacheMap.put(svcType,dCache);
         return dCache;
     }
 
@@ -96,7 +134,6 @@ public class StatisticsControllerImpl implements StatisticsController {
 
         /**
          * Set the peek value
-         *
          * @param peek peek value
          */
         public void setPeek(Optional<Pair<Date, Double>> peek) {
@@ -105,7 +142,6 @@ public class StatisticsControllerImpl implements StatisticsController {
 
         /**
          * Set the average usage
-         *
          * @param averageUsage average usage
          */
         public void setAverageUsage(double averageUsage) {
@@ -114,7 +150,6 @@ public class StatisticsControllerImpl implements StatisticsController {
 
         /**
          * Set the total usage
-         *
          * @param totalUsage total usage
          */
         public void setTotalUsage(double totalUsage) {
@@ -123,7 +158,6 @@ public class StatisticsControllerImpl implements StatisticsController {
 
         /**
          * Get the peek value
-         *
          * @return the peek value
          */
         public Optional<Pair<Date, Double>> getPeek() {
@@ -132,7 +166,6 @@ public class StatisticsControllerImpl implements StatisticsController {
 
         /**
          * Get the average usage
-         *
          * @return the average usage
          */
         public Optional<Double> getAverageUsage() {
@@ -141,7 +174,6 @@ public class StatisticsControllerImpl implements StatisticsController {
 
         /**
          * Get the total usage
-         *
          * @return the total usage
          */
         public Optional<Double> getTotalUsage() {

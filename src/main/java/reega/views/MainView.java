@@ -3,11 +3,11 @@ package reega.views;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -27,6 +27,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import org.apache.commons.lang3.StringUtils;
 import reega.controllers.MainController;
 import reega.data.models.Contract;
 import reega.data.models.ServiceType;
@@ -34,6 +35,12 @@ import reega.statistics.DataPlotter;
 import reega.viewcomponents.Card;
 import reega.viewcomponents.FlexibleGridPane;
 import reega.viewutils.ViewUtils;
+
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 public abstract class MainView extends GridPane {
 
@@ -203,9 +210,6 @@ public abstract class MainView extends GridPane {
 
     /**
      * Populate the {@link #graphPane}
-     *
-     * @param svcType    service type used
-     * @param controller controller used to populate the {@link #graphPane}
      */
     protected final void populateGraphPane() {
         this.getGraphPane().getChildren().clear();
