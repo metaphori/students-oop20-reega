@@ -33,7 +33,7 @@ public class CsvExporter implements ReegaExporter {
                 .forEach(contract -> contract.getValue().forEach(
                         val -> val.getData().entrySet().stream()
                                 .sorted(Comparator.comparingLong(Map.Entry::getKey)).map(
-                                        record -> csvRow(record.getKey(), contract.getKey(), val.getType().getID(), record.getValue())
+                                        record -> csvRow(record.getKey(), contract.getKey(), val.getType().getName(), record.getValue())
                                 ).forEach(k -> {
                                     try {
                                         outputStream.write(k.getBytes(StandardCharsets.UTF_8));

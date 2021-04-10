@@ -32,7 +32,7 @@ public class JsonExporter implements ReegaExporter {
                 .entrySet().stream().map(contracts -> new ContractEntry(
                         contracts.getKey(),
                         contracts.getValue().stream()
-                                .map(values -> new DataEntry(values.getType().getID(), values.getData()
+                                .map(values -> new DataEntry(values.getType().getName(), values.getData()
                                 )).collect(Collectors.toList())
                 )).collect(Collectors.toList());
         final Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -45,11 +45,11 @@ public class JsonExporter implements ReegaExporter {
 
     private static class DataEntry {
         @SerializedName("type")
-        final int type;
+        final String type;
         @SerializedName("values")
         final Map<Long, Double> values;
 
-        public DataEntry(final int type, final Map<Long, Double> values) {
+        public DataEntry(final String type, final Map<Long, Double> values) {
             this.type = type;
             this.values = values;
         }
