@@ -12,6 +12,7 @@ jobs:
       with:
         java-version: '11'
         distribution: 'adopt'
+<<<<<<< HEAD
     
     - name: Load Cache
       uses: actions/cache@v2
@@ -23,6 +24,8 @@ jobs:
         restore-keys: |
           ubuntu-gradle-
         
+=======
+>>>>>>> master
     - name: Build
       run: ./gradlew shadowJar
     - uses: actions/upload-artifact@v2
@@ -30,6 +33,7 @@ jobs:
         name: reega.jar
         path: build/libs/reega.jar
         
+<<<<<<< HEAD
     - name: Clean Cache
       run: |
         rm -f ~/.gradle/caches/modules-2/modules-2.lock
@@ -46,3 +50,27 @@ jobs:
         artifacts: ./build/libs/reega.jar
         token: "${{ secrets.GITHUB_TOKEN }}"
 
+=======
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+        
+    - name: Upload Release Asset
+      id: upload-release-asset 
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./build/libs/reega.jar
+        asset_name: reega.jar
+        asset_content_type: application/jar
+        
+>>>>>>> master

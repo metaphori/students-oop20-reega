@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -47,11 +48,14 @@ public class JsonExporter implements ReegaExporter {
         @SerializedName("type")
         final String type;
         @SerializedName("values")
-        final Map<Long, Double> values;
+        final Map<String, Double> values;
 
         public DataEntry(final String type, final Map<Long, Double> values) {
             this.type = type;
-            this.values = values;
+            this.values = values.entrySet().stream().collect(Collectors.toMap(
+                    e -> new Date(e.getKey()).toString(),
+                    Map.Entry::getValue
+            ));
         }
     }
 
