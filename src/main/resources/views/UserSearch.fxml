@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<fx:root xmlns:fx="http://javafx.com/fxml/1" type="VBox">
+    <fx:define>
+    	<ToggleGroup fx:id="radioGroup"/>
+    </fx:define>
+	<children>
+		<HBox alignment="TOP_LEFT">
+			<children>
+				<TextField fx:id="searchBar"/>
+				<VBox>
+					<children>
+						<RadioButton fx:id="userSearch" toggleGroup="$radioGroup"/>
+						<RadioButton fx:id="contractSearch" toggleGroup="$radioGroup"/>
+					</children>
+				</VBox>
+				<Button fx:id="searchButton"/>
+			</children>
+		</HBox>
+		<ScrollPane VBox.vgrow="ALWAYS">
+			<content>
+				<HBox fx:id="cardsBox/>
+			</content>
+		</ScrollPane>
+	</children>
+</fx:root>
