@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class JavaFXSaveDialogController implements SaveDialogController{
+public class JavaFXSaveDialog implements SaveDialog {
     @Override
     public Optional<File> openSaveDialog(DialogExtensionFilter... extensions) {
         if (extensions.length == 0) {
