@@ -17,13 +17,6 @@ public interface OperatorMainController extends MainController {
     ObjectProperty<User> selectedUser();
 
     /**
-     * Set the current selected user
-     *
-     * @param newUser new selected user to set
-     */
-    void setSelectedUser(User newUser);
-
-    /**
      * Get the selected user
      *
      * @return an Optional with the user inside if the {@link #selectedUser()} is not null, an empty {@link Optional}

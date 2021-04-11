@@ -1,9 +1,6 @@
 package reega.controllers;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -61,7 +58,9 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
                      * Pop the {@link SearchUserController}
                      */
                     this.popController();
-                    this.setSelectedUser(evtArgs.getEventItem());
+                    User user = evtArgs.getEventItem();
+                    this.initializeStatisticsForSelectedUser(user);
+                    this.setSelectedUser(user);
                 }
             });
             searchUserController.setContractFoundEventHandler(evtArgs -> {
@@ -70,22 +69,37 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
                      * Pop the {@link SearchUserController}
                      */
                     this.popController();
-                    this.setSelectedUser(evtArgs.getEventItem().getKey());
+                    User user = evtArgs.getEventItem().getKey();
+                    this.initializeStatisticsForSelectedUser(user);
                     this.getSelectedContracts().clear();
-                    this.getSelectedContracts().add(evtArgs.getEventItem().getValue());
-
+                    this.getStatisticsController().setData(new ArrayList<>());
+                    this.addSelectedContract(evtArgs.getEventItem().getValue());
+                    this.setSelectedUser(user);
                 }
             });
         }, false);
     }
 
-    @Override
-    public void setSelectedUser(final User newUser) {
+    /**
+     * Initialize the statistics when a new user is selected
+     * @param newUser new user
+     */
+    private void initializeStatisticsForSelectedUser(final User newUser) {
         super.initializeStatistics(newUser);
+        if (this.selectedUser().isNull().get()) {
+            this.getCommands().add(new LabeledCommand("Remove current selection", args -> {
+                this.removeSelectedUser();
+            }));
+        }
+
+    }
+
+    /**
+     * Set the selected user
+     * @param newUser user that needs to be marked as selected
+     */
+    private void setSelectedUser(final User newUser) {
         this.selectedUser().set(newUser);
-        this.getCommands().add(new LabeledCommand("Remove current selection", args -> {
-            this.removeSelectedUser();
-        }));
     }
 
     @Override
