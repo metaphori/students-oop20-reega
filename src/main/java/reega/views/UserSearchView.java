@@ -13,16 +13,16 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
-import javafx.scene.control.RadioButton;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import reega.controllers.SearchUserController;
 import reega.data.models.Contract;
 import reega.users.User;
 import reega.viewcomponents.Card;
+import reega.viewcomponents.FlexibleGridPane;
 import reega.viewutils.ViewUtils;
 
 public class UserSearchView extends VBox {
@@ -30,13 +30,13 @@ public class UserSearchView extends VBox {
     @FXML
     private TextField searchBar;
     @FXML
-    private RadioButton userSearch;
+    private ToggleButton userSearch;
     @FXML
-    private RadioButton contractSearch;
+    private ToggleButton contractSearch;
     @FXML
     private Button searchButton;
     @FXML
-    private HBox cardsBox;
+    private FlexibleGridPane cardsPane;
 
     public UserSearchView(SearchUserController controller) {
         final FXMLLoader loader = new FXMLLoader(
@@ -60,20 +60,19 @@ public class UserSearchView extends VBox {
         };
         this.searchBar.setOnAction(action);
         this.searchButton.setOnAction(action);
-
     }
 
     protected void populateCardBoxByUser(SearchUserController controller) {
         List<User> users = controller.searchUser(this.searchBar.getText());
         // add cards with user information to the cardsBox
-        this.cardsBox.getChildren().clear();
-        this.cardsBox.getChildren().addAll(users.stream().map(user -> {
+        this.cardsPane.getChildren().clear();
+        this.cardsPane.getChildren().addAll(users.stream().map(user -> {
             Card card = ViewUtils.wrapNodeWithStyleClasses(new Card(), "search-card");
             card.getChildren()
-                    .addAll(ViewUtils.wrapNodeWithStyleClasses(new Text("name: " + user.getFullName()), "search-text"),
-                            ViewUtils.wrapNodeWithStyleClasses(new Text("fiscal code: " + user.getFiscalCode()),
+                    .addAll(ViewUtils.wrapNodeWithStyleClasses(new Label("name: " + user.getFullName()), "search-text"),
+                            ViewUtils.wrapNodeWithStyleClasses(new Label("fiscal code: " + user.getFiscalCode()),
                                     "search-text"),
-                            ViewUtils.wrapNodeWithStyleClasses(new Text("email: " + user.getEmail()), "search-text"));
+                            ViewUtils.wrapNodeWithStyleClasses(new Label("email: " + user.getEmail()), "search-text"));
             card.setOnMouseClicked(e -> {
                 if (e.getButton() == MouseButton.PRIMARY) {
                     controller.setUserFound(user);
@@ -86,22 +85,24 @@ public class UserSearchView extends VBox {
     protected void populateCardBoxByContract(SearchUserController controller) {
         Map<User, Set<Contract>> contracts = controller.searchContract(this.searchBar.getText());
         // add cards with contract informations to the cardsBox
-        this.cardsBox.getChildren().clear();
-        this.cardsBox.getChildren().addAll(contracts.entrySet().stream().flatMap(userContracts -> {
+        this.cardsPane.getChildren().clear();
+        this.cardsPane.getChildren().addAll(contracts.entrySet().stream().flatMap(userContracts -> {
 
             User user = userContracts.getKey();
             return userContracts.getValue().stream().map(contract -> {
                 Card card = ViewUtils.wrapNodeWithStyleClasses(new Card(), "search-card");
                 // add user info and contract info for each card
                 card.getChildren()
-                        .addAll(ViewUtils.wrapNodeWithStyleClasses(new Text("name: " + user.getFullName()),
-                                "search-text"),
-                                ViewUtils.wrapNodeWithStyleClasses(new Text("fiscal code: " + user.getFiscalCode()),
+                        .addAll(ViewUtils.wrapNodeWithStyleClasses(new Label("User"), "search-header"),
+                                ViewUtils.wrapNodeWithStyleClasses(new Label("name: " + user.getFullName()),
                                         "search-text"),
+                                ViewUtils.wrapNodeWithStyleClasses(new Label("fiscal code: " + user.getFiscalCode()),
+                                        "search-text"),
+                                ViewUtils.wrapNodeWithStyleClasses(new Label("Contract"), "search-header"),
                                 ViewUtils
-                                        .wrapNodeWithStyleClasses(new Text(
+                                        .wrapNodeWithStyleClasses(new Label(
                                                 "address: " + contract.getAddress()), "search-text"),
-                                ViewUtils.wrapNodeWithStyleClasses(new Text("services: " + contract.getServices()
+                                ViewUtils.wrapNodeWithStyleClasses(new Label("services: " + contract.getServices()
                                         .stream()
                                         .map(srv -> StringUtils.capitalize(srv.getName()))
                                         .collect(Collectors.joining(", "))), "search-text"));
