@@ -7,7 +7,7 @@ import java.util.Optional;
 /**
  * Controller for saving a file
  */
-public interface SaveDialogController {
+public interface SaveDialog {
     /**
      * Open a save dialog to save a file and return an {@link Optional} filled in with a {@link File} if it has been chosen, otherwise return an empty {@link Optional}
      * @param extensions list of {@link DialogExtensionFilter} to use as filters

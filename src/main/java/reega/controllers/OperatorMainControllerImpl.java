@@ -11,16 +11,10 @@ import javax.inject.Inject;
 
 import javafx.beans.property.ObjectProperty;
 import reega.data.DataController;
-import reega.data.models.Contract;
 import reega.data.models.Data;
 import reega.data.models.ServiceType;
-import reega.io.SaveDialogController;
 import reega.logging.ExceptionHandler;
 import javafx.beans.property.SimpleObjectProperty;
-import reega.data.DataController;
-import reega.data.models.Data;
-import reega.data.models.ServiceType;
-import reega.logging.ExceptionHandler;
 import reega.statistics.DataPlotter;
 import reega.statistics.StatisticsController;
 import reega.users.User;
@@ -30,8 +24,8 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
 
     @Inject
     public OperatorMainControllerImpl(final StatisticsController statisticsController, final DataPlotter dataPlotter,
-                                      final DataController dataController, final ExceptionHandler exceptionHandler, final SaveDialogController saveDialogController) {
-        super(statisticsController, dataPlotter, dataController, exceptionHandler, saveDialogController);
+                                      final DataController dataController, final ExceptionHandler exceptionHandler) {
+        super(statisticsController, dataPlotter, dataController, exceptionHandler);
     }
 
     @Override

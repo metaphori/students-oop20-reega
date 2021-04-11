@@ -22,14 +22,13 @@ import reega.data.exporter.ReegaExporterFactory;
 import reega.data.models.Contract;
 import reega.data.models.Data;
 import reega.data.models.ServiceType;
-import reega.io.SaveDialogController;
+import reega.io.SaveDialogFactory;
 import reega.logging.ExceptionHandler;
 import reega.statistics.DataPlotter;
 import reega.statistics.StatisticsController;
 import reega.users.User;
 import reega.viewutils.AbstractController;
 import reega.viewutils.Command;
-import reega.viewutils.EventArgs;
 import reega.viewutils.EventHandler;
 
 public class MainControllerImpl extends AbstractController implements MainController {
@@ -44,27 +43,25 @@ public class MainControllerImpl extends AbstractController implements MainContro
     private ConcurrentMap<Contract, List<Data>> currentDataByContract;
     private Map<String, Command> commands;
     private EventHandler<Void> logoutEventHandler;
-    private SaveDialogController saveDialogController;
 
     @Inject
     public MainControllerImpl(final StatisticsController statisticsController, final DataPlotter dataPlotter,
-                              final DataController dataController, final ExceptionHandler exceptionHandler, SaveDialogController saveDialogController) {
+                              final DataController dataController, final ExceptionHandler exceptionHandler) {
         this.statisticsController = statisticsController;
         this.dataPlotter = dataPlotter;
         this.dataController = dataController;
         this.exceptionHandler = exceptionHandler;
-        this.saveDialogController = saveDialogController;
     }
 
     protected void initializeCommands() {
         this.commands = new TreeMap<>();
         this.commands.put("Export to CSV", args -> {
-            this.saveDialogController.openSaveDialog("CSV Files", ".csv").ifPresent(file -> {
+            SaveDialogFactory.getDefaultSaveDialog().openSaveDialog("CSV Files", ".csv").ifPresent(file -> {
                 this.exportDataToFile(ExportFormat.CSV, file);
             });
         });
         this.commands.put("Export to JSON", args -> {
-            this.saveDialogController.openSaveDialog("JSON Files", ".json").ifPresent(file -> {
+            SaveDialogFactory.getDefaultSaveDialog().openSaveDialog("JSON Files", ".json").ifPresent(file -> {
                 this.exportDataToFile(ExportFormat.JSON, file);
             });
         });
