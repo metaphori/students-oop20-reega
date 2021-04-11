@@ -1,7 +1,7 @@
 /**
  *
  */
-package reega.main;
+package reega.views;
 
 import java.io.IOException;
 
@@ -25,8 +25,6 @@ public class BaseLayoutView extends ScrollPane {
     @FXML
     private Button backArrowButton;
 
-    private final MasterController controller;
-
     @Inject
     public BaseLayoutView(final MasterController controller) {
         final FXMLLoader fxmlLoader = new FXMLLoader(
@@ -38,16 +36,12 @@ public class BaseLayoutView extends ScrollPane {
         } catch (final IOException e) {
             e.printStackTrace();
         }
-        this.controller = controller;
-        this.contentControl.objectProperty().bind(this.controller.getNavigator().selectedControllerProperty());
-        this.backArrowButton.visibleProperty().bind(this.controller.getNavigator().navigationStackNotEmptyProperty());
-        this.controller.initializeApp();
+        this.contentControl.objectProperty().bind(controller.getNavigator().selectedControllerProperty());
+        this.backArrowButton.visibleProperty().bind(controller.getNavigator().navigationStackNotEmptyProperty());
+        this.backArrowButton.setOnAction(e -> controller.popController());
+        this.backArrowButton.managedProperty().bind(this.backArrowButton.visibleProperty());
+        controller.initializeApp();
 
-    }
-
-    @FXML
-    private void popController() {
-        this.controller.popController();
     }
 
 }

@@ -10,6 +10,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import reega.util.ServiceProvider;
+import reega.views.BaseLayoutView;
 
 /**
  * @author Marco
