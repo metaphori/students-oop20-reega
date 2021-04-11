@@ -181,15 +181,13 @@ public abstract class MainView extends GridPane {
      */
     protected final void populateContractsPane(final MainController controller) {
         this.getContractsPane().getChildren().clear();
-        this.getContractsPane().getChildren().addAll(controller.getContracts().stream().map(elem -> {
+        this.getContractsPane().getChildren().addAll(controller.getContracts().stream().map(contract -> {
             final CheckBox checkBox = new CheckBox();
-            checkBox.setUserData(elem);
-            checkBox.setText(elem.getAddress());
+            checkBox.setText(contract.getAddress());
             // If the selectedContracts contain the element then set the selected property to true
-            final boolean contractIsSelected = controller.getSelectedContracts().indexOf(elem) != -1;
+            final boolean contractIsSelected = controller.getSelectedContracts().indexOf(contract) != -1;
             checkBox.selectedProperty().set(contractIsSelected);
             checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
-                Contract contract = (Contract) checkBox.getUserData();
                 // Add the contract if the selectedProperty is true
                 if (newValue) {
                     controller.addSelectedContract(contract);
