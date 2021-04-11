@@ -1,6 +1,5 @@
 package reega.controllers;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -10,14 +9,12 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import reega.data.ContractFetcher;
-import reega.data.DataController;
-import reega.data.DataFetcher;
 import reega.data.OperatorDataFetcher;
 import reega.data.models.Data;
 import reega.data.models.ServiceType;
 import reega.logging.ExceptionHandler;
-import javafx.beans.property.SimpleObjectProperty;
 import reega.statistics.DataPlotter;
 import reega.statistics.StatisticsController;
 import reega.users.User;
@@ -27,27 +24,25 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
     private ObjectProperty<User> selectedUserProperty = new SimpleObjectProperty<>();
 
     @Inject
-    public OperatorMainControllerImpl(final StatisticsController statisticsController,
-                                      final DataPlotter dataPlotter,
-                                      final ExceptionHandler exceptionHandler,
-                                      final OperatorDataFetcher dataFetcher,
-                                      final ContractFetcher contractFetcher) {
+    public OperatorMainControllerImpl(final StatisticsController statisticsController, final DataPlotter dataPlotter,
+            final ExceptionHandler exceptionHandler, final OperatorDataFetcher dataFetcher,
+            final ContractFetcher contractFetcher) {
         super(statisticsController, dataPlotter, exceptionHandler, dataFetcher, contractFetcher);
     }
 
     @Override
     protected OperatorDataFetcher getDataFetcher() {
-        return (OperatorDataFetcher)super.getDataFetcher();
+        return (OperatorDataFetcher) super.getDataFetcher();
     }
 
     @Override
     protected void initializeCommands() {
         super.initializeCommands();
         this.getCommands().add(new LabeledCommand("Search user", (args) -> {
-           this.jumpToSearchUser();
+            this.jumpToSearchUser();
         }));
         this.getCommands().add(new LabeledCommand("Manage users", (args) -> {
-           //TODO Create the ManagerUsers controller
+            // TODO Create the ManagerUsers controller
         }));
     }
 
@@ -75,10 +70,9 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
                      * Pop the {@link SearchUserController}
                      */
                     this.popController();
-                    // Search the user by the contractID
-                    // Set the user as selected
                     this.getSelectedContracts().clear();
-                    this.getSelectedContracts().add(evtArgs.getEventItem());
+                    this.getSelectedContracts().add(evtArgs.getEventItem().getValue());
+                    this.setSelectedUser(evtArgs.getEventItem().getKey());
                 }
             });
         }, false);
