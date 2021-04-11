@@ -3,6 +3,7 @@ package reega.data;
 import reega.data.models.Contract;
 import reega.data.models.Data;
 import reega.data.models.DataType;
+import reega.data.models.MonthlyReport;
 import reega.data.models.gson.NewContract;
 
 import javax.annotation.Nullable;
@@ -78,4 +79,6 @@ public interface DataController {
     Long getLatestData(int contractID, DataType service) throws IOException;
 
     List<Data> getMonthlyData(@Nullable Integer contractID) throws IOException;
+
+    List<MonthlyReport> getBillsForContracts(int contractID) throws IOException;
 }
