@@ -22,7 +22,7 @@
 		</HBox>
 		<ScrollPane VBox.vgrow="ALWAYS">
 			<content>
-				<HBox fx:id="cardsBox/>
+				<HBox fx:id="cardsBox"/>
 			</content>
 		</ScrollPane>
 	</children>
