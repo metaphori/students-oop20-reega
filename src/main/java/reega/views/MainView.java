@@ -50,6 +50,8 @@ public abstract class MainView extends GridPane {
     @FXML
     private Label userEmail;
     @FXML
+    private Label managedUser;
+    @FXML
     private FlexibleGridPane servicesPane;
     @FXML
     private VBox graphPane;
@@ -58,7 +60,6 @@ public abstract class MainView extends GridPane {
     @FXML
     private VBox buttonsPane;
     @FXML
-
     private ToggleButton logoutButton;
 
     public MainView(final MainController controller) {
@@ -95,6 +96,10 @@ public abstract class MainView extends GridPane {
         controller.getCommands().addListener((ListChangeListener<? super Command>) change -> {
             this.populateButtonsPane(controller);
         });
+    }
+
+    protected final Label getManagedUser() {
+        return this.managedUser;
     }
 
     /**
@@ -192,7 +197,7 @@ public abstract class MainView extends GridPane {
             final CheckBox checkBox = new CheckBox();
             checkBox.setText(contract.getAddress());
             // If the selectedContracts contain the element then set the selected property to true
-            final boolean contractIsSelected = controller.getSelectedContracts().indexOf(contract) != -1;
+            final boolean contractIsSelected = controller.getSelectedContracts().contains(contract);
             checkBox.selectedProperty().set(contractIsSelected);
             checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
                 // Add the contract if the selectedProperty is true
