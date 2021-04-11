@@ -6,8 +6,10 @@ import reega.data.DataController;
 import reega.data.models.Contract;
 import reega.data.models.Data;
 import reega.data.models.DataType;
+import reega.data.models.MonthlyReport;
 import reega.data.models.gson.ContractModel;
 import reega.data.models.gson.DataModel;
+import reega.data.models.gson.MonthlyReportModel;
 import reega.data.models.gson.NewContract;
 import retrofit2.Response;
 
@@ -73,6 +75,27 @@ public class RemoteDatabaseAPI implements DataController {
     }
 
     @Override
+    public List<MonthlyReport> getBillsForContracts(int contractID) throws IOException {
+        logger.info("getting bill report for contract " + contractID);
+        final Response<List<MonthlyReportModel>> r = connection.getService().getBillReport(contractID).execute();
+        if (r.code() > 299 || r.body() == null) {
+            logger.info("error: " + r.errorBody());
+            return new ArrayList<>();
+        }
+        return r.body().stream().collect(Collectors.groupingBy(c -> c.month.getTime()))
+                .entrySet().stream().map(
+                        entry -> new MonthlyReport(entry.getKey(),
+                                entry.getValue().stream().collect(Collectors.toMap(
+                                        e -> DataType.fromId(e.type),
+                                        e -> new MonthlyReport.Report(e.sum, e.average)
+                                        )
+                                )
+                        )
+
+                ).collect(Collectors.toList());
+    }
+
+    @Override
     @Nonnull
     public List<Contract> getUserContracts() throws IOException {
         logger.info("getting contracts for the user");
@@ -135,4 +158,6 @@ public class RemoteDatabaseAPI implements DataController {
             logger.info("error: " + r.errorBody());
         }
     }
+
+
 }

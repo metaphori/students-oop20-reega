@@ -3,6 +3,7 @@ package reega.data.exporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reega.data.models.Data;
+import reega.main.Settings;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -29,7 +30,7 @@ public class CsvExporter implements ReegaExporter {
         outputStream.write("timestamp,contract_id,type,value\n".getBytes(StandardCharsets.UTF_8));
 
         final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
-        format.setTimeZone(TimeZone.getTimeZone("Europe/Rome"));
+        format.setTimeZone(TimeZone.getTimeZone(Settings.CLIENT_TIMEZONE));
         data.stream().collect(Collectors.groupingBy(Data::getContractID))
                 .entrySet().stream()
                 .sorted(Comparator.comparingInt(Map.Entry::getKey))

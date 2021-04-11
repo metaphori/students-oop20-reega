@@ -20,7 +20,6 @@ import reega.io.IOControllerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.util.Date;
 import java.util.HashMap;
@@ -28,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static reega.data.utils.FileUtils.getFileFromResources;
+import static reega.data.utils.FileUtils.getFileFromResourcesAsString;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -101,9 +102,7 @@ public class DataExportTest {
         final File file = new File(basePath + fileName);
         assertTrue(file.exists());
         String fileContent = new String(Files.readAllBytes(file.toPath()));
-
-        File testFile = getFileFromResource(fileName);
-        String testContent = new String(Files.readAllBytes(testFile.toPath()));
+        String testContent = getFileFromResourcesAsString("exporter/" + fileName);
 
         assertEquals(JsonParser.parseString(testContent), JsonParser.parseString(fileContent));
     }
@@ -112,7 +111,7 @@ public class DataExportTest {
         final File file = new File(basePath + fileName);
         assertTrue(file.exists());
 
-        File testFile = getFileFromResource(fileName);
+        File testFile = getFileFromResources("exporter/" + fileName);
         assertTrue(FileUtils.contentEquals(testFile, file));
     }
 
@@ -121,17 +120,6 @@ public class DataExportTest {
         if (!file.exists() || !file.isFile() || !file.delete()) {
             fail("Invalid test file " + file.getAbsolutePath());
         }
-    }
-
-    private File getFileFromResource(String fileName) throws URISyntaxException {
-        ClassLoader classLoader = getClass().getClassLoader();
-        URL resource = classLoader.getResource("exporter/" + fileName);
-        if (resource == null) {
-            throw new IllegalArgumentException("file " + fileName + " not found");
-        } else {
-            return new File(resource.toURI());
-        }
-
     }
 
     private void insertData(int contractID) throws IOException {

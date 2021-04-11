@@ -4,15 +4,12 @@ import org.junit.jupiter.api.*;
 import reega.data.mock.TestConnection;
 import reega.data.models.Data;
 import reega.data.models.DataType;
-import reega.data.models.ServiceType;
-import reega.data.models.gson.NewContract;
 import reega.data.remote.RemoteConnection;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static reega.data.utils.ContractUtils.insertContract;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -25,7 +22,7 @@ public class DataControllerTest {
         connection = new TestConnection().getTestConnection("admin@reega.it", "AES_PASSWORD");
         controller = DataControllerFactory.getRemoteDatabaseController(connection);
 
-        addContract("Test Address", 1614942000000L);
+        insertContract(controller, "Test Address", "ABC123", 1614942000000L);
     }
 
     @AfterAll
@@ -56,7 +53,7 @@ public class DataControllerTest {
         latestTimestamp = controller.getLatestData(1, DataType.ELECTRICITY);
         assertEquals(timestamp + 3000, latestTimestamp);
 
-        addContract("Address 2", 1615000000000L);
+        insertContract(controller, "Address 2", "ABC123", 1615000000000L);
         // using same data, not relevant
         final Data data2 = new Data(contract.getId() + 1, DataType.ELECTRICITY, newData.getData());
         controller.putUserData(data2);
@@ -76,13 +73,5 @@ public class DataControllerTest {
         data = controller.getMonthlyData(contracts.get(0).getId());
         sum = data.stream().map(Data::getData).flatMap(k -> k.values().stream()).reduce(.0, Double::sum);
         assertEquals(5.5 + 6.4 + 7.3, sum);
-    }
-
-    private void addContract(String address, long startTime) throws IOException {
-        List<ServiceType> services = List.of(
-                ServiceType.ELECTRICITY
-        );
-        NewContract newContract = new NewContract(address, services, "ABC123", new Date(startTime));
-        controller.addContract(newContract);
     }
 }
