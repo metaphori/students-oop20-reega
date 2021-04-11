@@ -23,6 +23,7 @@ import reega.statistics.StatisticsController;
 import reega.statistics.StatisticsControllerImpl;
 import reega.util.ServiceCollection;
 import reega.util.ServiceProvider;
+import reega.views.BaseLayoutView;
 import reega.views.LoginView;
 import reega.views.OperatorMainView;
 import reega.views.RegistrationView;
