@@ -65,6 +65,10 @@ public class ContractsTest {
         assertNotNull(contracts);
         assertEquals(1, contracts.size());
 
+        contracts = controller.searchContract("not existing");
+        assertNotNull(contracts);
+        assertEquals(0, contracts.size());
+
         contracts = controller.searchContract("test");
         assertNotNull(contracts);
         assertEquals(1, contracts.size());
