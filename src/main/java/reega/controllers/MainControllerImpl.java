@@ -16,7 +16,9 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import reega.data.ContractFetcher;
 import reega.data.DataController;
+import reega.data.DataFetcher;
 import reega.data.exporter.ExportFormat;
 import reega.data.exporter.ReegaExporterFactory;
 import reega.data.models.Contract;
@@ -30,77 +32,53 @@ import reega.users.User;
 import reega.viewutils.AbstractController;
 import reega.viewutils.Command;
 import reega.viewutils.EventHandler;
+import reega.viewutils.LabeledCommand;
 
 public class MainControllerImpl extends AbstractController implements MainController {
 
     final ObjectProperty<User> user = new SimpleObjectProperty<>();
     private final StatisticsController statisticsController;
     private final DataPlotter dataPlotter;
-    private final DataController dataController;
     private final ExceptionHandler exceptionHandler;
     private List<Contract> contracts;
     private final ObservableList<Contract> selectedContracts = FXCollections.observableArrayList();
-    private ConcurrentMap<Contract, List<Data>> currentDataByContract;
-    private Map<String, Command> commands;
+    private ObservableList<Command> commands = FXCollections.observableArrayList();
     private EventHandler<Void> logoutEventHandler;
+    private final DataFetcher dataFetcher;
+    private final ContractFetcher contractFetcher;
 
     @Inject
-    public MainControllerImpl(final StatisticsController statisticsController, final DataPlotter dataPlotter,
-                              final DataController dataController, final ExceptionHandler exceptionHandler) {
+    public MainControllerImpl(final StatisticsController statisticsController,
+                              final DataPlotter dataPlotter,
+                              final ExceptionHandler exceptionHandler,
+                              final DataFetcher dataFetcher,
+                              final ContractFetcher contractFetcher) {
         this.statisticsController = statisticsController;
         this.dataPlotter = dataPlotter;
-        this.dataController = dataController;
         this.exceptionHandler = exceptionHandler;
+        this.dataFetcher = dataFetcher;
+        this.contractFetcher = contractFetcher;
     }
 
     protected void initializeCommands() {
-        this.commands = new TreeMap<>();
-        this.commands.put("Export to CSV", args -> {
+        this.commands.add(new LabeledCommand("Export to CSV",args -> {
             SaveDialogFactory.getDefaultSaveDialog().openSaveDialog("CSV Files", ".csv").ifPresent(file -> {
                 this.exportDataToFile(ExportFormat.CSV, file);
             });
-        });
-        this.commands.put("Export to JSON", args -> {
+        }));
+        this.commands.add(new LabeledCommand("Export to JSON", args -> {
             SaveDialogFactory.getDefaultSaveDialog().openSaveDialog("JSON Files", ".json").ifPresent(file -> {
                 this.exportDataToFile(ExportFormat.JSON, file);
             });
-        });
+        }));
     }
 
-    private void exportDataToFile(ExportFormat format, File file) {
-        try {
-            ReegaExporterFactory.export(format, this.statisticsController.getCurrentData(), file.getAbsolutePath());
-        } catch (IOException e) {
-            this.exceptionHandler.handleException(e);
-        }
-    }
-
-    @Override
-    public Map<String, Command> getCommands() {
-        return this.commands;
-    }
-
-    @Override
-    public void addSelectedContract(Contract contract) {
-        final List<Data> monthlyData = this.getDataByContract(contract);
-        final Stream<Data> newDataStream = monthlyData.stream();
-        final List<Data> allData = Stream
-                .concat(newDataStream, this.currentDataByContract.values().stream().flatMap(Collection::stream))
-                .collect(Collectors.toList());
-        this.currentDataByContract.put(contract,monthlyData);
-        this.getStatisticsController().setData(allData);
-        this.selectedContracts.add(contract);
-    }
-
-    @Override
-    public void removeSelectedContract(Contract contract) {
-        this.currentDataByContract.remove(contract);
-        this.getStatisticsController()
-                .setData(this.currentDataByContract.values()
-                        .stream()
-                        .flatMap(Collection::stream)
-                        .collect(Collectors.toList()));
-        this.selectedContracts.remove(contract);
+    /**
+     * Get the data fetcher
+     * @return the data fetcher
+     */
+    protected DataFetcher getDataFetcher() {
+        return this.dataFetcher;
     }
 
     /**
@@ -113,72 +91,44 @@ public class MainControllerImpl extends AbstractController implements MainContro
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public DataPlotter getDataPlotter() {
-        return this.dataPlotter;
-    }
-
-    /**
-     * Get the data controller
-     *
-     * @return the data controller
-     */
-    protected DataController getDataController() {
-        return this.dataController;
-    }
-
-    /**
-     * Get the exception handler
-     *
-     * @return the exception handler
-     */
-    protected ExceptionHandler getExceptionHandler() {
-        return this.exceptionHandler;
-    }
-
-    /**
-     * Get the current data by contract
-     *
-     * @return the current data by contract
-     */
-    protected Map<Contract, List<Data>> getCurrentDataByContract() {
-        return this.currentDataByContract;
-    }
-
-    /**
      * Initialize the statistics when a new user is set
      *
      * @param user user used for the statistics calculations
      */
     protected void initializeStatistics(final User user) {
-        this.fetchAndLoadUserData(user);
+        final List<Contract> allContracts = this.contractFetcher.fetchContractsByUser(user);
+        this.contracts = allContracts;
+        this.selectedContracts.clear();
+        this.selectedContracts.addAll(allContracts);
+        List<Data> initialData = this.dataFetcher.fetchAllUserData(user, allContracts);
+        this.getStatisticsController().setData(initialData);
     }
 
-    /**
-     * Fetch the user data (contracts and data) and load it into the fields
-     *
-     * @param user user used to load data
-     */
-    protected final void fetchAndLoadUserData(final User user) {
-        List<Contract> contracts;
+    private void exportDataToFile(ExportFormat format, File file) {
         try {
-            contracts = this.getDataController().getUserContracts();
+            ReegaExporterFactory.export(format, this.statisticsController.getCurrentData(), file.getAbsolutePath());
         } catch (IOException e) {
-            this.getExceptionHandler().handleException(e, "Failed to load contracts for the user");
-            return;
+            this.exceptionHandler.handleException(e);
         }
-        this.contracts = contracts;
-        this.currentDataByContract = new ConcurrentHashMap<>();
-        this.selectedContracts.clear();
-        this.selectedContracts.addAll(contracts);
-        final List<Data> data = contracts.stream().flatMap(contract -> {
-            final List<Data> monthlyData = this.getDataByContract(contract);
-            this.currentDataByContract.put(contract, monthlyData);
-            return monthlyData.stream();
-        }).collect(Collectors.toList());
-        this.getStatisticsController().setData(data);
+    }
+
+    @Override
+    public ObservableList<Command> getCommands() {
+        return this.commands;
+    }
+
+    @Override
+    public void addSelectedContract(Contract contract) {
+        List<Data> newData = this.dataFetcher.pushAndFetchContract(this.getStatisticsController().getCurrentData(), contract);
+        this.getStatisticsController().setData(newData);
+        this.selectedContracts.add(contract);
+    }
+
+    @Override
+    public void removeSelectedContract(Contract contract) {
+        final List<Data> newData = this.dataFetcher.removeAndFetchContract(this.getStatisticsController().getCurrentData(), contract);
+        this.getStatisticsController().setData(newData);
+        this.selectedContracts.remove(contract);
     }
 
     @Override
@@ -225,7 +175,7 @@ public class MainControllerImpl extends AbstractController implements MainContro
 
     @Override
     public Set<ServiceType> getAvailableServiceTypes() {
-        return this.currentDataByContract.keySet()
+        return this.selectedContracts
                 .stream()
                 .flatMap(elem -> elem.getServices().stream())
                 .collect(Collectors.toCollection(TreeSet::new));
@@ -243,17 +193,11 @@ public class MainControllerImpl extends AbstractController implements MainContro
     }
 
     /**
-     * Get the data by a contract
-     *
-     * @param contract contract to search
-     * @return a list of data containing data for the contract
+     * {@inheritDoc}
      */
-    protected final List<Data> getDataByContract(final Contract contract) {
-        try {
-            return this.getDataController().getMonthlyData(contract.getId());
-        } catch (final IOException e) {
-            this.getExceptionHandler().handleException(e, "Failed to load data for the contract: " + contract.getId());
-        }
-        return Collections.emptyList();
+    @Override
+    public DataPlotter getDataPlotter() {
+        return this.dataPlotter;
     }
+
 }

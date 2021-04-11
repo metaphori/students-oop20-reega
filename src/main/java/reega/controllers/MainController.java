@@ -100,7 +100,7 @@ public interface MainController extends Controller {
      *
      * @return a map containing the label as the key and the command as the value
      */
-    Map<String, Command> getCommands();
+    ObservableList<Command> getCommands();
 
     /**
      * Add <code>contract</code> to the selected contracts
