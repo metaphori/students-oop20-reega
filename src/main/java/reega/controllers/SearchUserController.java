@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import reega.data.models.Contract;
 import reega.users.User;
 import reega.viewutils.Controller;
@@ -56,5 +58,5 @@ public interface SearchUserController extends Controller {
      *
      * @param userEventHandler event handler
      */
-    void setContractFoundEventHandler(EventHandler<Contract> userEventHandler);
+    void setContractFoundEventHandler(EventHandler<Pair<User, Contract>> contractEventHandler);
 }
