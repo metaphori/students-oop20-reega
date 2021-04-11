@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,13 +28,16 @@ public class CsvExporter implements ReegaExporter {
         // writing header
         outputStream.write("timestamp,contract_id,type,value\n".getBytes(StandardCharsets.UTF_8));
 
+        final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+        format.setTimeZone(TimeZone.getTimeZone("Europe/Rome"));
         data.stream().collect(Collectors.groupingBy(Data::getContractID))
                 .entrySet().stream()
                 .sorted(Comparator.comparingInt(Map.Entry::getKey))
                 .forEach(contract -> contract.getValue().forEach(
                         val -> val.getData().entrySet().stream()
                                 .sorted(Comparator.comparingLong(Map.Entry::getKey)).map(
-                                        record -> csvRow(new Date(record.getKey()), contract.getKey(), val.getType().getName(), record.getValue())
+                                        record ->
+                                                csvRow(format.format(new Date(record.getKey())), contract.getKey(), val.getType().getName(), record.getValue())
                                 ).forEach(k -> {
                                     try {
                                         outputStream.write(k.getBytes(StandardCharsets.UTF_8));

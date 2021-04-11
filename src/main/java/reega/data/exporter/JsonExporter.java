@@ -11,9 +11,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 public class JsonExporter implements ReegaExporter {
@@ -52,8 +54,10 @@ public class JsonExporter implements ReegaExporter {
 
         public DataEntry(final String type, final Map<Long, Double> values) {
             this.type = type;
+            final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+            format.setTimeZone(TimeZone.getTimeZone("Europe/Rome"));
             this.values = values.entrySet().stream().collect(Collectors.toMap(
-                    e -> new Date(e.getKey()).toString(),
+                    e -> format.format(new Date(e.getKey())),
                     Map.Entry::getValue
             ));
         }
