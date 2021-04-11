@@ -1,18 +1,17 @@
-package reega.data;
+package reega.data.factory;
 
 import org.jetbrains.annotations.Nullable;
+import reega.data.DataController;
 import reega.data.remote.RemoteConnection;
-import reega.data.remote.RemoteDatabaseAPI;
+import reega.data.remote.RemoteDataAPI;
 
-/**
- * This factory returns an implementation of DataController based on the needs.
- */
-public final class DataControllerFactory {
+public class DataControllerFactory {
     public static DataController getDefaultDataController(@Nullable RemoteConnection connection) {
-        return new RemoteDatabaseAPI(connection);
+        return new RemoteDataAPI(connection);
     }
 
     public static DataController getRemoteDatabaseController(@Nullable RemoteConnection connection) {
-        return new RemoteDatabaseAPI(connection);
+        return new RemoteDataAPI(connection);
     }
+
 }

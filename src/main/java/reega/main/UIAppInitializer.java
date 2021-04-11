@@ -8,8 +8,14 @@ import reega.auth.AuthManager;
 import reega.auth.RemindableAuthManager;
 import reega.controllers.*;
 import reega.data.*;
+import reega.data.factory.AuthControllerFactory;
+import reega.data.factory.ContractControllerFactory;
+import reega.data.factory.DataControllerFactory;
+import reega.data.factory.UserControllerFactory;
 import reega.data.remote.RemoteConnection;
-import reega.io.*;
+import reega.io.IOController;
+import reega.io.IOControllerFactory;
+import reega.io.TokenIOController;
 import reega.logging.ExceptionHandler;
 import reega.logging.SimpleExceptionHandler;
 import reega.statistics.DataPlotter;
@@ -71,6 +77,8 @@ public class UIAppInitializer implements AppInitializer {
         svcCollection.addSingleton(AuthController.class, AuthControllerFactory.getDefaultAuthController(null));
         svcCollection.addSingleton(IOController.class, IOControllerFactory.getDefaultIOController());
         svcCollection.addSingleton(TokenIOController.class, IOControllerFactory.getDefaultTokenIOController());
+        svcCollection.addSingleton(ContractController.class,
+                ContractControllerFactory.getDefaultDataController(new RemoteConnection()));
         svcCollection.addSingleton(DataController.class,
                 DataControllerFactory.getDefaultDataController(new RemoteConnection()));
         svcCollection.addSingleton(ExceptionHandler.class, SimpleExceptionHandler.class);

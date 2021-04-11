@@ -3,10 +3,12 @@ package reega.data.export;
 import com.google.gson.JsonParser;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.*;
+import reega.data.ContractController;
 import reega.data.DataController;
-import reega.data.DataControllerFactory;
 import reega.data.exporter.ExportFormat;
 import reega.data.exporter.ReegaExporterFactory;
+import reega.data.factory.ContractControllerFactory;
+import reega.data.factory.DataControllerFactory;
 import reega.data.mock.TestConnection;
 import reega.data.models.Contract;
 import reega.data.models.Data;
@@ -36,12 +38,14 @@ public class DataExportTest {
     private final long baseTimestamp = 1898938800000L;
     private String basePath;
     private RemoteConnection connection;
-    private DataController controller;
+    private ContractController contractController;
+    private DataController dataController;
 
     @BeforeAll
     public void setup() throws IOException {
         connection = new TestConnection().getTestConnection("admin@reega.it", "AES_PASSWORD");
-        controller = DataControllerFactory.getRemoteDatabaseController(connection);
+        contractController = ContractControllerFactory.getRemoteDatabaseController(connection);
+        dataController = DataControllerFactory.getDefaultDataController(connection);
 
         addContract("Address 1");
         addContract("Address 2");
@@ -71,7 +75,7 @@ public class DataExportTest {
     @Test
     @Order(2)
     public void insertData() throws IOException {
-        var contracts = controller.getUserContracts();
+        var contracts = contractController.getUserContracts();
         assertEquals(2, contracts.size());
         for (Contract c : contracts) {
             insertData(c.getId());
@@ -81,7 +85,7 @@ public class DataExportTest {
     @Test
     @Order(3)
     public void exportJSON() throws IOException, URISyntaxException {
-        var data = controller.getMonthlyData(null);
+        var data = dataController.getMonthlyData(null);
 
         ReegaExporterFactory.export(ExportFormat.JSON, data, basePath + "json1.json");
         checkJsonOutput("json1.json");
@@ -91,7 +95,7 @@ public class DataExportTest {
     @Test
     @Order(4)
     public void exportCSV() throws IOException, URISyntaxException {
-        var data = controller.getMonthlyData(null);
+        var data = dataController.getMonthlyData(null);
 
         ReegaExporterFactory.export(ExportFormat.CSV, data, basePath + "csv1.csv");
         checkFileContent("csv1.csv");
@@ -129,11 +133,11 @@ public class DataExportTest {
             put(baseTimestamp + 3000, 7.3);
         }};
 
-        controller.putUserData(new Data(contractID, DataType.ELECTRICITY, data));
-        controller.putUserData(new Data(contractID, DataType.GLASS, data));
-        controller.putUserData(new Data(contractID, DataType.WATER, data));
-        controller.putUserData(new Data(contractID, DataType.PAPER, data));
-        controller.putUserData(new Data(contractID, DataType.MIXED, data));
+        dataController.putUserData(new Data(contractID, DataType.ELECTRICITY, data));
+        dataController.putUserData(new Data(contractID, DataType.GLASS, data));
+        dataController.putUserData(new Data(contractID, DataType.WATER, data));
+        dataController.putUserData(new Data(contractID, DataType.PAPER, data));
+        dataController.putUserData(new Data(contractID, DataType.MIXED, data));
     }
 
     private void addContract(String address) throws IOException {
@@ -142,6 +146,6 @@ public class DataExportTest {
                 ServiceType.GARBAGE
         );
         NewContract newContract = new NewContract(address, services, "ABC123", new Date(baseTimestamp));
-        controller.addContract(newContract);
+        contractController.addContract(newContract);
     }
 }

@@ -11,19 +11,19 @@ import java.util.List;
 
 public class ContractFetcherImpl implements ContractFetcher{
 
-    private DataController dataController;
+    private ContractController contractController;
     private ExceptionHandler exceptionHandler;
 
     @Inject
-    public ContractFetcherImpl(DataController dataController, ExceptionHandler exceptionHandler) {
-        this.dataController = dataController;
+    public ContractFetcherImpl(ContractController contractController, ExceptionHandler exceptionHandler) {
+        this.contractController = contractController;
         this.exceptionHandler = exceptionHandler;
     }
 
     @Override
     public List<Contract> fetchContractsByUser(User user) {
         try {
-            return this.dataController.getUserContracts();
+            return this.contractController.getUserContracts();
         } catch (IOException e) {
             this.exceptionHandler.handleException(e);
             return Collections.emptyList();

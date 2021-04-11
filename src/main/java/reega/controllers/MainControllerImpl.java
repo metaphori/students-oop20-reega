@@ -3,10 +3,7 @@ package reega.controllers;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
@@ -17,7 +14,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import reega.data.ContractFetcher;
-import reega.data.DataController;
 import reega.data.DataFetcher;
 import reega.data.exporter.ExportFormat;
 import reega.data.exporter.ReegaExporterFactory;

@@ -1,8 +1,8 @@
 package reega.users;
 
 import org.junit.jupiter.api.*;
-import reega.data.DataController;
-import reega.data.DataControllerFactory;
+import reega.data.ContractController;
+import reega.data.factory.ContractControllerFactory;
 import reega.data.mock.TestConnection;
 import reega.data.remote.RemoteConnection;
 
@@ -12,12 +12,12 @@ import java.io.IOException;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserSearch {
     private RemoteConnection connection;
-    private DataController controller;
+    private ContractController controller;
 
     @BeforeAll
     public void setup() throws IOException {
         connection = new TestConnection().getTestConnection("admin@reega.it", "AES_PASSWORD");
-        controller = DataControllerFactory.getRemoteDatabaseController(connection);
+        controller = ContractControllerFactory.getRemoteDatabaseController(connection);
     }
 
     @AfterAll

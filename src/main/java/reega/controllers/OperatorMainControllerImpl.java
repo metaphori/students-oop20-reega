@@ -1,6 +1,5 @@
 package reega.controllers;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -11,8 +10,6 @@ import javax.inject.Inject;
 
 import javafx.beans.property.ObjectProperty;
 import reega.data.ContractFetcher;
-import reega.data.DataController;
-import reega.data.DataFetcher;
 import reega.data.OperatorDataFetcher;
 import reega.data.models.Data;
 import reega.data.models.ServiceType;
