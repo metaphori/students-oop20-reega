@@ -1,0 +1,27 @@
+
+.search-card {
+	-fx-padding: 0.8125em;
+}
+
+.search-text {
+}
+
+.search-header {
+    -fx-font-weight: bold;
+}
+
+#searchBox, #cardsPane {
+	-fx-padding: 0.8125em;
+}
+
+#search-bar {
+	-fx-padding: 0.8125em;
+}
+
+/*
+#toggleBox {
+	-fx-background-color: white;
+    -fx-background-radius: 1em;
+	-fx-padding: 0.120em;
+}
+*/

@@ -18,6 +18,7 @@
     -fx-background-position: center;
     -fx-background-color: transparent;
     -fx-effect: none;
+    -fx-view-order: 1.0;
 }
 
 .button {
