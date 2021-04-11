@@ -3,13 +3,18 @@
  */
 package reega.main;
 
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 import javafx.scene.Parent;
 import reega.auth.AuthManager;
 import reega.auth.RemindableAuthManager;
 import reega.controllers.*;
 import reega.data.*;
 import reega.data.remote.RemoteConnection;
-import reega.io.*;
+import reega.io.IOController;
+import reega.io.IOControllerFactory;
+import reega.io.TokenIOController;
 import reega.logging.ExceptionHandler;
 import reega.logging.SimpleExceptionHandler;
 import reega.statistics.DataPlotter;
@@ -22,13 +27,11 @@ import reega.views.LoginView;
 import reega.views.OperatorMainView;
 import reega.views.RegistrationView;
 import reega.views.UserMainView;
+import reega.views.UserSearchView;
 import reega.viewutils.DataTemplate;
 import reega.viewutils.DataTemplateManager;
 import reega.viewutils.Navigator;
 import reega.viewutils.NavigatorImpl;
-
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * App initializer for the UI main class
@@ -93,7 +96,8 @@ public class UIAppInitializer implements AppInitializer {
 
             dataPlotter.setStatisticController(statisticsController);
 
-            return new MainControllerImpl(statisticsController, dataPlotter, exceptionHandler, dataFetcher, contractFetcher);
+            return new MainControllerImpl(statisticsController, dataPlotter, exceptionHandler, dataFetcher,
+                    contractFetcher);
         });
         svcCollection.addTransient(OperatorMainController.class, (svcProvider) -> {
             final StatisticsController statisticsController = svcProvider
@@ -105,8 +109,10 @@ public class UIAppInitializer implements AppInitializer {
 
             dataPlotter.setStatisticController(statisticsController);
 
-            return new OperatorMainControllerImpl(statisticsController, dataPlotter, exceptionHandler, dataFetcher, contractFetcher);
+            return new OperatorMainControllerImpl(statisticsController, dataPlotter, exceptionHandler, dataFetcher,
+                    contractFetcher);
         });
+        svcCollection.addTransient(SearchUserController.class, SearchUserControllerImpl.class);
         svcCollection.addSingleton(BaseLayoutView.class);
         return svcCollection.buildServiceProvider();
     }
@@ -161,6 +167,18 @@ public class UIAppInitializer implements AppInitializer {
                 return () -> new OperatorMainView(controller);
             }
 
+        });
+        templateManager.addTemplate(new DataTemplate<SearchUserControllerImpl>() {
+
+            @Override
+            public Class<SearchUserControllerImpl> getDataObjectClass() {
+                return SearchUserControllerImpl.class;
+            }
+
+            @Override
+            public Supplier<? extends Parent> getControlFactory(SearchUserControllerImpl controller) {
+                return () -> new UserSearchView(controller);
+            }
         });
     }
 
