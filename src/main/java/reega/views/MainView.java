@@ -7,6 +7,8 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+import javafx.application.Platform;
+import javafx.collections.ListChangeListener;
 import org.apache.commons.lang3.StringUtils;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -34,6 +36,7 @@ import reega.data.models.ServiceType;
 import reega.statistics.DataPlotter;
 import reega.viewcomponents.Card;
 import reega.viewcomponents.FlexibleGridPane;
+import reega.viewutils.Command;
 import reega.viewutils.ViewUtils;
 
 import java.io.IOException;
@@ -89,6 +92,9 @@ public abstract class MainView extends GridPane {
         this.servicesPane.managedProperty().bind(this.servicesPane.visibleProperty());
         this.populateGraphPane();
         this.logoutButton.setOnAction(e -> controller.logout());
+        controller.getCommands().addListener((ListChangeListener<? super Command>) change -> {
+            this.populateButtonsPane(controller);
+        });
     }
 
     /**
@@ -124,11 +130,12 @@ public abstract class MainView extends GridPane {
      * @param controller controller used to populate the {@link #buttonsPane}
      */
     private void populateButtonsPane(final MainController controller) {
-        this.buttonsPane.getChildren().addAll(controller.getCommands().entrySet().stream().map(entry -> {
-            final Button b = new Button(entry.getKey());
+        this.buttonsPane.getChildren().clear();
+        this.buttonsPane.getChildren().addAll(controller.getCommands().stream().map(entry -> {
+            final Button b = new Button(entry.getCommandName());
             b.setMaxWidth(1.7976931348623157E308);
             b.setOnAction(event -> {
-                entry.getValue().execute((Object) null);
+                entry.execute((Object) null);
             });
             return b;
         }).collect(Collectors.toList()));
@@ -181,15 +188,13 @@ public abstract class MainView extends GridPane {
      */
     protected final void populateContractsPane(final MainController controller) {
         this.getContractsPane().getChildren().clear();
-        this.getContractsPane().getChildren().addAll(controller.getContracts().stream().map(elem -> {
+        this.getContractsPane().getChildren().addAll(controller.getContracts().stream().map(contract -> {
             final CheckBox checkBox = new CheckBox();
-            checkBox.setUserData(elem);
-            checkBox.setText(elem.getAddress());
+            checkBox.setText(contract.getAddress());
             // If the selectedContracts contain the element then set the selected property to true
-            final boolean contractIsSelected = controller.getSelectedContracts().indexOf(elem) != -1;
+            final boolean contractIsSelected = controller.getSelectedContracts().indexOf(contract) != -1;
             checkBox.selectedProperty().set(contractIsSelected);
             checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
-                Contract contract = (Contract) checkBox.getUserData();
                 // Add the contract if the selectedProperty is true
                 if (newValue) {
                     controller.addSelectedContract(contract);

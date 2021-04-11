@@ -76,6 +76,9 @@ public class UIAppInitializer implements AppInitializer {
         svcCollection.addSingleton(ExceptionHandler.class, SimpleExceptionHandler.class);
         svcCollection.addSingleton(UserController.class, UserControllerFactory.getDefaultUserController(null));
         svcCollection.addSingleton(AuthManager.class, RemindableAuthManager.class);
+        svcCollection.addSingleton(DataFetcher.class, DataFetcherImpl.class);
+        svcCollection.addSingleton(OperatorDataFetcher.class, OperatorDataFetcherImpl.class);
+        svcCollection.addSingleton(ContractFetcher.class, ContractFetcherImpl.class);
         svcCollection.addTransient(StatisticsController.class, StatisticsControllerImpl.class);
         svcCollection.addTransient(DataPlotter.class, DataPlotterImpl.class);
         svcCollection.addTransient(LoginController.class, LoginControllerImpl.class);
@@ -84,23 +87,25 @@ public class UIAppInitializer implements AppInitializer {
             final StatisticsController statisticsController = svcProvider
                     .getRequiredService(StatisticsController.class);
             final DataPlotter dataPlotter = svcProvider.getRequiredService(DataPlotter.class);
-            final DataController dataController = svcProvider.getRequiredService(DataController.class);
             final ExceptionHandler exceptionHandler = svcProvider.getRequiredService(ExceptionHandler.class);
+            final DataFetcher dataFetcher = svcProvider.getRequiredService(DataFetcher.class);
+            final ContractFetcher contractFetcher = svcProvider.getRequiredService(ContractFetcher.class);
 
             dataPlotter.setStatisticController(statisticsController);
 
-            return new MainControllerImpl(statisticsController, dataPlotter, dataController, exceptionHandler);
+            return new MainControllerImpl(statisticsController, dataPlotter, exceptionHandler, dataFetcher, contractFetcher);
         });
         svcCollection.addTransient(OperatorMainController.class, (svcProvider) -> {
             final StatisticsController statisticsController = svcProvider
                     .getRequiredService(StatisticsController.class);
             final DataPlotter dataPlotter = svcProvider.getRequiredService(DataPlotter.class);
-            final DataController dataController = svcProvider.getRequiredService(DataController.class);
             final ExceptionHandler exceptionHandler = svcProvider.getRequiredService(ExceptionHandler.class);
+            final OperatorDataFetcher dataFetcher = svcProvider.getRequiredService(OperatorDataFetcher.class);
+            final ContractFetcher contractFetcher = svcProvider.getRequiredService(ContractFetcher.class);
 
             dataPlotter.setStatisticController(statisticsController);
 
-            return new OperatorMainControllerImpl(statisticsController, dataPlotter, dataController, exceptionHandler);
+            return new OperatorMainControllerImpl(statisticsController, dataPlotter, exceptionHandler, dataFetcher, contractFetcher);
         });
         svcCollection.addSingleton(BaseLayoutView.class);
         return svcCollection.buildServiceProvider();

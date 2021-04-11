@@ -10,7 +10,10 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import javafx.beans.property.ObjectProperty;
+import reega.data.ContractFetcher;
 import reega.data.DataController;
+import reega.data.DataFetcher;
+import reega.data.OperatorDataFetcher;
 import reega.data.models.Data;
 import reega.data.models.ServiceType;
 import reega.logging.ExceptionHandler;
@@ -18,40 +21,40 @@ import javafx.beans.property.SimpleObjectProperty;
 import reega.statistics.DataPlotter;
 import reega.statistics.StatisticsController;
 import reega.users.User;
+import reega.viewutils.LabeledCommand;
 
 public class OperatorMainControllerImpl extends MainControllerImpl implements OperatorMainController {
     private ObjectProperty<User> selectedUserProperty = new SimpleObjectProperty<>();
 
     @Inject
-    public OperatorMainControllerImpl(final StatisticsController statisticsController, final DataPlotter dataPlotter,
-                                      final DataController dataController, final ExceptionHandler exceptionHandler) {
-        super(statisticsController, dataPlotter, dataController, exceptionHandler);
+    public OperatorMainControllerImpl(final StatisticsController statisticsController,
+                                      final DataPlotter dataPlotter,
+                                      final ExceptionHandler exceptionHandler,
+                                      final OperatorDataFetcher dataFetcher,
+                                      final ContractFetcher contractFetcher) {
+        super(statisticsController, dataPlotter, exceptionHandler, dataFetcher, contractFetcher);
+    }
+
+    @Override
+    protected OperatorDataFetcher getDataFetcher() {
+        return (OperatorDataFetcher)super.getDataFetcher();
     }
 
     @Override
     protected void initializeCommands() {
         super.initializeCommands();
-        this.getCommands().put("Search user", (args) -> {
+        this.getCommands().add(new LabeledCommand("Search user", (args) -> {
            this.jumpToSearchUser();
-        });
-        this.getCommands().put("Manage users", (args) -> {
+        }));
+        this.getCommands().add(new LabeledCommand("Manage users", (args) -> {
            //TODO Create the ManagerUsers controller
-            this.jumpToSearchUser();
-        });
-        this.getCommands().put("Manage users", (args) -> {
-            // TODO Create the ManagerUsers controller
-        });
+        }));
     }
 
     @Override
     protected void initializeStatistics(final User user) {
-        try {
-            final List<Data> generalMonthlyData = this.getDataController().getMonthlyData(null);
-            this.getStatisticsController().setData(generalMonthlyData);
-        } catch (final IOException e) {
-            this.getExceptionHandler().handleException(e, "Failed to load general data");
-            return;
-        }
+        List<Data> initialData = this.getDataFetcher().getGeneralData();
+        this.getStatisticsController().setData(initialData);
     }
 
     @Override
@@ -83,8 +86,11 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
 
     @Override
     public void setSelectedUser(final User newUser) {
-        this.fetchAndLoadUserData(newUser);
+        super.initializeStatistics(newUser);
         this.selectedUser().set(newUser);
+        this.getCommands().add(new LabeledCommand("Remove current selection", args -> {
+            this.removeSelectedUser();
+        }));
     }
 
     @Override
@@ -109,7 +115,7 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
         this.initializeStatistics(this.getUser());
         this.getContracts().clear();
         this.getSelectedContracts().clear();
-        this.getCurrentDataByContract().clear();
         this.selectedUser().set(null);
+        this.getCommands().remove(this.getCommands().size() - 1);
     }
 }
