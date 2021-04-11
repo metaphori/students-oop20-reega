@@ -7,11 +7,9 @@ import reega.data.models.Data;
 import reega.logging.ExceptionHandler;
 import reega.users.User;
 
+import javax.inject.Inject;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
@@ -23,6 +21,7 @@ public class DataFetcherImpl implements DataFetcher {
     private DataController dataController;
     private ExceptionHandler exceptionHandler;
 
+    @Inject
     public DataFetcherImpl(DataController dataController, ExceptionHandler exceptionHandler) {
         this.dataController = dataController;
         this.exceptionHandler = exceptionHandler;
@@ -30,7 +29,7 @@ public class DataFetcherImpl implements DataFetcher {
 
     @Override
     public List<Data> fetchAllUserData(User user, List<Contract> contracts) {
-        this.currentDataByContract = new ConcurrentHashMap<>();
+        this.currentDataByContract = new HashMap<>();
         return contracts.stream().flatMap(contract -> {
             final List<Data> monthlyData = this.getDataByContract(contract);
             this.currentDataByContract.put(contract, monthlyData);
