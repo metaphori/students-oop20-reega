@@ -44,14 +44,6 @@
 	-fx-padding: 0 0.625em 0 0;
 }
 
-.button:armed {
-    -fx-background-color: rgba(20,105,4,1);
-}
-
-.button {
-    -fx-background-color: rgba(20,105,4, 0.75);
-}
-
 #managedUser {
     -fx-font-size: 1.5em;
     -fx-text-fill: #ff0000;
