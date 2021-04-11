@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reega.data.models.Data;
+import reega.main.Settings;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -55,7 +56,7 @@ public class JsonExporter implements ReegaExporter {
         public DataEntry(final String type, final Map<Long, Double> values) {
             this.type = type;
             final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
-            format.setTimeZone(TimeZone.getTimeZone("Europe/Rome"));
+            format.setTimeZone(TimeZone.getTimeZone(Settings.CLIENT_TIMEZONE));
             this.values = values.entrySet().stream().collect(Collectors.toMap(
                     e -> format.format(new Date(e.getKey())),
                     Map.Entry::getValue
