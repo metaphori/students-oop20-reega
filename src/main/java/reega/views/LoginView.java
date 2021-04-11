@@ -54,6 +54,13 @@ public class LoginView extends GridPane {
                 this.loginController.setPassword(this.passwordField.getText());
             }
         });
+
+        this.emailOrFiscalCodeField.setOnAction((e) -> this.passwordField.requestFocus());
+
+        this.passwordField.setOnAction((e) -> {
+            this.loginController.setPassword(this.passwordField.getText());
+            this.login();
+        });
     }
 
     /**
