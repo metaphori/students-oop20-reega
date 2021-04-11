@@ -70,9 +70,10 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
                      * Pop the {@link SearchUserController}
                      */
                     this.popController();
+                    this.setSelectedUser(evtArgs.getEventItem().getKey());
                     this.getSelectedContracts().clear();
                     this.getSelectedContracts().add(evtArgs.getEventItem().getValue());
-                    this.setSelectedUser(evtArgs.getEventItem().getKey());
+
                 }
             });
         }, false);
