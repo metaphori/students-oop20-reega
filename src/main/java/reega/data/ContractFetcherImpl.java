@@ -23,7 +23,7 @@ public class ContractFetcherImpl implements ContractFetcher{
     @Override
     public List<Contract> fetchContractsByUser(User user) {
         try {
-            return this.dataController.getUserContracts();
+            return this.dataController.getContractsForUser(user.getFiscalCode());
         } catch (IOException e) {
             this.exceptionHandler.handleException(e);
             return Collections.emptyList();
