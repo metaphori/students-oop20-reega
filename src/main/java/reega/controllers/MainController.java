@@ -28,27 +28,7 @@ import reega.viewutils.EventHandler;
  * @author Marco
  *
  */
-public interface MainController extends Controller {
-    /**
-     * Set the current user
-     *
-     * @param newUser new user to set
-     */
-    void setUser(User newUser);
-
-    /**
-     * Get the current user
-     *
-     * @return the current user
-     */
-    User getUser();
-
-    /**
-     * User property
-     *
-     * @return the user property that contains the current user
-     */
-    ObjectProperty<User> user();
+public interface MainController extends UserController {
 
     /**
      * Get the peek usage
