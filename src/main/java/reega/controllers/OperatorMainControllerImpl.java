@@ -90,13 +90,9 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
         final List<Contract> allContracts = this.getContractFetcher().fetchContractsByUser(newUser);
         this.setUserContracts(allContracts);
         this.getSelectedContracts().clear();
-        if (selectedContracts == null) {
-            this.getSelectedContracts().addAll(allContracts);
-        }
-        else {
-            this.getSelectedContracts().addAll(selectedContracts);
-        }
-        List<Data> initialData = this.getDataFetcher().fetchAllUserData(newUser, allContracts);
+        List<Contract> contracts = selectedContracts == null ? allContracts : selectedContracts;
+        this.getSelectedContracts().addAll(contracts);
+        List<Data> initialData = this.getDataFetcher().fetchAllUserData(newUser, contracts);
         this.getStatisticsController().setData(initialData);
         if (this.selectedUser().isNull().get()) {
             this.getCommands().add(new LabeledCommand("Remove current selection", args -> {
