@@ -20,10 +20,18 @@ public class ContractFetcherImpl implements ContractFetcher{
         this.exceptionHandler = exceptionHandler;
     }
 
+    protected final DataController getDataController() {
+        return this.dataController;
+    }
+
+    protected final ExceptionHandler getExceptionHandler() {
+        return this.exceptionHandler;
+    }
+
     @Override
-    public List<Contract> fetchContractsByUser(User user) {
+    public List<Contract> fetchUserContracts() {
         try {
-            return this.dataController.getContractsForUser(user.getFiscalCode());
+            return this.dataController.getUserContracts();
         } catch (IOException e) {
             this.exceptionHandler.handleException(e);
             return Collections.emptyList();

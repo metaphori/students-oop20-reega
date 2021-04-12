@@ -6,5 +6,9 @@ import reega.users.User;
 import java.util.List;
 
 public interface ContractFetcher {
-    List<Contract> fetchContractsByUser(User user);
+    /**
+     * Fetch the contracts of the current user
+     * @return the contracts of the current user
+     */
+    List<Contract> fetchUserContracts();
 }
