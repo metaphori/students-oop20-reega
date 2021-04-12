@@ -96,6 +96,7 @@ public abstract class MainView extends GridPane {
         controller.getCommands().addListener((ListChangeListener<? super Command>) change -> {
             this.populateButtonsPane(controller);
         });
+        this.managedUser.managedProperty().bind(this.managedUser.visibleProperty());
     }
 
     protected final Label getManagedUser() {
