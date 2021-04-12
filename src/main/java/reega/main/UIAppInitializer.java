@@ -23,12 +23,7 @@ import reega.statistics.StatisticsController;
 import reega.statistics.StatisticsControllerImpl;
 import reega.util.ServiceCollection;
 import reega.util.ServiceProvider;
-import reega.views.BaseLayoutView;
-import reega.views.LoginView;
-import reega.views.OperatorMainView;
-import reega.views.RegistrationView;
-import reega.views.UserMainView;
-import reega.views.UserSearchView;
+import reega.views.*;
 import reega.viewutils.DataTemplate;
 import reega.viewutils.DataTemplateManager;
 import reega.viewutils.Navigator;
@@ -78,7 +73,7 @@ public class UIAppInitializer implements AppInitializer {
         svcCollection.addSingleton(DataController.class,
                 DataControllerFactory.getDefaultDataController(new RemoteConnection()));
         svcCollection.addSingleton(ExceptionHandler.class, SimpleExceptionHandler.class);
-        svcCollection.addSingleton(UserController.class, UserControllerFactory.getDefaultUserController(null));
+        svcCollection.addSingleton(reega.data.UserController.class, UserControllerFactory.getDefaultUserController(null));
         svcCollection.addSingleton(AuthManager.class, RemindableAuthManager.class);
         svcCollection.addSingleton(DataFetcher.class, DataFetcherImpl.class);
         svcCollection.addSingleton(OperatorDataFetcher.class, OperatorDataFetcherImpl.class);
@@ -115,6 +110,7 @@ public class UIAppInitializer implements AppInitializer {
                     contractFetcher);
         });
         svcCollection.addTransient(SearchUserController.class, SearchUserControllerImpl.class);
+        svcCollection.addTransient(UserProfileController.class, UserProfileControllerImpl.class);
         svcCollection.addSingleton(BaseLayoutView.class);
         return svcCollection.buildServiceProvider();
     }
@@ -180,6 +176,18 @@ public class UIAppInitializer implements AppInitializer {
             @Override
             public Supplier<? extends Parent> getControlFactory(SearchUserControllerImpl controller) {
                 return () -> new UserSearchView(controller);
+            }
+        });
+        templateManager.addTemplate(new DataTemplate<UserProfileControllerImpl>() {
+
+            @Override
+            public Class<UserProfileControllerImpl> getDataObjectClass() {
+                return UserProfileControllerImpl.class;
+            }
+
+            @Override
+            public Supplier<? extends Parent> getControlFactory(UserProfileControllerImpl controller) {
+                return () -> new UserProfileView(controller);
             }
         });
     }

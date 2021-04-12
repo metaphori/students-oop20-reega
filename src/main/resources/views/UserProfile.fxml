@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import reega.viewcomponents.FlexibleGridPane?>
+<fx:root xmlns="http://javafx.com/javafx"
+         xmlns:fx="http://javafx.com/fxml"
+         type="VBox"
+         alignment="CENTER"
+         stylesheets="@/css/UserProfile.css">
+    <children>
+        <Label fx:id="userName" styleClass="user-label"/>
+        <Label fx:id="userSurname" styleClass="user-label"/>
+        <Label fx:id="userRole" styleClass="user-label"/>
+        <Label fx:id="userEmail" styleClass="user-label"/>
+        <Label fx:id="userFiscalCode" styleClass="user-label"/>
+        <FlexibleGridPane fx:id="userContracts" fixedColumnsNumber="4" hgap="10" vgap="10" VBox.vgrow="ALWAYS"/>
+    </children>
+</fx:root>
