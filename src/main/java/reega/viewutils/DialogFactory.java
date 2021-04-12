@@ -7,26 +7,15 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
+import reega.io.JavaFXSaveDialog;
+import reega.io.SaveDialog;
 
 /**
  * @author Marco
  *
  */
-public class DialogFactory {
-
-    private static DialogFactory instance;
-
-    /**
-     * Get the static instance of a {@link DialogFactory}
-     *
-     * @return the static instance of a {@link DialogFactory}
-     */
-    public synchronized static DialogFactory getInstance() {
-        if (DialogFactory.instance == null) {
-            DialogFactory.instance = new DialogFactory();
-        }
-        return DialogFactory.instance;
-    }
+public final class DialogFactory {
+    private DialogFactory() {}
 
     /**
      * Build an alert
@@ -39,7 +28,7 @@ public class DialogFactory {
      * @see AlertType
      * @see Alert
      */
-    public Alert buildAlert(final AlertType alertType, final String title, final String content,
+    public static Alert buildAlert(final AlertType alertType, final String title, final String content,
             final ButtonType... buttons) {
         final Alert alert = new Alert(alertType, content, buttons);
         alert.setGraphic(null);
@@ -51,6 +40,14 @@ public class DialogFactory {
                 .add(ClassLoader.getSystemClassLoader().getResource("css/Common.css").toExternalForm());
         dialogPane.getStyleClass().add("commonDialog");
         return alert;
+    }
+
+    /**
+     * Get the default save dialog
+     * @return the default save dialog implementation
+     */
+    public static SaveDialog getDefaultSaveDialog() {
+        return new JavaFXSaveDialog();
     }
 
 }

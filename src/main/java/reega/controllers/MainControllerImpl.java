@@ -24,15 +24,11 @@ import reega.data.exporter.ReegaExporterFactory;
 import reega.data.models.Contract;
 import reega.data.models.Data;
 import reega.data.models.ServiceType;
-import reega.io.SaveDialogFactory;
 import reega.logging.ExceptionHandler;
 import reega.statistics.DataPlotter;
 import reega.statistics.StatisticsController;
 import reega.users.User;
-import reega.viewutils.AbstractController;
-import reega.viewutils.Command;
-import reega.viewutils.EventHandler;
-import reega.viewutils.LabeledCommand;
+import reega.viewutils.*;
 
 public class MainControllerImpl extends AbstractController implements MainController {
 
@@ -62,12 +58,12 @@ public class MainControllerImpl extends AbstractController implements MainContro
 
     protected void initializeCommands() {
         this.commands.add(new LabeledCommand("Export to CSV",args -> {
-            SaveDialogFactory.getDefaultSaveDialog().openSaveDialog("CSV Files", ".csv").ifPresent(file -> {
+            DialogFactory.getDefaultSaveDialog().openSaveDialog("CSV Files", ".csv").ifPresent(file -> {
                 this.exportDataToFile(ExportFormat.CSV, file);
             });
         }));
         this.commands.add(new LabeledCommand("Export to JSON", args -> {
-            SaveDialogFactory.getDefaultSaveDialog().openSaveDialog("JSON Files", ".json").ifPresent(file -> {
+            DialogFactory.getDefaultSaveDialog().openSaveDialog("JSON Files", ".json").ifPresent(file -> {
                 this.exportDataToFile(ExportFormat.JSON, file);
             });
         }));

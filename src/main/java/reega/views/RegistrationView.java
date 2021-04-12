@@ -94,8 +94,7 @@ public class RegistrationView extends GridPane {
     private void register() {
         final ValueResult<Void> result = this.registrationController.register();
         if (result.isInvalid()) {
-            DialogFactory.getInstance()
-                    .buildAlert(AlertType.ERROR, "Create user error", result.getMessage())
+            DialogFactory.buildAlert(AlertType.ERROR, "Create user error", result.getMessage())
                     .showAndWait();
         }
     }

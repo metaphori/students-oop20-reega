@@ -78,8 +78,7 @@ public class LoginView extends GridPane {
     private void login() {
         final ValueResult<Void> valueResult = this.loginController.login(this.rememberMeCheckBox.isSelected());
         if (valueResult.isInvalid()) {
-            DialogFactory.getInstance()
-                    .buildAlert(AlertType.ERROR, "Login error", valueResult.getMessage())
+            DialogFactory.buildAlert(AlertType.ERROR, "Login error", valueResult.getMessage())
                     .showAndWait();
         }
     }
