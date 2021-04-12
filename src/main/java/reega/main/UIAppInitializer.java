@@ -196,7 +196,7 @@ public class UIAppInitializer implements AppInitializer {
      * {@inheritDoc}
      */
     @Override
-    public void initialize() throws Exception {
+    public void initialize() {
         if (this.alreadyCalledInitialize) {
             throw new IllegalStateException("The initialize() method has already been created");
         }
