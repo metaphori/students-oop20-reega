@@ -23,6 +23,7 @@ import reega.data.models.Contract;
 import reega.users.User;
 import reega.viewcomponents.Card;
 import reega.viewcomponents.FlexibleGridPane;
+import reega.viewcomponents.WrappableLabel;
 import reega.viewutils.ViewUtils;
 
 public class UserSearchView extends VBox {
@@ -73,10 +74,10 @@ public class UserSearchView extends VBox {
         this.cardsPane.getChildren().addAll(users.stream().map(user -> {
             Card card = ViewUtils.wrapNodeWithStyleClasses(new Card(), "search-card");
             card.getChildren()
-                    .addAll(ViewUtils.wrapNodeWithStyleClasses(new Label("name: " + user.getFullName()), "search-text"),
-                            ViewUtils.wrapNodeWithStyleClasses(new Label("fiscal code: " + user.getFiscalCode()),
+                    .addAll(ViewUtils.wrapNodeWithStyleClasses(new WrappableLabel("name: " + user.getFullName()), "search-text"),
+                            ViewUtils.wrapNodeWithStyleClasses(new WrappableLabel("fiscal code: " + user.getFiscalCode()),
                                     "search-text"),
-                            ViewUtils.wrapNodeWithStyleClasses(new Label("email: " + user.getEmail()), "search-text"));
+                            ViewUtils.wrapNodeWithStyleClasses(new WrappableLabel("email: " + user.getEmail()), "search-text"));
             card.setOnMouseClicked(e -> {
                 if (e.getButton() == MouseButton.PRIMARY) {
                     controller.setUserFound(user);
@@ -97,16 +98,16 @@ public class UserSearchView extends VBox {
                 Card card = ViewUtils.wrapNodeWithStyleClasses(new Card(), "search-card");
                 // add user info and contract info for each card
                 card.getChildren()
-                        .addAll(ViewUtils.wrapNodeWithStyleClasses(new Label("User"), "search-header"),
-                                ViewUtils.wrapNodeWithStyleClasses(new Label("name: " + user.getFullName()),
+                        .addAll(ViewUtils.wrapNodeWithStyleClasses(new WrappableLabel("User"), "search-header"),
+                                ViewUtils.wrapNodeWithStyleClasses(new WrappableLabel("name: " + user.getFullName()),
                                         "search-text"),
-                                ViewUtils.wrapNodeWithStyleClasses(new Label("fiscal code: " + user.getFiscalCode()),
+                                ViewUtils.wrapNodeWithStyleClasses(new WrappableLabel("fiscal code: " + user.getFiscalCode()),
                                         "search-text"),
-                                ViewUtils.wrapNodeWithStyleClasses(new Label("Contract"), "search-header"),
+                                ViewUtils.wrapNodeWithStyleClasses(new WrappableLabel("Contract"), "search-header"),
                                 ViewUtils
-                                        .wrapNodeWithStyleClasses(new Label(
+                                        .wrapNodeWithStyleClasses(new WrappableLabel(
                                                 "address: " + contract.getAddress()), "search-text"),
-                                ViewUtils.wrapNodeWithStyleClasses(new Label("services: " + contract.getServices()
+                                ViewUtils.wrapNodeWithStyleClasses(new WrappableLabel("services: " + contract.getServices()
                                         .stream()
                                         .map(srv -> StringUtils.capitalize(srv.getName()))
                                         .collect(Collectors.joining(", "))), "search-text"));

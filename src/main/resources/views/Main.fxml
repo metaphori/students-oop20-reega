@@ -10,7 +10,7 @@
          type="GridPane"
          prefHeight="400.0"
          prefWidth="600.0"
-         stylesheets="@/css/Card.css,@/css/Main.css,@/css/Button.css">
+         stylesheets="@/css/Main.css,@/css/Button.css">
     <columnConstraints>
         <ColumnConstraints percentWidth="25"/>
         <ColumnConstraints percentWidth="75"/>
@@ -22,8 +22,8 @@
                 <HBox alignment="CENTER_RIGHT" fx:id="logoutHBox">
                     <ToggleButton fx:id="logoutButton"/>
                 </HBox>
-                <Label fx:id="userEmail"/>
-                <Label fx:id="managedUser" visible="false"/>
+                <WrappableLabel fx:id="userEmail"/>
+                <WrappableLabel fx:id="managedUser" visible="false"/>
                 <HBox fx:id="contractsPane" visible="false" alignment="CENTER" spacing="10"/>
                 <StackPane VBox.vgrow="ALWAYS">
                     <FlexibleGridPane fx:id="servicesPane" fixedColumnsNumber="2" hgap="10" vgap="10"/>

@@ -1,16 +1,16 @@
 package reega.views;
 
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextFlow;
 import org.apache.commons.lang3.StringUtils;
 import reega.controllers.UserProfileController;
 import reega.users.User;
 import reega.viewcomponents.Card;
 import reega.viewcomponents.FlexibleGridPane;
+import reega.viewcomponents.WrappableLabel;
 import reega.viewutils.ViewUtils;
 
 import java.io.IOException;
@@ -20,15 +20,15 @@ import java.util.stream.Collectors;
 public class UserProfileView extends VBox {
 
     @FXML
-    private Label userName;
+    private WrappableLabel userName;
     @FXML
-    private Label userSurname;
+    private WrappableLabel userSurname;
     @FXML
-    private Label userRole;
+    private WrappableLabel userRole;
     @FXML
-    private Label userEmail;
+    private WrappableLabel userEmail;
     @FXML
-    private Label userFiscalCode;
+    private WrappableLabel userFiscalCode;
     @FXML
     private FlexibleGridPane userContracts;
 
@@ -56,11 +56,11 @@ public class UserProfileView extends VBox {
         this.userContracts.getChildren().clear();
         this.userContracts.getChildren().addAll(controller.getUserContracts().stream().map(contract -> {
             Card contractCard = ViewUtils.wrapNodeWithStyleClasses(new Card(), "contract-card");
-            Label contractAddress = ViewUtils.wrapNodeWithStyleClasses(new Label("Address: " + contract.getAddress()), "contract-label");
-            String contractServicesString = contract.getServices().stream().map(svcType -> StringUtils.capitalize(svcType.getName())).collect(Collectors.joining(new StringBuffer(",")));
-            Label contractServices = ViewUtils.wrapNodeWithStyleClasses(new Label("Services: " + contractServicesString), "contract-label");
+            WrappableLabel contractAddress = ViewUtils.wrapNodeWithStyleClasses(new WrappableLabel("Address: " + contract.getAddress()), "contract-label");
+            String contractServicesString = contract.getServices().stream().map(svcType -> StringUtils.capitalize(svcType.getName())).collect(Collectors.joining(", "));
+            WrappableLabel contractServices = ViewUtils.wrapNodeWithStyleClasses(new WrappableLabel("Services: " + contractServicesString), "contract-label");
             String contractStartDateString = new SimpleDateFormat("yyyy/MM/dd").format(contract.getStartDate());
-            Label contractStartDate = ViewUtils.wrapNodeWithStyleClasses(new Label("Start date: " + contractStartDateString), "contract-label");
+            WrappableLabel contractStartDate = ViewUtils.wrapNodeWithStyleClasses(new WrappableLabel("Start date: " + contractStartDateString), "contract-label");
             contractCard.getChildren().addAll(contractAddress, contractServices, contractStartDate);
             return contractCard;
         }).collect(Collectors.toList()));

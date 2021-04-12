@@ -36,21 +36,16 @@ import reega.data.models.ServiceType;
 import reega.statistics.DataPlotter;
 import reega.viewcomponents.Card;
 import reega.viewcomponents.FlexibleGridPane;
+import reega.viewcomponents.WrappableLabel;
 import reega.viewutils.Command;
 import reega.viewutils.ViewUtils;
-
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-import java.util.stream.Collectors;
 
 public abstract class MainView extends GridPane {
 
     @FXML
-    private Label userEmail;
+    private WrappableLabel userEmail;
     @FXML
-    private Label managedUser;
+    private WrappableLabel managedUser;
     @FXML
     private FlexibleGridPane servicesPane;
     @FXML
@@ -96,7 +91,7 @@ public abstract class MainView extends GridPane {
         this.managedUser.managedProperty().bind(this.managedUser.visibleProperty());
     }
 
-    protected final Label getManagedUser() {
+    protected final WrappableLabel getManagedUser() {
         return this.managedUser;
     }
 
@@ -163,22 +158,22 @@ public abstract class MainView extends GridPane {
             final ObservableList<Node> serviceCardChildren = serviceCard.getChildren();
             // Add the header of the card
             serviceCardChildren.add(ViewUtils
-                    .wrapNodeWithStyleClasses(new Text(StringUtils.capitalize(svcType.getName())), "svc-header"));
+                    .wrapNodeWithStyleClasses(new WrappableLabel(StringUtils.capitalize(svcType.getName())), "svc-header"));
             // Add the peek if it's present
             controller.getPeek(svcType).ifPresent(peek -> {
                 DateFormat usDateFormat = new SimpleDateFormat("yyyy/MM/dd");
                 serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(
-                        new Text("Peek date: " + usDateFormat.format(peek.getKey())), "svc-peek"));
+                        new WrappableLabel("Peek date: " + usDateFormat.format(peek.getKey())), "svc-peek"));
                 serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(
-                        new Text(String.format(Locale.US, "Peek value: %.2f", peek.getValue())), "svc-peek"));
+                        new WrappableLabel(String.format(Locale.US, "Peek value: %.2f", peek.getValue())), "svc-peek"));
             });
             // Add the average usage
             serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(
-                    new Text(String.format(Locale.US, "Average usage: %.2f", controller.getAverageUsage(svcType))),
+                    new WrappableLabel(String.format(Locale.US, "Average usage: %.2f", controller.getAverageUsage(svcType))),
                     "svc-avg"));
             // Add the total usage
             serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(
-                    new Text(String.format(Locale.US, "Total usage: %.2f", controller.getTotalUsage(svcType))),
+                    new WrappableLabel(String.format(Locale.US, "Total usage: %.2f", controller.getTotalUsage(svcType))),
                     "svc-tot"));
             this.getServicesPane().getChildren().add(serviceCard);
         });
