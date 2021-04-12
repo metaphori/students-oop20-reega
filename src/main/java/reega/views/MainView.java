@@ -73,14 +73,11 @@ public abstract class MainView extends GridPane {
         } catch (final IOException e) {
             e.printStackTrace();
         }
-        if (controller.user().isNotNull().get()) {
-            this.userEmail.setText("Logged in as: " + controller.user().get().getFullName());
-            this.populateButtonsPane(controller);
-        }
-        controller.user().addListener((observable, oldValue, newValue) -> {
-            this.userEmail.setText("Logged in as: " + newValue.getFullName());
-            this.populateButtonsPane(controller);
-        });
+
+        this.userEmail.setText("Logged in as: " + controller.getUser().getFullName());
+        this.populateButtonsPane(controller);
+
+
         this.graphPane.setVisible(false);
         this.graphPane.visibleProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {

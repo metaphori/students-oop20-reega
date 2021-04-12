@@ -100,8 +100,7 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
                 this.removeSelectedUser();
             }));
         }
-
-        if (this.selectedUser().isNotNull().get()) {
+        else {
             this.getCommands().remove(this.getCommands().size() - 1);
         }
 

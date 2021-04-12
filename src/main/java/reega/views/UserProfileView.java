@@ -44,13 +44,7 @@ public class UserProfileView extends VBox {
             e.printStackTrace();
         }
 
-
-        if (controller.user().isNotNull().get()) {
-            this.setUserProperties(controller.getUser(), controller);
-        }
-        controller.user().addListener((observable, oldValue, newValue) -> {
-            this.setUserProperties(newValue, controller);
-        });
+        this.setUserProperties(controller.getUser(), controller);
     }
 
     private void setUserProperties(User user, UserProfileController controller) {

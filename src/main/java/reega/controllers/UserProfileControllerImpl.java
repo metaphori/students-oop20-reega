@@ -10,21 +10,16 @@ import java.util.List;
 
 public class UserProfileControllerImpl extends AbstractController implements UserProfileController {
 
-    final ObjectProperty<User> user = new SimpleObjectProperty<>();
+    private User user;
     private List<Contract> userContracts;
 
     @Override
     public void setUser(User newUser) {
-        this.user().set(newUser);
+        this.user = newUser;
     }
 
     @Override
     public User getUser() {
-        return this.user().get();
-    }
-
-    @Override
-    public ObjectProperty<User> user() {
         return this.user;
     }
 

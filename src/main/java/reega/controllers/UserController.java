@@ -21,11 +21,4 @@ public interface UserController extends Controller {
      * @return the current user
      */
     User getUser();
-
-    /**
-     * User property
-     *
-     * @return the user property that contains the current user
-     */
-    ObjectProperty<User> user();
 }
