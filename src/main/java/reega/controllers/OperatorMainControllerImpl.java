@@ -17,6 +17,7 @@ import reega.logging.ExceptionHandler;
 import reega.statistics.DataPlotter;
 import reega.statistics.StatisticsController;
 import reega.users.User;
+import reega.viewutils.Command;
 import reega.viewutils.LabeledCommand;
 
 public class OperatorMainControllerImpl extends MainControllerImpl implements OperatorMainController {
@@ -99,6 +100,16 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
                 this.removeSelectedUser();
             }));
         }
+        else {
+            this.getCommands().remove(this.getCommands().size() - 1);
+        }
+
+        this.getCommands().add(new LabeledCommand("See selected user profile", args -> {
+            this.pushController(UserProfileController.class, userProfileController -> {
+                userProfileController.setUserContracts(allContracts);
+                userProfileController.setUser(newUser);
+            }, false);
+        }));
         this.setSelectedUser(newUser);
     }
 
@@ -133,6 +144,6 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
         this.getContracts().clear();
         this.getSelectedContracts().clear();
         this.selectedUser().set(null);
-        this.getCommands().remove(this.getCommands().size() - 1);
+        this.getCommands().remove(this.getCommands().size() - 2, this.getCommands().size());
     }
 }

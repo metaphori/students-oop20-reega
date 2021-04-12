@@ -21,23 +21,23 @@ public class NavigatorImpl implements Navigator {
         this.serviceProvider = provider;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public <T extends Controller> T pushController(final Class<T> controllerClass, final boolean clearNavigationStack) {
+    public <T extends Controller> T buildController(Class<T> controllerClass) {
         final Optional<T> optionalController = this.serviceProvider.getService(controllerClass);
         if (optionalController.isEmpty()) {
             throw new NoSuchElementException();
         }
-        final T controller = optionalController.get();
+        return optionalController.get();
+    }
+
+    @Override
+    public void pushControllerToStack(Controller controller, boolean clearNavigationStack) {
         if (clearNavigationStack) {
             this.navigationStack.clear();
         }
         this.navigationStack.push(controller);
         this.navigationStackNotEmptyProperty.set(this.navigationStack.size() > 1);
         this.selectedControllerProperty.set(controller);
-        return controller;
     }
 
     /**

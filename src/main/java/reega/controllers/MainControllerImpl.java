@@ -36,7 +36,7 @@ import reega.viewutils.LabeledCommand;
 
 public class MainControllerImpl extends AbstractController implements MainController {
 
-    final ObjectProperty<User> user = new SimpleObjectProperty<>();
+    private User currentUser;
     private final StatisticsController statisticsController;
     private final DataPlotter dataPlotter;
     private final ExceptionHandler exceptionHandler;
@@ -147,17 +147,12 @@ public class MainControllerImpl extends AbstractController implements MainContro
     public void setUser(final User newUser) {
         this.initializeStatistics(newUser);
         this.initializeCommands();
-        this.user().set(newUser);
+        this.currentUser = newUser;
     }
 
     @Override
     public User getUser() {
-        return this.user().get();
-    }
-
-    @Override
-    public ObjectProperty<User> user() {
-        return this.user;
+        return this.currentUser;
     }
 
     @Override

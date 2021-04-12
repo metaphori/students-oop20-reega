@@ -5,14 +5,30 @@ import javafx.beans.property.ObjectProperty;
 
 public interface Navigator {
     /**
-     * Push a controller in the navigation stack
+     * Build a controller
+     * @param controllerClass class of the controller
+     * @param <T> type of the controller
+     * @return an instance of the controller
+     */
+    <T extends Controller> T buildController(Class<T> controllerClass);
+
+    /**
+     * Push <code>controller</code> to the navigation stack
+     * @param controller controller that needs to be pushed
+     * @param clearNavigationStack clear the navigation stack before pushing the controller
+     */
+    void pushControllerToStack(Controller controller,boolean clearNavigationStack);
+    /**
+     * Build a controller and push it into the navigation stack
      *
      * @param <T>                  type of the controller
      * @param controllerClass      class of the controller
      * @param clearNavigationStack clear the navigation stack before pushing the controller
-     * @return an instance of the controller
      */
-    <T extends Controller> T pushController(Class<T> controllerClass, boolean clearNavigationStack);
+    default <T extends Controller> void pushController(Class<T> controllerClass, boolean clearNavigationStack) {
+        T controller = this.buildController(controllerClass);
+        this.pushControllerToStack(controller, clearNavigationStack);
+    }
 
     /**
      * Pop the current controller that is in the peek of the stack {@link #selectedControllerProperty()}
