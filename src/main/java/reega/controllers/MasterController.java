@@ -20,9 +20,12 @@ public class MasterController {
                     this.navigator.popController();
                     return;
                 }
-                final Controller controller = this.navigator.pushController(evtArgs.getEventItem(),
-                        evtArgs.isClearNavigationStack());
+//                final Controller controller = this.navigator.pushController(evtArgs.getEventItem(),
+//                        evtArgs.isClearNavigationStack());
+//                evtArgs.executeAction(controller);
+                final Controller controller = this.navigator.buildController(evtArgs.getEventItem());
                 evtArgs.executeAction(controller);
+                this.navigator.pushControllerToStack(controller, evtArgs.isClearNavigationStack());
             });
         });
     }
