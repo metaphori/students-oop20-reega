@@ -74,6 +74,14 @@ public class MainControllerImpl extends AbstractController implements MainContro
     }
 
     /**
+     * Get the contract fetcher
+     * @return the contract fetcher
+     */
+    protected ContractFetcher getContractFetcher() {
+        return this.contractFetcher;
+    }
+
+    /**
      * Get the data fetcher
      * @return the data fetcher
      */
@@ -90,13 +98,17 @@ public class MainControllerImpl extends AbstractController implements MainContro
         return this.statisticsController;
     }
 
+    protected final void setUserContracts(List<Contract> contracts) {
+        this.contracts = contracts;
+    }
+
     /**
      * Initialize the statistics when a new user is set
      *
      * @param user user used for the statistics calculations
      */
     protected void initializeStatistics(final User user) {
-        final List<Contract> allContracts = this.contractFetcher.fetchContractsByUser(user);
+        final List<Contract> allContracts = this.contractFetcher.fetchUserContracts();
         this.contracts = allContracts;
         this.selectedContracts.clear();
         this.selectedContracts.addAll(allContracts);

@@ -8,7 +8,9 @@ import javax.inject.Inject;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import reega.data.ContractFetcher;
+import reega.data.OperatorContractFetcher;
 import reega.data.OperatorDataFetcher;
+import reega.data.models.Contract;
 import reega.data.models.Data;
 import reega.data.models.ServiceType;
 import reega.logging.ExceptionHandler;
@@ -23,8 +25,13 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
     @Inject
     public OperatorMainControllerImpl(final StatisticsController statisticsController, final DataPlotter dataPlotter,
             final ExceptionHandler exceptionHandler, final OperatorDataFetcher dataFetcher,
-            final ContractFetcher contractFetcher) {
+            final OperatorContractFetcher contractFetcher) {
         super(statisticsController, dataPlotter, exceptionHandler, dataFetcher, contractFetcher);
+    }
+
+    @Override
+    protected OperatorContractFetcher getContractFetcher() {
+        return (OperatorContractFetcher) super.getContractFetcher();
     }
 
     @Override
@@ -59,8 +66,7 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
                      */
                     this.popController();
                     User user = evtArgs.getEventItem();
-                    this.initializeStatisticsForSelectedUser(user);
-                    this.setSelectedUser(user);
+                    this.initializeStatisticsForSelectedUser(user, null);
                 }
             });
             searchUserController.setContractFoundEventHandler(evtArgs -> {
@@ -70,11 +76,7 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
                      */
                     this.popController();
                     User user = evtArgs.getEventItem().getKey();
-                    this.initializeStatisticsForSelectedUser(user);
-                    this.getSelectedContracts().clear();
-                    this.getStatisticsController().setData(new ArrayList<>());
-                    this.addSelectedContract(evtArgs.getEventItem().getValue());
-                    this.setSelectedUser(user);
+                    this.initializeStatisticsForSelectedUser(user, List.of(evtArgs.getEventItem().getValue()));
                 }
             });
         }, false);
@@ -84,14 +86,24 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
      * Initialize the statistics when a new user is selected
      * @param newUser new user
      */
-    private void initializeStatisticsForSelectedUser(final User newUser) {
-        super.initializeStatistics(newUser);
+    private void initializeStatisticsForSelectedUser(final User newUser, final List<Contract> selectedContracts) {
+        final List<Contract> allContracts = this.getContractFetcher().fetchContractsByUser(newUser);
+        this.setUserContracts(allContracts);
+        this.getSelectedContracts().clear();
+        if (selectedContracts == null) {
+            this.getSelectedContracts().addAll(allContracts);
+        }
+        else {
+            this.getSelectedContracts().addAll(selectedContracts);
+        }
+        List<Data> initialData = this.getDataFetcher().fetchAllUserData(newUser, allContracts);
+        this.getStatisticsController().setData(initialData);
         if (this.selectedUser().isNull().get()) {
             this.getCommands().add(new LabeledCommand("Remove current selection", args -> {
                 this.removeSelectedUser();
             }));
         }
-
+        this.setSelectedUser(newUser);
     }
 
     /**

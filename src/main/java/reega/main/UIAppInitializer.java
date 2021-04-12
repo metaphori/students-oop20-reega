@@ -83,6 +83,7 @@ public class UIAppInitializer implements AppInitializer {
         svcCollection.addSingleton(DataFetcher.class, DataFetcherImpl.class);
         svcCollection.addSingleton(OperatorDataFetcher.class, OperatorDataFetcherImpl.class);
         svcCollection.addSingleton(ContractFetcher.class, ContractFetcherImpl.class);
+        svcCollection.addSingleton(OperatorContractFetcher.class, OperatorContractFetcherImpl.class);
         svcCollection.addTransient(StatisticsController.class, StatisticsControllerImpl.class);
         svcCollection.addTransient(DataPlotter.class, DataPlotterImpl.class);
         svcCollection.addTransient(LoginController.class, LoginControllerImpl.class);
@@ -106,7 +107,7 @@ public class UIAppInitializer implements AppInitializer {
             final DataPlotter dataPlotter = svcProvider.getRequiredService(DataPlotter.class);
             final ExceptionHandler exceptionHandler = svcProvider.getRequiredService(ExceptionHandler.class);
             final OperatorDataFetcher dataFetcher = svcProvider.getRequiredService(OperatorDataFetcher.class);
-            final ContractFetcher contractFetcher = svcProvider.getRequiredService(ContractFetcher.class);
+            final OperatorContractFetcher contractFetcher = svcProvider.getRequiredService(OperatorContractFetcher.class);
 
             dataPlotter.setStatisticController(statisticsController);
 
