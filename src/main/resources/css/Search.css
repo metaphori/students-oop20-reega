@@ -10,12 +10,18 @@
     -fx-font-weight: bold;
 }
 
-#searchBox, #cardsPane {
+#searchBox {
+	-fx-padding: 0.8125em;
+	-fx-spacing: 0.5em;
+}
+
+#cardsPane {
 	-fx-padding: 0.8125em;
 }
 
-#search-bar {
-	-fx-padding: 0.8125em;
+#userSearch, #contractSearch {
+    -fx-font-size: 0.875em;
+    -fx-text-fill: #ffffff;
 }
 
 /*

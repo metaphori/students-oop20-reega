@@ -60,6 +60,10 @@ public class UserSearchView extends VBox {
         };
         this.searchBar.setOnAction(action);
         this.searchButton.setOnAction(action);
+
+        this.searchBar.setPromptText("Search for name, surname, fiscal code or email");
+        this.userSearch.setOnAction(e -> searchBar.setPromptText("Search for name, surname, fiscal code or email"));
+        this.contractSearch.setOnAction(e -> searchBar.setPromptText("Search for services, address or accountholder"));
     }
 
     protected void populateCardBoxByUser(SearchUserController controller) {
