@@ -9,11 +9,9 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import reega.data.ContractFetcher;
+import reega.data.ContractManager;
 import reega.data.DataFetcher;
 import reega.data.exporter.ExportFormat;
 import reega.data.exporter.ReegaExporterFactory;
@@ -37,19 +35,19 @@ public class MainControllerImpl extends AbstractController implements MainContro
     private ObservableList<Command> commands = FXCollections.observableArrayList();
     private EventHandler<Void> logoutEventHandler;
     private final DataFetcher dataFetcher;
-    private final ContractFetcher contractFetcher;
+    private final ContractManager contractManager;
 
     @Inject
     public MainControllerImpl(final StatisticsController statisticsController,
                               final DataPlotter dataPlotter,
                               final ExceptionHandler exceptionHandler,
                               final DataFetcher dataFetcher,
-                              final ContractFetcher contractFetcher) {
+                              final ContractManager contractManager) {
         this.statisticsController = statisticsController;
         this.dataPlotter = dataPlotter;
         this.exceptionHandler = exceptionHandler;
         this.dataFetcher = dataFetcher;
-        this.contractFetcher = contractFetcher;
+        this.contractManager = contractManager;
     }
 
     protected void initializeCommands() {
@@ -66,11 +64,11 @@ public class MainControllerImpl extends AbstractController implements MainContro
     }
 
     /**
-     * Get the contract fetcher
-     * @return the contract fetcher
+     * Get the contract manager
+     * @return the contract manager
      */
-    protected ContractFetcher getContractFetcher() {
-        return this.contractFetcher;
+    protected ContractManager getContractManager() {
+        return this.contractManager;
     }
 
     /**
@@ -100,7 +98,7 @@ public class MainControllerImpl extends AbstractController implements MainContro
      * @param user user used for the statistics calculations
      */
     protected void initializeStatistics(final User user) {
-        final List<Contract> allContracts = this.contractFetcher.fetchUserContracts();
+        final List<Contract> allContracts = this.contractManager.fetchUserContracts();
         this.contracts = allContracts;
         this.selectedContracts.clear();
         this.selectedContracts.addAll(allContracts);

@@ -2,26 +2,25 @@ package reega.data;
 
 import reega.data.models.Contract;
 import reega.logging.ExceptionHandler;
-import reega.users.User;
 
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-public class ContractFetcherImpl implements ContractFetcher{
+public class ContractManagerImpl implements ContractManager {
 
     private ContractController contractController;
     private ExceptionHandler exceptionHandler;
 
     @Inject
-    public ContractFetcherImpl(ContractController contractController, ExceptionHandler exceptionHandler) {
+    public ContractManagerImpl(ContractController contractController, ExceptionHandler exceptionHandler) {
         this.contractController = contractController;
         this.exceptionHandler = exceptionHandler;
     }
 
-    protected final DataController getDataController() {
-        return this.dataController;
+    protected final ContractController getContractController() {
+        return this.contractController;
     }
 
     protected final ExceptionHandler getExceptionHandler() {
