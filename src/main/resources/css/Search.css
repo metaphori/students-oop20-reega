@@ -10,24 +10,22 @@
     -fx-font-weight: bold;
 }
 
-#searchBox {
+/* HBox containing text field, button and toggle button for search */
+#innerSearchBox {
 	-fx-padding: 0.8125em;
 	-fx-spacing: 0.5em;
 }
 
+/* grid pane in wich results are shown */
 #cardsPane {
 	-fx-padding: 0.8125em;
+	-fx-hgap: 1em;
+	-fx-vgap: 1em;
+	-fx-grid-lines-visible: true;
 }
 
+/* radio buttons */
 #userSearch, #contractSearch {
     -fx-font-size: 0.875em;
     -fx-text-fill: #ffffff;
 }
-
-/*
-#toggleBox {
-	-fx-background-color: white;
-    -fx-background-radius: 1em;
-	-fx-padding: 0.120em;
-}
-*/
