@@ -109,6 +109,13 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
             this.pushController(UserProfileController.class, userProfileController -> {
                 userProfileController.setUserContracts(allContracts);
                 userProfileController.setUser(newUser);
+                userProfileController.setDeleteUserContractHandler(evtArgs -> {
+                    Contract contractToDelete = evtArgs.getEventItem();
+                    if (this.getContractManager().deleteUserContract(contractToDelete)) {
+                        this.getContracts().remove(contractToDelete);
+                        this.removeSelectedContract(contractToDelete);
+                    }
+                });
             }, false);
         }));
         this.setSelectedUser(newUser);
