@@ -1,7 +1,5 @@
 package reega.data;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import reega.data.models.Contract;
 import reega.data.models.Data;
 import reega.logging.ExceptionHandler;
@@ -10,20 +8,18 @@ import reega.users.User;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class DataFetcherImpl implements DataFetcher {
 
     private Map<Contract, List<Data>> currentDataByContract;
-    private DataController dataController;
+    private DataController contractController;
     private ExceptionHandler exceptionHandler;
 
     @Inject
-    public DataFetcherImpl(DataController dataController, ExceptionHandler exceptionHandler) {
-        this.dataController = dataController;
+    public DataFetcherImpl(DataController contractController, ExceptionHandler exceptionHandler) {
+        this.contractController = contractController;
         this.exceptionHandler = exceptionHandler;
     }
 
@@ -38,18 +34,18 @@ public class DataFetcherImpl implements DataFetcher {
     }
 
     @Override
-    public List<Data> pushAndFetchContract(List<Data> oldData,Contract contract) {
+    public List<Data> pushAndFetchContract(List<Data> oldData, Contract contract) {
         final List<Data> monthlyData = this.getDataByContract(contract);
         final Stream<Data> newDataStream = monthlyData.stream();
         final List<Data> allData = Stream
                 .concat(newDataStream, oldData.stream())
                 .collect(Collectors.toList());
-        this.currentDataByContract.put(contract,monthlyData);
+        this.currentDataByContract.put(contract, monthlyData);
         return allData;
     }
 
     @Override
-    public List<Data> removeAndFetchContract(List<Data> oldData,Contract contract) {
+    public List<Data> removeAndFetchContract(List<Data> oldData, Contract contract) {
         this.currentDataByContract.remove(contract);
         return this.currentDataByContract.values()
                 .stream()
@@ -59,14 +55,16 @@ public class DataFetcherImpl implements DataFetcher {
 
     /**
      * Get the data controller
+     *
      * @return the data controller
      */
     protected final DataController getDataController() {
-        return this.dataController;
+        return this.contractController;
     }
 
     /**
      * Get the exception handler
+     *
      * @return the exception handler
      */
     protected final ExceptionHandler getExceptionHandler() {
@@ -81,7 +79,7 @@ public class DataFetcherImpl implements DataFetcher {
      */
     protected final List<Data> getDataByContract(final Contract contract) {
         try {
-            return this.dataController.getMonthlyData(contract.getId());
+            return this.contractController.getMonthlyData(contract.getId());
         } catch (final IOException e) {
             this.exceptionHandler.handleException(e, "Failed to load data for the contract: " + contract.getId());
         }

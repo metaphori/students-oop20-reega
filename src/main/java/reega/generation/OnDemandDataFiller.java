@@ -1,24 +1,20 @@
 package reega.generation;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import reega.data.DataController;
+import reega.data.factory.ContractControllerFactory;
+import reega.data.factory.DataControllerFactory;
 import reega.data.models.Contract;
 import reega.data.models.Data;
 import reega.data.models.DataType;
 import reega.data.models.ServiceType;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 public class OnDemandDataFiller implements DataFiller {
 
@@ -33,11 +29,11 @@ public class OnDemandDataFiller implements DataFiller {
     private final DataController database;
     private final Long currentDate;
 
-    public OnDemandDataFiller(DataController controller, final Collection<Contract> contracts) {
+    public OnDemandDataFiller() throws IOException {
         this.currentDate = new Date().getTime() + 60_000L; // current date + 1 min
-        this.database = controller;
+        this.database = DataControllerFactory.getDefaultDataController(null);
         this.usageDataMap = new HashMap<>();
-        this.addContracts(contracts);
+        this.addContracts(ContractControllerFactory.getDefaultDataController(null).getAllContracts());
     }
 
     @Override
@@ -59,7 +55,7 @@ public class OnDemandDataFiller implements DataFiller {
         }
     }
 
-    public void addContracts(Collection<Contract> contracts) {
+    public void addContracts(List<Contract> contracts) {
         for (Contract contract : contracts) {
             List<DataType> dataTypes = contract.getServices()
                     .stream()

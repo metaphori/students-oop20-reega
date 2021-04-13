@@ -1,6 +1,7 @@
-package reega.data;
+package reega.data.factory;
 
 
+import reega.data.UserController;
 import reega.data.remote.RemoteConnection;
 import reega.data.remote.RemoteUserAPI;
 

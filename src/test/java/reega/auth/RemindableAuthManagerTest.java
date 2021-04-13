@@ -5,8 +5,8 @@ package reega.auth;
 
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-import reega.data.AuthControllerFactory;
-import reega.data.UserControllerFactory;
+import reega.data.factory.AuthControllerFactory;
+import reega.data.factory.UserControllerFactory;
 import reega.data.mock.TestConnection;
 import reega.data.remote.RemoteConnection;
 import reega.io.IOControllerFactory;
