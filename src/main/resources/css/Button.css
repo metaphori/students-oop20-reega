@@ -2,6 +2,10 @@
     -fx-background-color: rgba(20,105,4,1);
 }
 
+.button:hover {
+	-fx-cursor: hand;
+}
+
 .button {
     -fx-background-color: rgba(20,105,4, 0.75);
 }
