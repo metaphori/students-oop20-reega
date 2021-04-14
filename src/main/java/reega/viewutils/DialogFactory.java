@@ -38,7 +38,9 @@ public final class DialogFactory {
                 .add(ClassLoader.getSystemClassLoader().getResource("css/Dialog.css").toExternalForm());
         dialogPane.getStylesheets()
                 .add(ClassLoader.getSystemClassLoader().getResource("css/Common.css").toExternalForm());
-        dialogPane.getStyleClass().add("commonDialog");
+        dialogPane.getStylesheets()
+                .add(ClassLoader.getSystemClassLoader().getResource("css/Button.css").toExternalForm());
+		dialogPane.getStyleClass().add("commonDialog");
         return alert;
     }
 

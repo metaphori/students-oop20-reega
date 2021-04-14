@@ -13,7 +13,7 @@
             type="ScrollPane"
             prefHeight="800.0"
             prefWidth="700.0"
-            stylesheets="@/css/Common.css"
+            stylesheets="@/css/Common.css,@/css/Button.css"
             fitToWidth="true" fitToHeight="true">
     <content>
         <VBox>

@@ -14,7 +14,7 @@
          prefHeight="400.0"
          prefWidth="600.0"
          alignment="CENTER"
-         stylesheets="@/css/Login.css,@/css/Logo.css">
+         stylesheets="@/css/Logo.css">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" halignment="CENTER" percentWidth="25.0"/>
         <ColumnConstraints hgrow="SOMETIMES" halignment="CENTER" percentWidth="50.0"/>
