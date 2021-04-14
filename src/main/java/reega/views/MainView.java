@@ -36,6 +36,7 @@ import reega.data.models.ServiceType;
 import reega.statistics.DataPlotter;
 import reega.viewcomponents.Card;
 import reega.viewcomponents.FlexibleGridPane;
+import reega.viewcomponents.MaxWidthButton;
 import reega.viewcomponents.WrappableLabel;
 import reega.viewutils.Command;
 import reega.viewutils.ViewUtils;
@@ -130,8 +131,7 @@ public abstract class MainView extends GridPane {
     private void populateButtonsPane(final MainController controller) {
         this.buttonsPane.getChildren().clear();
         this.buttonsPane.getChildren().addAll(controller.getCommands().stream().map(entry -> {
-            final Button b = new Button(entry.getCommandName());
-            b.setMaxWidth(1.7976931348623157E308);
+            final MaxWidthButton b = new MaxWidthButton(entry.getCommandName());
             b.setOnAction(event -> {
                 entry.execute((Object) null);
             });
@@ -245,9 +245,8 @@ public abstract class MainView extends GridPane {
     }
 
     /**
-     * updates data to be shown and sets the graphPane visible
+     * Updates data to be shown and sets the graphPane visible
      *
-     * @param svcType
      * @param dataPlotter
      */
     protected void updateAndShowGraph(DataPlotter dataPlotter) {
@@ -256,9 +255,8 @@ public abstract class MainView extends GridPane {
     }
 
     /**
-     * updates graph based on the given data type and dataPlotter
+     * Updates graph based on the given data type and dataPlotter
      *
-     * @param svcType
      * @param dataPlotter
      */
     protected void updateGraph(DataPlotter dataPlotter) {
