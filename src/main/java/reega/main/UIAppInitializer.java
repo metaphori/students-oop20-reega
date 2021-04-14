@@ -11,6 +11,10 @@ import reega.auth.AuthManager;
 import reega.auth.RemindableAuthManager;
 import reega.controllers.*;
 import reega.data.*;
+import reega.data.factory.AuthControllerFactory;
+import reega.data.factory.ContractControllerFactory;
+import reega.data.factory.DataControllerFactory;
+import reega.data.factory.UserControllerFactory;
 import reega.data.remote.RemoteConnection;
 import reega.io.IOController;
 import reega.io.IOControllerFactory;
@@ -70,6 +74,8 @@ public class UIAppInitializer implements AppInitializer {
         svcCollection.addSingleton(AuthController.class, AuthControllerFactory.getDefaultAuthController(null));
         svcCollection.addSingleton(IOController.class, IOControllerFactory.getDefaultIOController());
         svcCollection.addSingleton(TokenIOController.class, IOControllerFactory.getDefaultTokenIOController());
+        svcCollection.addSingleton(ContractController.class,
+                ContractControllerFactory.getDefaultDataController(new RemoteConnection()));
         svcCollection.addSingleton(DataController.class,
                 DataControllerFactory.getDefaultDataController(new RemoteConnection()));
         svcCollection.addSingleton(ExceptionHandler.class, SimpleExceptionHandler.class);
@@ -77,8 +83,8 @@ public class UIAppInitializer implements AppInitializer {
         svcCollection.addSingleton(AuthManager.class, RemindableAuthManager.class);
         svcCollection.addSingleton(DataFetcher.class, DataFetcherImpl.class);
         svcCollection.addSingleton(OperatorDataFetcher.class, OperatorDataFetcherImpl.class);
-        svcCollection.addSingleton(ContractFetcher.class, ContractFetcherImpl.class);
-        svcCollection.addSingleton(OperatorContractFetcher.class, OperatorContractFetcherImpl.class);
+        svcCollection.addSingleton(ContractManager.class, ContractManagerImpl.class);
+        svcCollection.addSingleton(OperatorContractManager.class, OperatorContractManagerImpl.class);
         svcCollection.addTransient(StatisticsController.class, StatisticsControllerImpl.class);
         svcCollection.addTransient(DataPlotter.class, DataPlotterImpl.class);
         svcCollection.addTransient(LoginController.class, LoginControllerImpl.class);
@@ -89,12 +95,12 @@ public class UIAppInitializer implements AppInitializer {
             final DataPlotter dataPlotter = svcProvider.getRequiredService(DataPlotter.class);
             final ExceptionHandler exceptionHandler = svcProvider.getRequiredService(ExceptionHandler.class);
             final DataFetcher dataFetcher = svcProvider.getRequiredService(DataFetcher.class);
-            final ContractFetcher contractFetcher = svcProvider.getRequiredService(ContractFetcher.class);
+            final ContractManager contractManager = svcProvider.getRequiredService(ContractManager.class);
 
             dataPlotter.setStatisticController(statisticsController);
 
             return new MainControllerImpl(statisticsController, dataPlotter, exceptionHandler, dataFetcher,
-                    contractFetcher);
+                    contractManager);
         });
         svcCollection.addTransient(OperatorMainController.class, (svcProvider) -> {
             final StatisticsController statisticsController = svcProvider
@@ -102,7 +108,7 @@ public class UIAppInitializer implements AppInitializer {
             final DataPlotter dataPlotter = svcProvider.getRequiredService(DataPlotter.class);
             final ExceptionHandler exceptionHandler = svcProvider.getRequiredService(ExceptionHandler.class);
             final OperatorDataFetcher dataFetcher = svcProvider.getRequiredService(OperatorDataFetcher.class);
-            final OperatorContractFetcher contractFetcher = svcProvider.getRequiredService(OperatorContractFetcher.class);
+            final OperatorContractManager contractFetcher = svcProvider.getRequiredService(OperatorContractManager.class);
 
             dataPlotter.setStatisticController(statisticsController);
 

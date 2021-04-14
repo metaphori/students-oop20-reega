@@ -5,7 +5,7 @@ import reega.users.User;
 
 import java.util.List;
 
-public interface ContractFetcher {
+public interface ContractManager {
     /**
      * Fetch the contracts of the current user
      * @return the contracts of the current user

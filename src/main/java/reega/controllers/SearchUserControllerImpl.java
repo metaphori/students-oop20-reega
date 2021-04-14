@@ -11,6 +11,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import reega.data.ContractController;
 import reega.data.DataController;
 import reega.data.UserController;
 import reega.data.models.Contract;
@@ -25,14 +26,14 @@ public class SearchUserControllerImpl extends AbstractController implements Sear
     private EventHandler<User> userEventHandler;
     private EventHandler<Pair<User, Contract>> contractEventHandler;
     private UserController userController;
-    private DataController dataController;
+    private ContractController contractController;
     private ExceptionHandler exceptionHandler;
 
     @Inject
-    public SearchUserControllerImpl(UserController userController, DataController dataController,
+    public SearchUserControllerImpl(UserController userController, ContractController contractController,
             ExceptionHandler exceptionHandler) {
         this.userController = userController;
-        this.dataController = dataController;
+        this.contractController = contractController;
         this.exceptionHandler = exceptionHandler;
     }
 
@@ -50,7 +51,7 @@ public class SearchUserControllerImpl extends AbstractController implements Sear
     public Map<User, Set<Contract>> searchContract(String contract) {
 
         try {
-            return dataController.searchContract(contract).stream().collect(Collectors.groupingBy(cnt -> {
+            return this.contractController.searchContract(contract).stream().collect(Collectors.groupingBy(cnt -> {
                 try {
                     return this.userController.getUserFromContract(cnt.getId());
                 } catch (IOException e) {

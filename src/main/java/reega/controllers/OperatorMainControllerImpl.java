@@ -1,14 +1,16 @@
 package reega.controllers;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import reega.data.ContractFetcher;
-import reega.data.OperatorContractFetcher;
+import reega.data.OperatorContractManager;
 import reega.data.OperatorDataFetcher;
 import reega.data.models.Contract;
 import reega.data.models.Data;
@@ -17,7 +19,6 @@ import reega.logging.ExceptionHandler;
 import reega.statistics.DataPlotter;
 import reega.statistics.StatisticsController;
 import reega.users.User;
-import reega.viewutils.Command;
 import reega.viewutils.LabeledCommand;
 
 public class OperatorMainControllerImpl extends MainControllerImpl implements OperatorMainController {
@@ -26,13 +27,13 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
     @Inject
     public OperatorMainControllerImpl(final StatisticsController statisticsController, final DataPlotter dataPlotter,
             final ExceptionHandler exceptionHandler, final OperatorDataFetcher dataFetcher,
-            final OperatorContractFetcher contractFetcher) {
-        super(statisticsController, dataPlotter, exceptionHandler, dataFetcher, contractFetcher);
+            final OperatorContractManager contractManager) {
+        super(statisticsController, dataPlotter, exceptionHandler, dataFetcher, contractManager);
     }
 
     @Override
-    protected OperatorContractFetcher getContractFetcher() {
-        return (OperatorContractFetcher) super.getContractFetcher();
+    protected OperatorContractManager getContractManager() {
+        return (OperatorContractManager) super.getContractManager();
     }
 
     @Override
@@ -88,7 +89,7 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
      * @param newUser new user
      */
     private void initializeStatisticsForSelectedUser(final User newUser, final List<Contract> selectedContracts) {
-        final List<Contract> allContracts = this.getContractFetcher().fetchContractsByUser(newUser);
+        final List<Contract> allContracts = this.getContractManager().fetchContractsByUser(newUser);
         this.setUserContracts(allContracts);
         this.getSelectedContracts().clear();
         List<Contract> contracts = selectedContracts == null ? allContracts : selectedContracts;
@@ -108,6 +109,13 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
             this.pushController(UserProfileController.class, userProfileController -> {
                 userProfileController.setUserContracts(allContracts);
                 userProfileController.setUser(newUser);
+                userProfileController.setDeleteUserContractHandler(evtArgs -> {
+                    Contract contractToDelete = evtArgs.getEventItem();
+                    if (this.getContractManager().deleteUserContract(contractToDelete)) {
+                        this.getContracts().remove(contractToDelete);
+                        this.removeSelectedContract(contractToDelete);
+                    }
+                });
             }, false);
         }));
         this.setSelectedUser(newUser);
