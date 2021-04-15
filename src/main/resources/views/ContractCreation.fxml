@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import reega.viewcomponents.Card?>
+<fx:root xmlns:fx="http://javafx.com/fxml/1"
+         type="VBox"
+         stylesheets="@/css/Contract.css,@/css/Button.css,@/css/Card.css">
+    <children>
+        <Label text="Create new contract" alignment="TOP_CENTER"/>
+        <Card alignment="CENTER">
+            <children>
+                <Label fx:id="userLabel" alignment="TOP_CENTER"/>
+                <GridPane>
+                    <children>
+                        <Label text="Services:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                        <ListView fx:id="servicesList" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                        <Label text="Address:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                        <TextField fx:id="addressLabel" promptText="Insert Address" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                    </children>
+                </GridPane>
+                <Button fx:id="contractButton" text="Create new Contract" alignment="BOTTOM_RIGHT"/>
+            </children>
+        </Card>
+    </children>
+</fx:root>>
