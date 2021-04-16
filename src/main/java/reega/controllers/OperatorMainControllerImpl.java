@@ -102,7 +102,7 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
             }));
         }
         else {
-            this.getCommands().remove(this.getCommands().size() - 1);
+            this.getCommands().remove(this.getCommands().size() - 2);
         }
 
         this.getCommands().add(new LabeledCommand("See selected user profile", args -> {
@@ -115,6 +115,14 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
                         this.getContracts().remove(contractToDelete);
                         this.removeSelectedContract(contractToDelete);
                     }
+                });
+            }, false);
+        }));
+        this.getCommands().add(new LabeledCommand("Add contract to the selected user", args -> {
+            this.pushController(ContractCreationController.class, contractCreationController -> {
+                contractCreationController.setUser(newUser);
+                contractCreationController.setContractCreateEventHandler(evtArgs -> {
+                    this.getContracts().add(evtArgs.getEventItem());
                 });
             }, false);
         }));
