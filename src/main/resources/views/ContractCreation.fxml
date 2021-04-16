@@ -9,7 +9,7 @@
 <?import reega.viewcomponents.Card?>
 <fx:root xmlns:fx="http://javafx.com/fxml/1"
          type="VBox"
-         stylesheets="@/css/Contract.css,@/css/Button.css,@/css/Card.css">
+         stylesheets="@/css/Contract.css">
     <children>
         <Label text="Create new contract" alignment="TOP_CENTER"/>
         <Card alignment="CENTER">
