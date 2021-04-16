@@ -1,26 +1,14 @@
 package reega.controllers;
 
+import reega.data.models.Contract;
 import reega.data.models.gson.NewContract;
 import reega.users.User;
 import reega.viewutils.EventHandler;
 
 import java.util.Optional;
 
-public interface ContractCreationController {
-        /**
-         * Get the currently set {@link User} for this instance
-         *
-         * @return an User
-         */
-        Optional<User> getUser();
-
-        /**
-         * Set the current {@link User} for this instance
-         *
-         * @param user the user this instance will be linked with
-         */
-        void setUser(User user);
-
+public interface ContractCreationController extends UserController{
+        
         /**
          * Register a new contract associated with the current user
          *
@@ -36,5 +24,5 @@ public interface ContractCreationController {
          *
          * @param eventHandler event handler
          */
-        void setContractCreateEventHandler(EventHandler<NewContract> eventHandler);
+        void setContractCreateEventHandler(EventHandler<Contract> eventHandler);
 }

@@ -34,7 +34,7 @@ public class ContractCreationView extends VBox {
                         e.printStackTrace();
                 }
 
-                this.userLabel.setText("User: " + controller.getUser().get().getName() + controller.getUser().get().getSurname());
+                this.userLabel.setText("User: " + controller.getUser().getName() + controller.getUser().getSurname());
                 // TODO init services list properly
                 this.contractButton.setOnAction(e -> {
                         try {
