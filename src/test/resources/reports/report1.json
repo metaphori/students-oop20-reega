@@ -1,0 +1,9 @@
+{
+  "month": "2021-03",
+  "reports": {
+    "ELECTRICITY": {
+      "sum": 19.2,
+      "avg": 6.4
+    }
+  }
+}

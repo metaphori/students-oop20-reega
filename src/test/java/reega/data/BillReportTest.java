@@ -29,7 +29,6 @@ public class BillReportTest {
         connection = new TestConnection().getTestConnection("admin@reega.it", "AES_PASSWORD");
         contractController = ContractControllerFactory.getRemoteDatabaseController(connection);
         dataController = DataControllerFactory.getDefaultDataController(connection);
-
     }
 
     @AfterAll
