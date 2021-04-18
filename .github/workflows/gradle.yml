@@ -24,7 +24,9 @@ jobs:
           ubuntu-gradle-
         
     - name: Build
-      run: ./gradlew shadowJar
+      run: |
+        ./gradlew shadowJar
+        chmod +x build/libs/reega.jar
     - uses: actions/upload-artifact@v2
       with:
         name: reega.jar
