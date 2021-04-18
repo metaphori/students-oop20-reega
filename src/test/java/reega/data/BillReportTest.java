@@ -11,6 +11,7 @@ import reega.data.remote.RemoteConnection;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -40,7 +41,7 @@ public class BillReportTest {
     @Test
     @Order(1)
     public void ensureEmpty() throws IOException {
-        var reports = contractController.getBillsForContracts(0);
+        var reports = contractController.getBillsForContracts(List.of(0));
         assertNotNull(reports);
         assertEquals(0, reports.size());
     }
@@ -71,7 +72,7 @@ public class BillReportTest {
         assertNotNull(contracts);
         assertEquals(1, contracts.size());
 
-        var reports = contractController.getBillsForContracts(contracts.get(0).getId());
+        var reports = contractController.getBillsForContracts(List.of(contracts.get(0).getId()));
         assertNotNull(reports);
         assertEquals(1, reports.size());
         String report = reports.get(0).toString();
@@ -79,5 +80,4 @@ public class BillReportTest {
 
         assertEquals(JsonParser.parseString(expected), JsonParser.parseString(report));
     }
-
 }

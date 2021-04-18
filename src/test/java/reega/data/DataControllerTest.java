@@ -12,6 +12,7 @@ import reega.data.utils.FileUtils;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -48,7 +49,7 @@ public class DataControllerTest {
     public void ensureEmpty() throws IOException {
         var contracts = contractController.getUserContracts();
         assertEquals(1, contracts.size());
-        var report = contractController.getBillsForContracts(contracts.get(0).getId());
+        var report = contractController.getBillsForContracts(List.of(contracts.get(0).getId()));
         assertNotNull(report);
         assertEquals(0, report.size());
         report.forEach(System.out::println);
@@ -113,7 +114,7 @@ public class DataControllerTest {
     public void billReport() throws IOException, URISyntaxException {
         var contracts = contractController.getUserContracts();
         assertEquals(2, contracts.size());
-        var report = contractController.getBillsForContracts(contracts.get(0).getId());
+        var report = contractController.getBillsForContracts(List.of(contracts.get(0).getId()));
         assertEquals(1, report.size());
 
         var expected = FileUtils.getFileFromResourcesAsString("reports/report1.json");

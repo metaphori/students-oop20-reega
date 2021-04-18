@@ -1,5 +1,6 @@
 package reega.data.remote;
 
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reega.data.ContractController;
@@ -30,9 +31,9 @@ public class RemoteContractAPI implements ContractController {
     }
 
     @Override
-    public List<MonthlyReport> getBillsForContracts(int contractID) throws IOException {
-        logger.info("getting bill report for contract " + contractID);
-        final Response<List<MonthlyReportModel>> r = connection.getService().getBillReport(contractID).execute();
+    public List<MonthlyReport> getBillsForContracts(@NotNull List<Integer> contractIDs) throws IOException {
+        logger.info("getting bill report for contract " + contractIDs);
+        final Response<List<MonthlyReportModel>> r = connection.getService().getBillReport(contractIDs).execute();
         if (r.code() > 299 || r.body() == null) {
             logger.info("error: " + r.errorBody());
             return new ArrayList<>();

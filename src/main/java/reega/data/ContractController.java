@@ -1,5 +1,6 @@
 package reega.data;
 
+import org.jetbrains.annotations.NotNull;
 import reega.data.models.Contract;
 import reega.data.models.MonthlyReport;
 import reega.data.models.gson.NewContract;
@@ -61,5 +62,5 @@ public interface ContractController {
      */
     List<Contract> searchContract(final String keyword) throws IOException;
 
-    List<MonthlyReport> getBillsForContracts(int contractID) throws IOException;
+    List<MonthlyReport> getBillsForContracts(@NotNull List<Integer> contractIDs) throws IOException;
 }
