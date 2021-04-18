@@ -1,13 +1,5 @@
 package reega.controllers;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.inject.Inject;
-
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import reega.data.OperatorContractManager;
@@ -21,13 +13,20 @@ import reega.statistics.StatisticsController;
 import reega.users.User;
 import reega.viewutils.LabeledCommand;
 
+import javax.inject.Inject;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 public class OperatorMainControllerImpl extends MainControllerImpl implements OperatorMainController {
     private ObjectProperty<User> selectedUserProperty = new SimpleObjectProperty<>();
 
     @Inject
     public OperatorMainControllerImpl(final StatisticsController statisticsController, final DataPlotter dataPlotter,
-            final ExceptionHandler exceptionHandler, final OperatorDataFetcher dataFetcher,
-            final OperatorContractManager contractManager) {
+                                      final ExceptionHandler exceptionHandler, final OperatorDataFetcher dataFetcher,
+                                      final OperatorContractManager contractManager) {
         super(statisticsController, dataPlotter, exceptionHandler, dataFetcher, contractManager);
     }
 
@@ -44,11 +43,8 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
     @Override
     protected void initializeCommands() {
         super.initializeCommands();
-        this.getCommands().add(new LabeledCommand("Search user", (args) -> {
+        this.getCommands().add(new LabeledCommand("Search", (args) -> {
             this.jumpToSearchUser();
-        }));
-        this.getCommands().add(new LabeledCommand("Manage users", (args) -> {
-            // TODO Create the ManagerUsers controller
         }));
     }
 
@@ -86,6 +82,7 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
 
     /**
      * Initialize the statistics when a new user is selected
+     *
      * @param newUser new user
      */
     private void initializeStatisticsForSelectedUser(final User newUser, final List<Contract> selectedContracts) {
@@ -97,32 +94,34 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
         List<Data> initialData = this.getDataFetcher().fetchAllUserData(newUser, contracts);
         this.getStatisticsController().setData(initialData);
         if (this.selectedUser().isNull().get()) {
-            this.getCommands().add(new LabeledCommand("Remove current selection", args -> {
-                this.removeSelectedUser();
-            }));
-        }
-        else {
-            this.getCommands().remove(this.getCommands().size() - 1);
+            this.getCommands().add(new LabeledCommand("Remove current selection", args -> this.removeSelectedUser()));
+        } else {
+            this.getCommands().remove(this.getCommands().size() - 2);
         }
 
-        this.getCommands().add(new LabeledCommand("See selected user profile", args -> {
-            this.pushController(UserProfileController.class, userProfileController -> {
-                userProfileController.setUserContracts(allContracts);
-                userProfileController.setUser(newUser);
-                userProfileController.setDeleteUserContractHandler(evtArgs -> {
-                    Contract contractToDelete = evtArgs.getEventItem();
-                    if (this.getContractManager().deleteUserContract(contractToDelete)) {
-                        this.getContracts().remove(contractToDelete);
-                        this.removeSelectedContract(contractToDelete);
-                    }
-                });
-            }, false);
-        }));
+        this.getCommands().add(new LabeledCommand("See selected user profile", args ->
+                this.pushController(UserProfileController.class, userProfileController -> {
+                    userProfileController.setUserContracts(allContracts);
+                    userProfileController.setUser(newUser);
+                    userProfileController.setDeleteUserContractHandler(evtArgs -> {
+                        Contract contractToDelete = evtArgs.getEventItem();
+                        if (this.getContractManager().deleteUserContract(contractToDelete)) {
+                            this.getContracts().remove(contractToDelete);
+                            this.removeSelectedContract(contractToDelete);
+                        }
+                    });
+                }, false)));
+
+        this.getCommands().add(new LabeledCommand("History", args ->
+                this.pushController(HistoryViewModel.class, controller ->
+                        controller.setContracts(this.getSelectedContracts()), false)));
+
         this.setSelectedUser(newUser);
     }
 
     /**
      * Set the selected user
+     *
      * @param newUser user that needs to be marked as selected
      */
     private void setSelectedUser(final User newUser) {
@@ -152,6 +151,6 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
         this.getContracts().clear();
         this.getSelectedContracts().clear();
         this.selectedUser().set(null);
-        this.getCommands().remove(this.getCommands().size() - 2, this.getCommands().size());
+        this.getCommands().remove(this.getCommands().size() - 3, this.getCommands().size());
     }
 }
