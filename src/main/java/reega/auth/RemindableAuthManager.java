@@ -29,22 +29,20 @@ import java.util.function.BiFunction;
  */
 public class RemindableAuthManager implements AuthManager {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RemindableAuthManager.class);
-
     /**
      * Data controller used for the login
      */
     private final AuthController authController;
     private final UserController userController;
     private final TokenIOController ioController;
+    private final ExceptionHandler exceptionHandler;
 
     @Inject
-    public RemindableAuthManager(final AuthController authController, final UserController userController,final TokenIOController ioController) {
-        Objects.requireNonNull(authController);
-        Objects.requireNonNull(ioController);
+    public RemindableAuthManager(final AuthController authController, final UserController userController,final TokenIOController ioController, final ExceptionHandler exceptionHandler) {
         this.authController = authController;
         this.userController = userController;
         this.ioController = ioController;
+        this.exceptionHandler = exceptionHandler;
     }
 
     /**
@@ -58,7 +56,7 @@ public class RemindableAuthManager implements AuthManager {
             uAuth = this.ioController.readUserAuthentication();
         } catch (final IOException e) {
             String errString = "Error when trying to read the user authentication from the disk";
-            LOGGER.trace(errString, e);
+            this.exceptionHandler.handleException(e, errString);
             return new ValueResult<>(Optional.empty(), errString);
         }
         if (uAuth.isEmpty()) {
@@ -70,7 +68,7 @@ public class RemindableAuthManager implements AuthManager {
             loggedInUser = Optional.ofNullable(this.authController.tokenLogin(uAuth.get()));
         } catch (final IOException e) {
             String errString = "Error when trying to read the user authentication from the database";
-            LOGGER.trace(errString, e);
+            this.exceptionHandler.handleException(e, errString);
             return new ValueResult<>(Optional.empty(), errString);
         }
 
@@ -91,7 +89,7 @@ public class RemindableAuthManager implements AuthManager {
             this.userController.addUser(user);
         } catch (final IOException e) {
             String errString = "Error when trying to add a new user";
-            LOGGER.trace(errString, e);
+            this.exceptionHandler.handleException(e, errString);
             return new ValueResult<>(null, errString);
         }
         return new ValueResult<>((Void)null);
@@ -108,7 +106,7 @@ public class RemindableAuthManager implements AuthManager {
                 loggedInUser = Optional.ofNullable(this.authController.emailLogin(userMethod, hash));
             } catch (final IOException e) {
                 String errString = "Failed to login into the application with the email";
-                LOGGER.trace(errString, e);
+                this.exceptionHandler.handleException(e, errString);
                 return new ValueResult<>(Optional.empty(), errString);
             }
             return new ValueResult<>(loggedInUser);
@@ -126,7 +124,7 @@ public class RemindableAuthManager implements AuthManager {
                 loggedInUser = Optional.ofNullable(this.authController.fiscalCodeLogin(userMethod, hash));
             } catch (final IOException e) {
                 String errString = "Failed to login into the application with the email";
-                LOGGER.trace(errString, e);
+                this.exceptionHandler.handleException(e, errString);
                 return new ValueResult<>(Optional.empty(), errString);
             }
             return new ValueResult<>(loggedInUser);
@@ -173,7 +171,7 @@ public class RemindableAuthManager implements AuthManager {
             this.authController.storeUserCredentials(userAuth.getSelector(), userAuth.getValidator());
         } catch (final IOException e) {
             String errString = "Failed to store the user credentials in the database";
-            LOGGER.trace(errString, e);
+            this.exceptionHandler.handleException(e, errString);
             return new ValueResult<>(null, errString);
         }
 
@@ -181,7 +179,7 @@ public class RemindableAuthManager implements AuthManager {
             this.ioController.storeUserAuthentication(userAuth);
         } catch (final IOException e) {
             String errString = "Failed to store the user credentials on the disk";
-            LOGGER.trace(errString, e);
+            this.exceptionHandler.handleException(e, errString);
             return new ValueResult<>(null, errString);
         }
         return new ValueResult<>((Void)null);
@@ -197,7 +195,7 @@ public class RemindableAuthManager implements AuthManager {
             this.authController.userLogout();
         } catch (final IOException e) {
             String errString = "Failed to logout from the db";
-            LOGGER.trace(errString, e);
+            this.exceptionHandler.handleException(e, errString);
             return new ValueResult<>(null, errString);
         }
 
@@ -214,7 +212,7 @@ public class RemindableAuthManager implements AuthManager {
             this.ioController.deleteUserAuthentication();
         } catch (final IOException e) {
             String errString = "Failed to delete the user authentication from the disk";
-            LOGGER.trace(errString, e);
+            this.exceptionHandler.handleException(e, errString);
             return new ValueResult<>(null, errString);
         }
         return new ValueResult<>((Void)null);

@@ -37,7 +37,9 @@ class RemindableAuthManagerTest {
         ioController = IOControllerFactory.createTokenIOController(new MockIOController());
         authManager = new RemindableAuthManager(
                 AuthControllerFactory.getRemoteAuthController(connection),
-                UserControllerFactory.getRemoteUserController(connection), ioController);
+                UserControllerFactory.getRemoteUserController(connection),
+                ioController,
+                new MockExceptionHandler());
         authManager.logout();
         connection.logout();
     }
