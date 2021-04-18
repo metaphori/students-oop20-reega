@@ -96,13 +96,15 @@ public class RemoteContractAPI implements ContractController {
     }
 
     @Override
-    public void addContract(final NewContract contract) throws IOException {
+    public Contract addContract(final NewContract contract) throws IOException {
         logger.info("adding contract: " + contract.toString());
-        final Response<Void> r = connection.getService().addContract(contract).execute();
+        final Response<ContractModel> r = connection.getService().addContract(contract).execute();
         logger.info("response: " + r.code());
-        if (r.code() > 299) {
+        if (r.code() > 299 || r.body() == null) {
             logger.info("error: " + r.errorBody());
+            return null;
         }
+        return new Contract(r.body());
     }
 
     @Override

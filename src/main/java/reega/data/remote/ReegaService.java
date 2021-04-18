@@ -50,7 +50,7 @@ public interface ReegaService {
     // region data
 
     @POST("data/contract")
-    Call<Void> addContract(@Body NewContract contract);
+    Call<ContractModel> addContract(@Body NewContract contract);
 
     /**
      * @return all the user's contracts
