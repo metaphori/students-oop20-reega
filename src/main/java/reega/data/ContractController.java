@@ -42,7 +42,7 @@ public interface ContractController {
      * @param contract
      * @throws IOException
      */
-    void addContract(NewContract contract) throws IOException;
+    Contract addContract(NewContract contract) throws IOException;
 
     /**
      * Delete contract with REEGA. It will also delete all the related data

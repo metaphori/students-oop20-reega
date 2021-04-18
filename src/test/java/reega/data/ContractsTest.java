@@ -56,12 +56,13 @@ public class ContractsTest {
                 ServiceType.ELECTRICITY
         );
         NewContract newContract = new NewContract("Test Address", services, "ABC123", new Date(1614942000000L));
-        controller.addContract(newContract);
+        var insertedContract = controller.addContract(newContract);
+        assertNotNull(insertedContract);
     }
 
     @Test
     @Order(3)
-    public void searchContracts()throws IOException{
+    public void searchContracts() throws IOException {
         var contracts = controller.searchContract("ABC123");
         assertNotNull(contracts);
         assertEquals(1, contracts.size());
