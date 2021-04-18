@@ -5,6 +5,7 @@ import java.io.IOException;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -40,6 +41,14 @@ public class LoginView extends GridPane {
             fxmlLoader.load();
         } catch (final IOException ex) {
             ex.printStackTrace();
+        }
+
+        ValueResult<Void> tryLoginResult = controller.tryLogin();
+        if (tryLoginResult.isInvalid()) {
+            DialogFactory.buildAlert(AlertType.ERROR,
+                    "Error when trying to login with the token",
+                    controller.tryLogin().getMessage(),
+                    ButtonType.CLOSE).showAndWait();
         }
 
         // Change email or fiscal code on lost focus

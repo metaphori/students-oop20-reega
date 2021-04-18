@@ -66,7 +66,7 @@ public class LoginControllerImpl extends AbstractController implements LoginCont
             return new ValueResult<>("You've not entered a password");
         }
 
-        Optional<User> user;
+        ValueResult<Optional<User>> user;
         if (EmailValidator.getInstance().isValid(this.emailOrFiscalCode)) {
             user = this.authManager.emailLogin(this.emailOrFiscalCode, this.password, rememberMe);
         } else if (FiscalCodeValidator.getInstance().isFiscalCodeValid(this.emailOrFiscalCode.toUpperCase())) {
@@ -75,19 +75,34 @@ public class LoginControllerImpl extends AbstractController implements LoginCont
             return new ValueResult<>("Incorrect format for a fiscal code or an email");
         }
 
-        if (user.isEmpty()) {
+        if (user.isInvalid()) {
+            return new ValueResult<>(user.getMessage());
+        }
+
+        if (user.getValue().isEmpty()) {
             return new ValueResult<>("Incorrect login credentials");
         }
 
-        this.jumpToNextPage(user.get());
+        this.jumpToNextPage(user.getValue().get());
 
         // Return a valid result
         return new ValueResult<>((Void) null);
     }
 
+    @Override
+    public ValueResult<Void> tryLogin() {
+        ValueResult<Optional<User>> tokenLogin = this.authManager.tryLoginWithoutPassword();
+        if (tokenLogin.isValid()) {
+            if (tokenLogin.getValue().isPresent()) {
+                this.jumpToNextPage(tokenLogin.getValue().get());
+            }
+            return new ValueResult<>((Void)null);
+        }
+        return new ValueResult<>(null, tokenLogin.getMessage());
+    }
+
     private void jumpToNextPage(final User user) {
         final EventHandler<Void> logoutEvtHandler = (evtArgs) -> this.authManager.logout();
-        final Consumer<MainController> setUserConsumer = (newController) -> newController.setUser(user);
         if (user.getRole() == Role.USER) {
             this.pushController(MainController.class, newController -> {
                 newController.setUser(user);
@@ -100,22 +115,5 @@ public class LoginControllerImpl extends AbstractController implements LoginCont
             newController.setOnLogout(logoutEvtHandler);
         }, true);
 
-    }
-
-    /**
-     * Try the login without the password
-     */
-    private void tryLoginWithoutPassword() {
-        // Try login without password
-        this.authManager.tryLoginWithoutPassword().ifPresent(this::jumpToNextPage);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setControllerChangeEvent(final ControllerChangedEventHandler<Controller> controllerChangeEvent) {
-        super.setControllerChangeEvent(controllerChangeEvent);
-        this.tryLoginWithoutPassword();
     }
 }

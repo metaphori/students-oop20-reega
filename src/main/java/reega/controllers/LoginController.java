@@ -30,4 +30,10 @@ public interface LoginController extends Controller {
      * @return login into the app
      */
     ValueResult<Void> login(boolean rememberMe);
+
+    /**
+     * Try the login without the credentials
+     * @return a {@link ValueResult} that is valid if the login succeeded, invalid otherwise
+     */
+    ValueResult<Void> tryLogin();
 }

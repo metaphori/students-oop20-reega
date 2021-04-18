@@ -131,15 +131,15 @@ public class RegistrationControllerImpl extends AbstractController implements Re
             return new ValueResult<>("Confirm password field and password field don't correspond");
         }
 
-        final boolean hasCreatedUser = this.authManager.createUser(
+        final ValueResult<Void> hasCreatedUser = this.authManager.createUser(
                 new NewUser(Role.USER, this.name, this.surname, this.email, this.fiscalCode, this.password));
 
-        if (!hasCreatedUser) {
-            return new ValueResult<>("Something went wrong with the registration");
+        if (hasCreatedUser.isInvalid()) {
+            return hasCreatedUser;
         }
 
         this.jumpToLogin();
 
-        return new ValueResult<>((Void) null);
+        return hasCreatedUser;
     }
 }

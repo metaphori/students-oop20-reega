@@ -3,14 +3,18 @@
  */
 package reega.auth;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import reega.data.AuthController;
 import reega.data.UserController;
 import reega.data.models.UserAuth;
 import reega.io.TokenIOController;
 import reega.logging.ExceptionHandler;
+import reega.logging.SimpleExceptionHandler;
 import reega.users.GenericUser;
 import reega.users.NewUser;
 import reega.users.User;
+import reega.util.ValueResult;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -25,23 +29,21 @@ import java.util.function.BiFunction;
  */
 public class RemindableAuthManager implements AuthManager {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(RemindableAuthManager.class);
+
     /**
      * Data controller used for the login
      */
     private final AuthController authController;
     private final UserController userController;
-    private final ExceptionHandler exceptionHandler;
     private final TokenIOController ioController;
 
     @Inject
-    public RemindableAuthManager(final AuthController authController, final UserController userController,
-                                 final ExceptionHandler exceptionHandler, final TokenIOController ioController) {
+    public RemindableAuthManager(final AuthController authController, final UserController userController,final TokenIOController ioController) {
         Objects.requireNonNull(authController);
-        Objects.requireNonNull(exceptionHandler);
         Objects.requireNonNull(ioController);
         this.authController = authController;
         this.userController = userController;
-        this.exceptionHandler = exceptionHandler;
         this.ioController = ioController;
     }
 
@@ -50,22 +52,26 @@ public class RemindableAuthManager implements AuthManager {
      * @return
      */
     @Override
-    public Optional<User> tryLoginWithoutPassword() {
-        Optional<UserAuth> uAuth = Optional.empty();
+    public ValueResult<Optional<User>> tryLoginWithoutPassword() {
+        Optional<UserAuth> uAuth;
         try {
             uAuth = this.ioController.readUserAuthentication();
         } catch (final IOException e) {
-            this.exceptionHandler.handleException(e);
+            String errString = "Error when trying to read the user authentication from the disk";
+            LOGGER.trace(errString, e);
+            return new ValueResult<>(Optional.empty(), errString);
         }
         if (uAuth.isEmpty()) {
-            return Optional.empty();
+            return new ValueResult<>(Optional.empty());
         }
 
-        Optional<User> loggedInUser = Optional.empty();
+        Optional<User> loggedInUser;
         try {
             loggedInUser = Optional.ofNullable(this.authController.tokenLogin(uAuth.get()));
         } catch (final IOException e) {
-            this.exceptionHandler.handleException(e);
+            String errString = "Error when trying to read the user authentication from the database";
+            LOGGER.trace(errString, e);
+            return new ValueResult<>(Optional.empty(), errString);
         }
 
         if (loggedInUser.isEmpty()) {
@@ -73,37 +79,39 @@ public class RemindableAuthManager implements AuthManager {
             this.deleteUserAuthenticationFromDisk();
         }
 
-        return loggedInUser;
+        return new ValueResult<>(loggedInUser);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean createUser(final NewUser user) {
+    public ValueResult<Void> createUser(final NewUser user) {
         try {
             this.userController.addUser(user);
         } catch (final IOException e) {
-            this.exceptionHandler.handleException(e, "createUser");
-            return false;
+            String errString = "Error when trying to add a new user";
+            LOGGER.trace(errString, e);
+            return new ValueResult<>(null, errString);
         }
-        return true;
+        return new ValueResult<>((Void)null);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Optional<User> emailLogin(final String email, final String pwd, final boolean saveToken) {
+    public ValueResult<Optional<User>> emailLogin(final String email, final String pwd, final boolean saveToken) {
         return this.login(email, pwd, saveToken, (userMethod, hash) -> {
             Optional<User> loggedInUser;
             try {
                 loggedInUser = Optional.ofNullable(this.authController.emailLogin(userMethod, hash));
             } catch (final IOException e) {
-                this.exceptionHandler.handleException(e, "emailLogin -> Login call");
-                return Optional.empty();
+                String errString = "Failed to login into the application with the email";
+                LOGGER.trace(errString, e);
+                return new ValueResult<>(Optional.empty(), errString);
             }
-            return loggedInUser;
+            return new ValueResult<>(loggedInUser);
         });
     }
 
@@ -111,16 +119,17 @@ public class RemindableAuthManager implements AuthManager {
      * {@inheritDoc}
      */
     @Override
-    public Optional<User> fiscalCodeLogin(final String fiscalCode, final String pwd, final boolean saveToken) {
+    public ValueResult<Optional<User>> fiscalCodeLogin(final String fiscalCode, final String pwd, final boolean saveToken) {
         return this.login(fiscalCode, pwd, saveToken, (userMethod, hash) -> {
             Optional<User> loggedInUser;
             try {
                 loggedInUser = Optional.ofNullable(this.authController.fiscalCodeLogin(userMethod, hash));
             } catch (final IOException e) {
-                this.exceptionHandler.handleException(e, "fiscalCodeLogin -> Login call");
-                return Optional.empty();
+                String errString = "Failed to login into the application with the email";
+                LOGGER.trace(errString, e);
+                return new ValueResult<>(Optional.empty(), errString);
             }
-            return loggedInUser;
+            return new ValueResult<>(loggedInUser);
         });
     }
 
@@ -133,23 +142,22 @@ public class RemindableAuthManager implements AuthManager {
      * @param invocationMethod method to invoke for logging in
      * @return a filled in Optional if the login successfully returned, an empty Optional otherwise
      */
-    private Optional<User> login(final String userMethod, final String pwd, final boolean saveToken,
-                                 final BiFunction<String, String, Optional<User>> invocationMethod) {
-        final Optional<User> loggedInUser = invocationMethod.apply(userMethod, pwd);
+    private ValueResult<Optional<User>> login(final String userMethod, final String pwd, final boolean saveToken,
+                                 final BiFunction<String, String, ValueResult<Optional<User>>> invocationMethod) {
+        final ValueResult<Optional<User>> loggedInUser = invocationMethod.apply(userMethod, pwd);
 
-        if (saveToken) {
-            // Save the token
-            loggedInUser.ifPresent(usr -> {
-                final UserAuth uAuth = new UserAuth();
-                this.storeUserAuthentication(uAuth);
-            });
-        } else {
-            // Delete the token if it exists
-            loggedInUser.ifPresent(usr -> {
-                if (this.ioController.tokenFileExists()) {
-                    this.deleteUserAuthentication();
+        if (loggedInUser.isValid()) {
+            Optional<User> currUser = loggedInUser.getValue();
+            if (currUser.isPresent()) {
+                if (saveToken) {
+                    // Save the token
+                    final UserAuth uAuth = new UserAuth();
+                    return loggedInUser.merge(this.storeUserAuthentication(uAuth));
                 }
-            });
+                if (this.ioController.tokenFileExists()) {
+                    return loggedInUser.merge(this.deleteUserAuthentication());
+                }
+            }
         }
 
         return loggedInUser;
@@ -160,20 +168,23 @@ public class RemindableAuthManager implements AuthManager {
      *
      * @param userAuth user authentication to save
      */
-    private void storeUserAuthentication(final UserAuth userAuth) {
+    private ValueResult<Void> storeUserAuthentication(final UserAuth userAuth) {
         try {
             this.authController.storeUserCredentials(userAuth.getSelector(), userAuth.getValidator());
         } catch (final IOException e) {
-            this.exceptionHandler.handleException(e);
-            return;
+            String errString = "Failed to store the user credentials in the database";
+            LOGGER.trace(errString, e);
+            return new ValueResult<>(null, errString);
         }
 
         try {
             this.ioController.storeUserAuthentication(userAuth);
         } catch (final IOException e) {
-            this.exceptionHandler.handleException(e,
-                    "storeUserAuthentication -> storing the authentication token to disk");
+            String errString = "Failed to store the user credentials on the disk";
+            LOGGER.trace(errString, e);
+            return new ValueResult<>(null, errString);
         }
+        return new ValueResult<>((Void)null);
     }
 
     /**
@@ -181,12 +192,13 @@ public class RemindableAuthManager implements AuthManager {
      *
      * @return true if the operation successfully ended, false otherwise
      */
-    private boolean deleteUserAuthentication() {
+    private ValueResult<Void> deleteUserAuthentication() {
         try {
             this.authController.userLogout();
         } catch (final IOException e) {
-            this.exceptionHandler.handleException(e, "logout -> db logout");
-            return false;
+            String errString = "Failed to logout from the db";
+            LOGGER.trace(errString, e);
+            return new ValueResult<>(null, errString);
         }
 
         return this.deleteUserAuthenticationFromDisk();
@@ -197,31 +209,23 @@ public class RemindableAuthManager implements AuthManager {
      *
      * @return true if the operation successfully ended, false otherwise
      */
-    private boolean deleteUserAuthenticationFromDisk() {
+    private ValueResult<Void> deleteUserAuthenticationFromDisk() {
         try {
             this.ioController.deleteUserAuthentication();
         } catch (final IOException e) {
-            this.exceptionHandler.handleException(e,
-                    "deleteUserAuthentication -> deleting the authentication token from disk");
-            return false;
+            String errString = "Failed to delete the user authentication from the disk";
+            LOGGER.trace(errString, e);
+            return new ValueResult<>(null, errString);
         }
-        return true;
+        return new ValueResult<>((Void)null);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean logout() {
+    public ValueResult<Void> logout() {
         return this.deleteUserAuthentication();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean logout(final GenericUser user) {
-        return this.logout();
     }
 
 }

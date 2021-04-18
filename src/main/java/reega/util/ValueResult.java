@@ -86,4 +86,22 @@ public class ValueResult<T> {
         return !this.valid;
     }
 
+    /**
+     * Merge this {@link ValueResult} with a {@link Void} {@link ValueResult} with an AND
+     * @param otherValueResult other {@link ValueResult}
+     * @param <X> Type of the other {@link ValueResult} that must extend {@link Void}
+     * @return an invalid {@link ValueResult} with {@link this#getValue()} as the value and the messages joined if <code>otherValueResult</code> is invalid;
+     * an invalid {@link ValueResult} with {@link this#getValue()} and the message of this object if this object is invalid;
+     * else return a valid {@link ValueResult}
+     */
+    public <X extends Void> ValueResult<T> merge(ValueResult<X> otherValueResult) {
+        if (otherValueResult.isInvalid()){
+            return new ValueResult<>(this.getValue(), this.getMessage() + otherValueResult.getMessage());
+        }
+        if (this.isInvalid()) {
+            return new ValueResult<>(this.getValue(), this.getMessage());
+        }
+        return this;
+    }
+
 }
