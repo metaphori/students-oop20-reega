@@ -96,7 +96,7 @@ public class ValueResult<T> {
      */
     public <X extends Void> ValueResult<T> merge(ValueResult<X> otherValueResult) {
         if (otherValueResult.isInvalid()){
-            return new ValueResult<>(this.getValue(), this.getMessage() + otherValueResult.getMessage());
+            return new ValueResult<>(this.getValue(), this.getMessage() + "\n" + otherValueResult.getMessage());
         }
         if (this.isInvalid()) {
             return new ValueResult<>(this.getValue(), this.getMessage());
