@@ -10,6 +10,17 @@
     -fx-font-weight: bold;
 }
 
+.radio-button .radio{
+	-fx-background-color: rgba(20,105,4, 0.75);
+	-fx-border-color: white;
+	-fx-border-radius: 50%;
+	-fx-background-radius: 50%;
+}
+
+.radio-button:selected .dot {
+	-fx-background-color: white;
+}
+
 /* HBox containing text field, button and toggle button for search */
 #innerSearchBox {
 	-fx-padding: 0.8125em;
@@ -19,8 +30,8 @@
 /* grid pane in wich results are shown */
 #cardsPane {
 	-fx-padding: 0.8125em;
-	-fx-hgap: 1em;
-	-fx-vgap: 1em;
+	-fx-hgap: 0.8125em;
+	-fx-vgap: 0.8125em;
 	-fx-grid-lines-visible: true;
 }
 
@@ -28,4 +39,8 @@
 #userSearch, #contractSearch {
     -fx-font-size: 0.875em;
     -fx-text-fill: #ffffff;
+}
+
+#toggleBox > * {
+	-fx-padding: 0.25em 0 0.25em 0;
 }
