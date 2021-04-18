@@ -1,16 +1,8 @@
 package reega.controllers;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import javax.inject.Inject;
-
-import org.apache.commons.lang3.tuple.Pair;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.apache.commons.lang3.tuple.Pair;
 import reega.data.ContractManager;
 import reega.data.DataFetcher;
 import reega.data.exporter.ExportFormat;
@@ -24,6 +16,12 @@ import reega.statistics.StatisticsController;
 import reega.users.User;
 import reega.viewutils.*;
 
+import javax.inject.Inject;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
+
 public class MainControllerImpl extends AbstractController implements MainController {
 
     private User currentUser;
@@ -32,7 +30,7 @@ public class MainControllerImpl extends AbstractController implements MainContro
     private final ExceptionHandler exceptionHandler;
     private List<Contract> contracts;
     private final ObservableList<Contract> selectedContracts = FXCollections.observableArrayList();
-    private ObservableList<Command> commands = FXCollections.observableArrayList();
+    private final ObservableList<Command> commands = FXCollections.observableArrayList();
     private EventHandler<Void> logoutEventHandler;
     private final DataFetcher dataFetcher;
     private final ContractManager contractManager;
@@ -51,20 +49,17 @@ public class MainControllerImpl extends AbstractController implements MainContro
     }
 
     protected void initializeCommands() {
-        this.commands.add(new LabeledCommand("Export to CSV",args -> {
-            DialogFactory.getDefaultSaveDialog().openSaveDialog("CSV Files", ".csv").ifPresent(file -> {
-                this.exportDataToFile(ExportFormat.CSV, file);
-            });
-        }));
-        this.commands.add(new LabeledCommand("Export to JSON", args -> {
-            DialogFactory.getDefaultSaveDialog().openSaveDialog("JSON Files", ".json").ifPresent(file -> {
-                this.exportDataToFile(ExportFormat.JSON, file);
-            });
-        }));
+        this.commands.add(new LabeledCommand("Export to CSV", args ->
+                DialogFactory.getDefaultSaveDialog().openSaveDialog("CSV Files", ".csv").ifPresent(file ->
+                        this.exportDataToFile(ExportFormat.CSV, file))));
+        this.commands.add(new LabeledCommand("Export to JSON", args ->
+                DialogFactory.getDefaultSaveDialog().openSaveDialog("JSON Files", ".json").ifPresent(file ->
+                        this.exportDataToFile(ExportFormat.JSON, file))));
     }
 
     /**
      * Get the contract manager
+     *
      * @return the contract manager
      */
     protected ContractManager getContractManager() {
@@ -73,6 +68,7 @@ public class MainControllerImpl extends AbstractController implements MainContro
 
     /**
      * Get the data fetcher
+     *
      * @return the data fetcher
      */
     protected DataFetcher getDataFetcher() {

@@ -1,0 +1,42 @@
+.expand-button {
+    -fx-pref-height: 32px;
+    -fx-pref-width: 32px;
+    -fx-background-color: transparent;
+    -fx-background-image: url("/images/Expand_More.png");
+    -fx-background-size: contain;
+    -fx-background-position: center center;
+    -fx-background-repeat: no-repeat no-repeat;
+    -fx-alignment: center-right;
+}
+
+.expand-button:selected {
+    -fx-background-image: url("/images/Expand_Less.png");
+}
+
+.service-header {
+    -fx-font-weight: bold;
+    -fx-font-size: 1.125em;
+}
+
+.services-pane {
+    -fx-hgap: 0.625em;
+    -fx-vgap: 0.625em;
+}
+
+#cardsList {
+    -fx-spacing: 0.625em;
+    -fx-padding: 0.8125em 0 0 0;
+}
+
+.service-card {
+    -fx-background-color: #ababab !important;
+    -fx-padding: 0.8125em;
+}
+
+#cardsList > * {
+    -fx-padding: 0.8125em;
+}
+
+.service-card > * {
+    -fx-text-fill: #000000;
+}

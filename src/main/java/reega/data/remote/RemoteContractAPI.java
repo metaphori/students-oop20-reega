@@ -34,6 +34,7 @@ public class RemoteContractAPI implements ContractController {
     public List<MonthlyReport> getBillsForContracts(@NotNull List<Integer> contractIDs) throws IOException {
         logger.info("getting bill report for contract " + contractIDs);
         final Response<List<MonthlyReportModel>> r = connection.getService().getBillReport(contractIDs).execute();
+        logger.info("response: "+r.code());
         if (r.code() > 299 || r.body() == null) {
             logger.info("error: " + r.errorBody());
             return new ArrayList<>();

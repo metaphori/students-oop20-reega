@@ -3,9 +3,6 @@
  */
 package reega.main;
 
-import java.util.function.Function;
-import java.util.function.Supplier;
-
 import javafx.scene.Parent;
 import reega.auth.AuthManager;
 import reega.auth.RemindableAuthManager;
@@ -32,6 +29,9 @@ import reega.viewutils.DataTemplate;
 import reega.viewutils.DataTemplateManager;
 import reega.viewutils.Navigator;
 import reega.viewutils.NavigatorImpl;
+
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * App initializer for the UI main class
@@ -117,6 +117,7 @@ public class UIAppInitializer implements AppInitializer {
         });
         svcCollection.addTransient(SearchUserController.class, SearchUserControllerImpl.class);
         svcCollection.addTransient(UserProfileController.class, UserProfileControllerImpl.class);
+        svcCollection.addTransient(HistoryViewModel.class, HistoryViewModelImpl.class);
         svcCollection.addSingleton(BaseLayoutView.class);
         return svcCollection.buildServiceProvider();
     }
@@ -194,6 +195,18 @@ public class UIAppInitializer implements AppInitializer {
             @Override
             public Supplier<? extends Parent> getControlFactory(UserProfileControllerImpl controller) {
                 return () -> new UserProfileView(controller);
+            }
+        });
+
+        templateManager.addTemplate(new DataTemplate<HistoryViewModelImpl>() {
+            @Override
+            public Class<HistoryViewModelImpl> getDataObjectClass() {
+                return HistoryViewModelImpl.class;
+            }
+
+            @Override
+            public Supplier<? extends Parent> getControlFactory(HistoryViewModelImpl controller) {
+                return () -> new HistoryView(controller);
             }
         });
     }
