@@ -3,9 +3,6 @@
  */
 package reega.main;
 
-import java.util.function.Function;
-import java.util.function.Supplier;
-
 import javafx.scene.Parent;
 import reega.auth.AuthManager;
 import reega.auth.RemindableAuthManager;
@@ -32,6 +29,9 @@ import reega.viewutils.DataTemplate;
 import reega.viewutils.DataTemplateManager;
 import reega.viewutils.Navigator;
 import reega.viewutils.NavigatorImpl;
+
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * App initializer for the UI main class
@@ -116,6 +116,7 @@ public class UIAppInitializer implements AppInitializer {
                     contractFetcher);
         });
         svcCollection.addTransient(SearchUserController.class, SearchUserControllerImpl.class);
+        svcCollection.addTransient(ContractCreationController.class, ContractCreationControllerImpl.class);
         svcCollection.addTransient(UserProfileController.class, UserProfileControllerImpl.class);
         svcCollection.addSingleton(BaseLayoutView.class);
         return svcCollection.buildServiceProvider();
@@ -194,6 +195,18 @@ public class UIAppInitializer implements AppInitializer {
             @Override
             public Supplier<? extends Parent> getControlFactory(UserProfileControllerImpl controller) {
                 return () -> new UserProfileView(controller);
+            }
+        });
+        templateManager.addTemplate(new DataTemplate<ContractCreationControllerImpl>() {
+
+            @Override
+            public Class<ContractCreationControllerImpl> getDataObjectClass() {
+                return ContractCreationControllerImpl.class;
+            }
+
+            @Override
+            public Supplier<? extends Parent> getControlFactory(ContractCreationControllerImpl controller) {
+                return () -> new ContractCreationView(controller);
             }
         });
     }

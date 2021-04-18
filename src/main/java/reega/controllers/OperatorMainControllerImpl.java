@@ -121,6 +121,7 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
                 contractCreationController.setUser(newUser);
                 contractCreationController.setContractCreateEventHandler(evtArgs -> {
                     this.getContracts().add(evtArgs.getEventItem());
+                    this.popController();
                 });
             }, false);
         }));

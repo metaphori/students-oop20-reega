@@ -1,13 +1,13 @@
 package reega.viewutils;
 
 import javafx.scene.Node;
+import javafx.util.StringConverter;
+
 import java.sql.Date;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-
-import javafx.util.StringConverter;
 
 /**
  * <a href="https://it.wikipedia.org/wiki/Atto_di_dolore_(preghiera)">source</a>
@@ -45,6 +45,9 @@ public final class ViewUtils {
             }
         };
     }
+
+    //public static getTreeCellFactory
+    //
 
     public static Long getDayOfTheMonth(int day) {
         return Date.valueOf(LocalDate.now().withDayOfMonth(day)).getTime();

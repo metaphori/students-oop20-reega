@@ -2,10 +2,7 @@ package reega.controllers;
 
 import reega.data.models.Contract;
 import reega.data.models.gson.NewContract;
-import reega.users.User;
 import reega.viewutils.EventHandler;
-
-import java.util.Optional;
 
 public interface ContractCreationController extends UserController{
         
