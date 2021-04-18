@@ -23,11 +23,16 @@ public class ContractCreationControllerImpl extends AbstractController implement
         }
 
         @Override
-        public boolean registerContract(NewContract contract) throws IllegalArgumentException {
+        public boolean registerContract(NewContract contract) {
                 try {
-                        this.contractEventHandler.handle(new EventArgs<Contract>(this.contractController.addContract(contract), this));
+                        Contract newContract = this.contractController.addContract(contract);
+                        if (newContract != null) {
+                                this.contractEventHandler.handle(new EventArgs<Contract>(newContract, this));
+                        } else {
+                                return false;
+                        }
                 } catch (IOException e) {
-                        throw new IllegalArgumentException(e.getMessage());
+                        return false;
                 }
                 return true;
         }

@@ -46,9 +46,6 @@ public final class ViewUtils {
         };
     }
 
-    //public static getTreeCellFactory
-    //
-
     public static Long getDayOfTheMonth(int day) {
         return Date.valueOf(LocalDate.now().withDayOfMonth(day)).getTime();
     }

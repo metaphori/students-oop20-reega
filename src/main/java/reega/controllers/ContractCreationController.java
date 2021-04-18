@@ -13,7 +13,7 @@ public interface ContractCreationController extends UserController{
          * @return true if the contract has been registered successfully false otherwise
          * @throws IllegalArgumentException if the given contract isn't valid
          */
-        boolean registerContract(NewContract contract) throws IllegalArgumentException;
+        boolean registerContract(NewContract contract);
 
         /**
          * Set the contract created event handler. The contract created event handler needs to be invoked whenever a valid

@@ -7,24 +7,32 @@
 <?import javafx.scene.layout.*?>
 
 <?import reega.viewcomponents.Card?>
-<fx:root xmlns:fx="http://javafx.com/fxml/1"
+<fx:root fx:id="rootBox"
+         xmlns:fx="http://javafx.com/fxml/1"
          type="VBox"
          stylesheets="@/css/Contract.css">
     <children>
-        <Label text="Create new contract" alignment="TOP_CENTER"/>
+        <Label fx:id="topLabel" text="Create new contract" alignment="TOP_CENTER"/>
         <Card alignment="CENTER">
             <children>
                 <Label fx:id="userLabel" alignment="TOP_CENTER"/>
-                <GridPane>
+                <GridPane fx:id="infoGrid" alignment="CENTER">
+                    <columnConstraints>
+                        <ColumnConstraints halignment="RIGHT"/>
+                        <ColumnConstraints halignment="LEFT"/>
+                    </columnConstraints>
                     <children>
                         <Label text="Services:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-                        <ListView fx:id="servicesList" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                        <HBox fx:id="servicesBox" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
                         <Label text="Address:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-                        <TextField fx:id="addressLabel" promptText="Insert Address" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                        <TextField fx:id="addressField" promptText="Insert Address" GridPane.rowIndex="1"
+                                   GridPane.columnIndex="1"/>
                     </children>
                 </GridPane>
-                <Button fx:id="contractButton" text="Create new Contract" alignment="BOTTOM_RIGHT"/>
             </children>
         </Card>
+        <VBox alignment="BOTTOM_RIGHT">
+            <Button fx:id="contractButton" text="Create new Contract" alignment="BOTTOM_RIGHT"/>
+        </VBox>
     </children>
 </fx:root>
