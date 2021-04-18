@@ -8,14 +8,12 @@ import reega.viewutils.Navigator;
 
 public class MasterController {
     private final Navigator navigator;
-    private Controller selectedController;
 
     @Inject
     public MasterController(final Navigator navigator) {
         this.navigator = navigator;
         this.navigator.selectedControllerProperty().addListener((observable, oldValue, newValue) -> {
-            this.selectedController = newValue;
-            this.selectedController.setControllerChangeEvent(evtArgs -> {
+            newValue.setControllerChangeEvent(evtArgs -> {
                 if (evtArgs.getEventType() == ControllerChangedEventType.POP) {
                     this.navigator.popController();
                     return;
@@ -32,15 +30,6 @@ public class MasterController {
      */
     public void initializeApp() {
         this.navigator.pushController(LoginController.class, false);
-    }
-
-    /**
-     * Pop the current controller
-     *
-     * @see Navigator
-     */
-    public void popController() {
-        this.navigator.popController();
     }
 
     /**

@@ -24,5 +24,4 @@ public interface DataController {
     Long getLatestData(int contractID, DataType service) throws IOException;
 
     List<Data> getMonthlyData(@Nullable Integer contractID) throws IOException;
-
 }

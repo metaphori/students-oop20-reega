@@ -38,7 +38,7 @@ public class BaseLayoutView extends ScrollPane {
         }
         this.contentControl.objectProperty().bind(controller.getNavigator().selectedControllerProperty());
         this.backArrowButton.visibleProperty().bind(controller.getNavigator().navigationStackNotEmptyProperty());
-        this.backArrowButton.setOnAction(e -> controller.popController());
+        this.backArrowButton.setOnAction(e -> controller.getNavigator().popController());
         this.backArrowButton.managedProperty().bind(this.backArrowButton.visibleProperty());
         controller.initializeApp();
 

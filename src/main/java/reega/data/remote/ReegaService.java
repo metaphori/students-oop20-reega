@@ -86,8 +86,8 @@ public interface ReegaService {
     @GET("data/getLatestTimestamp")
     Call<Date> getLatestData(@Query("type") int type, @Query("contract_id") int contractId);
 
-    @GET("data/history")
-    Call<List<MonthlyReportModel>> getBillReport(@Query("contract_id") int contractId);
+    @POST("data/history")
+    Call<List<MonthlyReportModel>> getBillReport(@Body List<Integer> contractId);
 
     // endregion
 
