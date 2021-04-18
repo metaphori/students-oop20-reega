@@ -11,6 +11,7 @@ import reega.logging.ExceptionHandler;
 import reega.statistics.DataPlotter;
 import reega.statistics.StatisticsController;
 import reega.users.User;
+import reega.viewutils.Command;
 import reega.viewutils.LabeledCommand;
 
 import javax.inject.Inject;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 
 public class OperatorMainControllerImpl extends MainControllerImpl implements OperatorMainController {
     private ObjectProperty<User> selectedUserProperty = new SimpleObjectProperty<>();
+    private List<Command> defaultCommands;
 
     @Inject
     public OperatorMainControllerImpl(final StatisticsController statisticsController, final DataPlotter dataPlotter,
@@ -46,6 +48,7 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
         this.getCommands().add(new LabeledCommand("Search", (args) -> {
             this.jumpToSearchUser();
         }));
+        this.defaultCommands = List.copyOf(this.getCommands());
     }
 
     @Override
@@ -93,28 +96,27 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
         this.getSelectedContracts().addAll(contracts);
         List<Data> initialData = this.getDataFetcher().fetchAllUserData(newUser, contracts);
         this.getStatisticsController().setData(initialData);
-        if (this.selectedUser().isNull().get()) {
-            this.getCommands().add(new LabeledCommand("Remove current selection", args -> this.removeSelectedUser()));
-        } else {
-            this.getCommands().remove(this.getCommands().size() - 2);
-        }
 
-        this.getCommands().add(new LabeledCommand("See selected user profile", args ->
-                this.pushController(UserProfileController.class, userProfileController -> {
-                    userProfileController.setUserContracts(allContracts);
-                    userProfileController.setUser(newUser);
-                    userProfileController.setDeleteUserContractHandler(evtArgs -> {
-                        Contract contractToDelete = evtArgs.getEventItem();
-                        if (this.getContractManager().deleteUserContract(contractToDelete)) {
-                            this.getContracts().remove(contractToDelete);
-                            this.removeSelectedContract(contractToDelete);
-                        }
-                    });
-                }, false)));
+        this.getCommands().clear();
+        this.getCommands().addAll(this.defaultCommands);
+        this.getCommands().addAll(new LabeledCommand("Remove current selection", args -> this.removeSelectedUser()),
+                new LabeledCommand("See selected user profile", args ->
+                        this.pushController(UserProfileController.class, userProfileController -> {
+                            userProfileController.setUserContracts(allContracts);
+                            userProfileController.setUser(newUser);
+                            userProfileController.setDeleteUserContractHandler(evtArgs -> {
+                                Contract contractToDelete = evtArgs.getEventItem();
+                                if (this.getContractManager().deleteUserContract(contractToDelete)) {
+                                    this.getContracts().remove(contractToDelete);
+                                    this.removeSelectedContract(contractToDelete);
+                                }
+                            });
+                        }, false)),
+                new LabeledCommand("History", args ->
+                        this.pushController(HistoryViewModel.class, controller ->
+                                controller.setContracts(this.getSelectedContracts()), false))
+        );
 
-        this.getCommands().add(new LabeledCommand("History", args ->
-                this.pushController(HistoryViewModel.class, controller ->
-                        controller.setContracts(this.getSelectedContracts()), false)));
 
         this.setSelectedUser(newUser);
     }
@@ -151,6 +153,7 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
         this.getContracts().clear();
         this.getSelectedContracts().clear();
         this.selectedUser().set(null);
-        this.getCommands().remove(this.getCommands().size() - 3, this.getCommands().size());
+        this.getCommands().clear();
+        this.getCommands().addAll(this.defaultCommands);
     }
 }
