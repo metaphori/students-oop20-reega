@@ -141,6 +141,7 @@ public abstract class MainView extends GridPane {
     protected final void populateServicesPane(final MainViewModel viewModel) {
         this.getServicesPane().getChildren().clear();
         viewModel.getAvailableServiceTypes().forEach(svcType -> {
+            String svcTypeMeasurementUnit = ServiceType.getMeasurementUnit(svcType);
             final Card serviceCard = ViewUtils.wrapNodeWithStyleClasses(new Card(), "svc-card");
             // Set the service card mouse clicked event
             serviceCard.setOnMouseClicked(e -> {
@@ -159,15 +160,15 @@ public abstract class MainView extends GridPane {
                 serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(
                         new WrappableLabel("Peek date: " + usDateFormat.format(peek.getKey())), "svc-peek"));
                 serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(
-                        new WrappableLabel(String.format(Locale.US, "Peek value: %.2f", peek.getValue())), "svc-peek"));
+                        new WrappableLabel(String.format(Locale.US, "Peek value: %.2f %s", peek.getValue(), svcTypeMeasurementUnit)), "svc-peek"));
             });
             // Add the average usage
             serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(
-                    new WrappableLabel(String.format(Locale.US, "Average usage: %.2f", viewModel.getAverageUsage(svcType))),
+                    new WrappableLabel(String.format(Locale.US, "Average usage: %.2f %s", viewModel.getAverageUsage(svcType), svcTypeMeasurementUnit)),
                     "svc-avg"));
             // Add the total usage
             serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(
-                    new WrappableLabel(String.format(Locale.US, "Total usage: %.2f", viewModel.getTotalUsage(svcType))),
+                    new WrappableLabel(String.format(Locale.US, "Total usage: %.2f %s", viewModel.getTotalUsage(svcType), svcTypeMeasurementUnit)),
                     "svc-tot"));
             this.getServicesPane().getChildren().add(serviceCard);
         });
