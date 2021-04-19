@@ -4,21 +4,21 @@ import reega.data.ContractController;
 import reega.data.models.Contract;
 import reega.data.models.gson.NewContract;
 import reega.users.User;
-import reega.viewutils.AbstractController;
+import reega.viewutils.AbstractViewModel;
 import reega.viewutils.EventArgs;
 import reega.viewutils.EventHandler;
 
 import javax.inject.Inject;
 import java.io.IOException;
 
-public class ContractCreationControllerImpl extends AbstractController implements ContractCreationController{
+public class ContractCreationViewModelImpl extends AbstractViewModel implements ContractCreationViewModel {
 
         private User user;
         private ContractController contractController;
         private EventHandler<Contract> contractEventHandler;
 
         @Inject
-        public ContractCreationControllerImpl(ContractController contractController) {
+        public ContractCreationViewModelImpl(ContractController contractController) {
                 this.contractController = contractController;
         }
 

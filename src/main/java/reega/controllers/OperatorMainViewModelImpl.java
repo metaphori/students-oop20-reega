@@ -21,13 +21,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class OperatorMainControllerImpl extends MainControllerImpl implements OperatorMainController {
+public class OperatorMainViewModelImpl extends MainViewModelImpl implements OperatorMainViewModel {
         private ObjectProperty<User> selectedUserProperty = new SimpleObjectProperty<>();
         private List<Command> defaultCommands;
 
-        @Inject public OperatorMainControllerImpl(final StatisticsController statisticsController,
-                final DataPlotter dataPlotter, final ExceptionHandler exceptionHandler,
-                final OperatorDataFetcher dataFetcher, final OperatorContractManager contractManager) {
+        @Inject public OperatorMainViewModelImpl(final StatisticsController statisticsController,
+                                                 final DataPlotter dataPlotter, final ExceptionHandler exceptionHandler,
+                                                 final OperatorDataFetcher dataFetcher, final OperatorContractManager contractManager) {
                 super(statisticsController, dataPlotter, exceptionHandler, dataFetcher, contractManager);
         }
 
@@ -53,13 +53,13 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
         }
 
         @Override public void jumpToSearchUser() {
-                this.pushController(SearchUserController.class, searchUserController -> {
+                this.pushViewModel(SearchUserViewModel.class, searchUserController -> {
                         searchUserController.setUserFoundEventHandler(evtArgs -> {
                                 if (evtArgs != null && evtArgs.getEventItem() != null) {
                                         /**
-                                         * Pop the {@link SearchUserController}
+                                         * Pop the {@link SearchUserViewModel}
                                          */
-                                        this.popController();
+                                        this.popViewModel();
                                         User user = evtArgs.getEventItem();
                                         this.initializeStatisticsForSelectedUser(user, null);
                                 }
@@ -67,9 +67,9 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
                         searchUserController.setContractFoundEventHandler(evtArgs -> {
                                 if (evtArgs != null && evtArgs.getEventItem() != null) {
                                         /**
-                                         * Pop the {@link SearchUserController}
+                                         * Pop the {@link SearchUserViewModel}
                                          */
-                                        this.popController();
+                                        this.popViewModel();
                                         User user = evtArgs.getEventItem().getKey();
                                         this.initializeStatisticsForSelectedUser(user,
                                                 List.of(evtArgs.getEventItem().getValue()));
@@ -97,7 +97,7 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
                 this.getCommands()
                         .addAll(new LabeledCommand("Remove current selection", args -> this.removeSelectedUser()),
                                 new LabeledCommand("See selected user profile",
-                                        args -> this.pushController(UserProfileController.class,
+                                        args -> this.pushViewModel(UserProfileViewModel.class,
                                                 userProfileController -> {
                                                         userProfileController.setUserContracts(allContracts);
                                                         userProfileController.setUser(newUser);
@@ -111,16 +111,16 @@ public class OperatorMainControllerImpl extends MainControllerImpl implements Op
                                                         });
                                                 }, false)),
                                 new LabeledCommand("Add contract to the selected user", args -> {
-                                        this.pushController(ContractCreationController.class,
+                                        this.pushViewModel(ContractCreationViewModel.class,
                                                 contractCreationController -> {
                                                         contractCreationController.setUser(newUser);
                                                         contractCreationController.setContractCreateEventHandler(
                                                                 evtArgs -> {
                                                                         this.getContracts().add(evtArgs.getEventItem());
-                                                                        this.popController();
+                                                                        this.popViewModel();
                                                                 });
                                                 }, false);
-                                }), new LabeledCommand("History", args -> this.pushController(HistoryViewModel.class,
+                                }), new LabeledCommand("History", args -> this.pushViewModel(HistoryViewModel.class,
                                         controller -> controller.setContracts(this.getSelectedContracts()), false)));
 
                 this.setSelectedUser(newUser);

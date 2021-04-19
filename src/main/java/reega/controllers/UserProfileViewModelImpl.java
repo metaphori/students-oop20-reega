@@ -1,16 +1,14 @@
 package reega.controllers;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import reega.data.models.Contract;
 import reega.users.User;
-import reega.viewutils.AbstractController;
+import reega.viewutils.AbstractViewModel;
 import reega.viewutils.EventArgs;
 import reega.viewutils.EventHandler;
 
 import java.util.List;
 
-public class UserProfileControllerImpl extends AbstractController implements UserProfileController {
+public class UserProfileViewModelImpl extends AbstractViewModel implements UserProfileViewModel {
 
     private User user;
     private List<Contract> userContracts;

@@ -11,7 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
-import reega.controllers.MasterController;
+import reega.controllers.MasterViewModel;
 import reega.viewutils.ContentControl;
 
 /**
@@ -26,7 +26,7 @@ public class BaseLayoutView extends ScrollPane {
     private Button backArrowButton;
 
     @Inject
-    public BaseLayoutView(final MasterController controller) {
+    public BaseLayoutView(final MasterViewModel viewModel) {
         final FXMLLoader fxmlLoader = new FXMLLoader(
                 ClassLoader.getSystemClassLoader().getResource("views/BaseLayout.fxml"));
         fxmlLoader.setRoot(this);
@@ -36,11 +36,11 @@ public class BaseLayoutView extends ScrollPane {
         } catch (final IOException e) {
             e.printStackTrace();
         }
-        this.contentControl.objectProperty().bind(controller.getNavigator().selectedControllerProperty());
-        this.backArrowButton.visibleProperty().bind(controller.getNavigator().navigationStackNotEmptyProperty());
-        this.backArrowButton.setOnAction(e -> controller.getNavigator().popController());
+        this.contentControl.objectProperty().bind(viewModel.getNavigator().selectedViewModelProperty());
+        this.backArrowButton.visibleProperty().bind(viewModel.getNavigator().navigationStackNotEmptyProperty());
+        this.backArrowButton.setOnAction(e -> viewModel.getNavigator().popController());
         this.backArrowButton.managedProperty().bind(this.backArrowButton.visibleProperty());
-        controller.initializeApp();
+        viewModel.initializeApp();
 
     }
 

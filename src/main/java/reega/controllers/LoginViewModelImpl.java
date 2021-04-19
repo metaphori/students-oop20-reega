@@ -1,7 +1,6 @@
 package reega.controllers;
 
 import java.util.Optional;
-import java.util.function.Consumer;
 
 import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
@@ -11,22 +10,17 @@ import reega.users.Role;
 import reega.users.User;
 import reega.util.FiscalCodeValidator;
 import reega.util.ValueResult;
-import reega.viewutils.AbstractController;
-import reega.viewutils.Controller;
-import reega.viewutils.ControllerChangedEventHandler;
+import reega.viewutils.AbstractViewModel;
 import reega.viewutils.EventHandler;
 
-import javax.inject.Inject;
-import java.util.Optional;
-
-public class LoginControllerImpl extends AbstractController implements LoginController {
+public class LoginViewModelImpl extends AbstractViewModel implements LoginViewModel {
 
     private String emailOrFiscalCode;
     private String password;
     private final AuthManager authManager;
 
     @Inject
-    public LoginControllerImpl(final AuthManager authManager) {
+    public LoginViewModelImpl(final AuthManager authManager) {
         this.authManager = authManager;
     }
 
@@ -35,7 +29,7 @@ public class LoginControllerImpl extends AbstractController implements LoginCont
      */
     @Override
     public void jumpToRegistration() {
-        this.pushController(RegistrationController.class, true);
+        this.pushViewModel(RegistrationViewModel.class, true);
     }
 
     /**
@@ -104,15 +98,15 @@ public class LoginControllerImpl extends AbstractController implements LoginCont
     private void jumpToNextPage(final User user) {
         final EventHandler<Void> logoutEvtHandler = (evtArgs) -> this.authManager.logout();
         if (user.getRole() == Role.USER) {
-            this.pushController(MainController.class, newController -> {
-                newController.setUser(user);
-                newController.setOnLogout(logoutEvtHandler);
+            this.pushViewModel(MainViewModel.class, newViewModel -> {
+                newViewModel.setUser(user);
+                newViewModel.setOnLogout(logoutEvtHandler);
             }, true);
             return;
         }
-        this.pushController(OperatorMainController.class, newController -> {
-            newController.setUser(user);
-            newController.setOnLogout(logoutEvtHandler);
+        this.pushViewModel(OperatorMainViewModel.class, newViewModel -> {
+            newViewModel.setUser(user);
+            newViewModel.setOnLogout(logoutEvtHandler);
         }, true);
 
     }

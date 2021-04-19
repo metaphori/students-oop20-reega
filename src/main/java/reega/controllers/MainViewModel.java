@@ -5,30 +5,25 @@ package reega.controllers;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
-import reega.auth.AuthManager;
 import reega.data.models.Contract;
 import reega.data.models.ServiceType;
 import reega.statistics.DataPlotter;
-import reega.users.User;
 import reega.viewutils.Command;
-import reega.viewutils.Controller;
 import reega.viewutils.EventHandler;
 
 /**
- * Interface for a controller that is represented by the page after the login
+ * Interface for a viewModel that is represented by the page after the login
  *
  * @author Marco
  *
  */
-public interface MainController extends UserController {
+public interface MainViewModel extends UserViewModel {
 
     /**
      * Get the peek usage

@@ -2,11 +2,11 @@ package reega.controllers;
 
 import reega.data.models.Contract;
 import reega.data.models.MonthlyReport;
-import reega.viewutils.Controller;
+import reega.viewutils.ViewModel;
 
 import java.util.List;
 
-public interface HistoryViewModel extends Controller {
+public interface HistoryViewModel extends ViewModel {
 
     void setContracts(List<Contract> contracts);
 

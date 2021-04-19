@@ -1,13 +1,12 @@
 package reega.controllers;
 
-import javafx.beans.property.ObjectProperty;
 import reega.users.User;
-import reega.viewutils.Controller;
+import reega.viewutils.ViewModel;
 
 /**
- * Controller that contains the method for setting and getting a user
+ * ViewModel that contains the method for setting and getting a user
  */
-public interface UserController extends Controller {
+public interface UserViewModel extends ViewModel {
     /**
      * Set the current user
      *

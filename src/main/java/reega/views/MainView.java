@@ -3,11 +3,9 @@ package reega.views;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import org.apache.commons.lang3.StringUtils;
 import javafx.collections.ObservableList;
@@ -21,17 +19,13 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
-import org.apache.commons.lang3.StringUtils;
-import reega.controllers.MainController;
-import reega.data.models.Contract;
+import reega.controllers.MainViewModel;
 import reega.data.models.ServiceType;
 import reega.statistics.DataPlotter;
 import reega.viewcomponents.Card;
@@ -58,7 +52,7 @@ public abstract class MainView extends GridPane {
     @FXML
     private ToggleButton logoutButton;
 
-    public MainView(final MainController controller) {
+    public MainView(final MainViewModel viewModel) {
         final FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemClassLoader().getResource("views/Main.fxml"));
 
         loader.setRoot(this);
@@ -70,8 +64,8 @@ public abstract class MainView extends GridPane {
             e.printStackTrace();
         }
 
-        this.userEmail.setText("Logged in as: " + controller.getUser().getFullName());
-        this.populateButtonsPane(controller);
+        this.userEmail.setText("Logged in as: " + viewModel.getUser().getFullName());
+        this.populateButtonsPane(viewModel);
 
 
         this.graphPane.setVisible(false);
@@ -85,9 +79,9 @@ public abstract class MainView extends GridPane {
         this.graphPane.managedProperty().bind(this.graphPane.visibleProperty());
         this.servicesPane.managedProperty().bind(this.servicesPane.visibleProperty());
         this.populateGraphPane();
-        this.logoutButton.setOnAction(e -> controller.logout());
-        controller.getCommands().addListener((ListChangeListener<? super Command>) change -> {
-            this.populateButtonsPane(controller);
+        this.logoutButton.setOnAction(e -> viewModel.logout());
+        viewModel.getCommands().addListener((ListChangeListener<? super Command>) change -> {
+            this.populateButtonsPane(viewModel);
         });
         this.managedUser.managedProperty().bind(this.managedUser.visibleProperty());
     }
@@ -126,11 +120,11 @@ public abstract class MainView extends GridPane {
     /**
      * Populate the {@link #buttonsPane}
      *
-     * @param controller controller used to populate the {@link #buttonsPane}
+     * @param viewModel viewModel used to populate the {@link #buttonsPane}
      */
-    private void populateButtonsPane(final MainController controller) {
+    private void populateButtonsPane(final MainViewModel viewModel) {
         this.buttonsPane.getChildren().clear();
-        this.buttonsPane.getChildren().addAll(controller.getCommands().stream().map(entry -> {
+        this.buttonsPane.getChildren().addAll(viewModel.getCommands().stream().map(entry -> {
             final MaxWidthButton b = new MaxWidthButton(entry.getCommandName());
             b.setOnAction(event -> {
                 entry.execute((Object) null);
@@ -142,17 +136,17 @@ public abstract class MainView extends GridPane {
     /**
      * Populate the {@link #servicesPane}
      *
-     * @param controller controller used to populate the {@link #servicesPane}
+     * @param viewModel viewModel used to populate the {@link #servicesPane}
      */
-    protected final void populateServicesPane(final MainController controller) {
+    protected final void populateServicesPane(final MainViewModel viewModel) {
         this.getServicesPane().getChildren().clear();
-        controller.getAvailableServiceTypes().forEach(svcType -> {
+        viewModel.getAvailableServiceTypes().forEach(svcType -> {
             final Card serviceCard = ViewUtils.wrapNodeWithStyleClasses(new Card(), "svc-card");
             // Set the service card mouse clicked event
             serviceCard.setOnMouseClicked(e -> {
                 if (e.getButton() == MouseButton.PRIMARY) {
-                    controller.getDataPlotter().setServiceType(svcType);
-                    this.updateAndShowGraph(controller.getDataPlotter());
+                    viewModel.getDataPlotter().setServiceType(svcType);
+                    this.updateAndShowGraph(viewModel.getDataPlotter());
                 }
             });
             final ObservableList<Node> serviceCardChildren = serviceCard.getChildren();
@@ -160,7 +154,7 @@ public abstract class MainView extends GridPane {
             serviceCardChildren.add(ViewUtils
                     .wrapNodeWithStyleClasses(new WrappableLabel(StringUtils.capitalize(svcType.getName())), "svc-header"));
             // Add the peek if it's present
-            controller.getPeek(svcType).ifPresent(peek -> {
+            viewModel.getPeek(svcType).ifPresent(peek -> {
                 DateFormat usDateFormat = new SimpleDateFormat("yyyy/MM/dd");
                 serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(
                         new WrappableLabel("Peek date: " + usDateFormat.format(peek.getKey())), "svc-peek"));
@@ -169,11 +163,11 @@ public abstract class MainView extends GridPane {
             });
             // Add the average usage
             serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(
-                    new WrappableLabel(String.format(Locale.US, "Average usage: %.2f", controller.getAverageUsage(svcType))),
+                    new WrappableLabel(String.format(Locale.US, "Average usage: %.2f", viewModel.getAverageUsage(svcType))),
                     "svc-avg"));
             // Add the total usage
             serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(
-                    new WrappableLabel(String.format(Locale.US, "Total usage: %.2f", controller.getTotalUsage(svcType))),
+                    new WrappableLabel(String.format(Locale.US, "Total usage: %.2f", viewModel.getTotalUsage(svcType))),
                     "svc-tot"));
             this.getServicesPane().getChildren().add(serviceCard);
         });
@@ -182,28 +176,28 @@ public abstract class MainView extends GridPane {
     /**
      * Populate the {@link #contractsPane}
      *
-     * @param controller controller used to populate the {@link #contractsPane}
+     * @param viewModel viewModel used to populate the {@link #contractsPane}
      */
-    protected final void populateContractsPane(final MainController controller) {
+    protected final void populateContractsPane(final MainViewModel viewModel) {
         this.getContractsPane().getChildren().clear();
-        this.getContractsPane().getChildren().addAll(controller.getContracts().stream().map(contract -> {
+        this.getContractsPane().getChildren().addAll(viewModel.getContracts().stream().map(contract -> {
             final CheckBox checkBox = new CheckBox();
             checkBox.setText(contract.getAddress());
             // If the selectedContracts contain the element then set the selected property to true
-            final boolean contractIsSelected = controller.getSelectedContracts().contains(contract);
+            final boolean contractIsSelected = viewModel.getSelectedContracts().contains(contract);
             checkBox.selectedProperty().set(contractIsSelected);
             checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
                 // Add the contract if the selectedProperty is true
                 if (newValue) {
-                    controller.addSelectedContract(contract);
+                    viewModel.addSelectedContract(contract);
                 }
                 // Remove the contract if the selectedProperty is false
                 else {
-                    controller.removeSelectedContract(contract);
+                    viewModel.removeSelectedContract(contract);
                 }
-                this.populateServicesPane(controller);
+                this.populateServicesPane(viewModel);
                 if (this.graphPane.isVisible()) {
-                    this.updateGraph(controller.getDataPlotter());
+                    this.updateGraph(viewModel.getDataPlotter());
                 }
             });
             return checkBox;

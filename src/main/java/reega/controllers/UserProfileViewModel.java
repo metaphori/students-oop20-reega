@@ -6,7 +6,7 @@ import reega.viewutils.EventHandler;
 
 import java.util.List;
 
-public interface UserProfileController extends UserController {
+public interface UserProfileViewModel extends UserViewModel {
     /**
      * Set the contracts of the user
      * @param contracts contracts of the user

@@ -6,7 +6,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.apache.commons.lang3.StringUtils;
-import reega.controllers.ContractCreationController;
+import reega.controllers.ContractCreationViewModel;
 import reega.data.models.ServiceType;
 import reega.data.models.gson.NewContract;
 import reega.users.User;
@@ -26,7 +26,7 @@ public class ContractCreationView extends VBox {
         @FXML private TextField addressField;
         @FXML private Button contractButton;
 
-        public ContractCreationView(ContractCreationController controller) {
+        public ContractCreationView(ContractCreationViewModel viewModel) {
                 final FXMLLoader loader = new FXMLLoader(
                         ClassLoader.getSystemClassLoader().getResource("views/ContractCreation.fxml"));
 
@@ -38,7 +38,7 @@ public class ContractCreationView extends VBox {
                 } catch (final IOException e) {
                         e.printStackTrace();
                 }
-                this.userLabel.setText("User: " + controller.getUser().getName() + controller.getUser().getSurname());
+                this.userLabel.setText("User: " + viewModel.getUser().getName() + viewModel.getUser().getSurname());
                 // services list init
                 this.servicesBox.getChildren().addAll(List.of(ServiceType.values()).stream().map(svc -> {
                         CheckBox box = ViewUtils.wrapNodeWithStyleClasses(
@@ -48,9 +48,9 @@ public class ContractCreationView extends VBox {
                 }).collect(Collectors.toList()));
                 // button init
                 this.contractButton.setOnAction(e -> {
-                        Optional<NewContract> newContract = getContractFromView(controller.getUser());
+                        Optional<NewContract> newContract = getContractFromView(viewModel.getUser());
                         if(newContract.isPresent()) {
-                                if (controller.registerContract(newContract.get())) {
+                                if (viewModel.registerContract(newContract.get())) {
                                         DialogFactory.buildAlert(Alert.AlertType.INFORMATION,
                                                 "contract created successfully", "Contract has been created " + "successfully", ButtonType.OK)
                                                 .showAndWait();

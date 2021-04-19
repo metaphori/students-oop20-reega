@@ -1,9 +1,9 @@
 package reega.controllers;
 
 import reega.util.ValueResult;
-import reega.viewutils.Controller;
+import reega.viewutils.ViewModel;
 
-public interface RegistrationController extends Controller {
+public interface RegistrationViewModel extends ViewModel {
     /**
      * Jump to the login page
      */

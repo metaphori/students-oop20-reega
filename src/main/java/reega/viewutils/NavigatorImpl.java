@@ -12,9 +12,9 @@ import reega.util.ServiceProvider;
 
 public class NavigatorImpl implements Navigator {
 
-    private final Stack<Controller> navigationStack = new Stack<>();
+    private final Stack<ViewModel> navigationStack = new Stack<>();
     private final ServiceProvider serviceProvider;
-    private final ObjectProperty<Controller> selectedControllerProperty = new SimpleObjectProperty<>();
+    private final ObjectProperty<ViewModel> selectedViewModelProperty = new SimpleObjectProperty<>();
     private final BooleanProperty navigationStackNotEmptyProperty = new SimpleBooleanProperty(false);
 
     public NavigatorImpl(final ServiceProvider provider) {
@@ -22,22 +22,22 @@ public class NavigatorImpl implements Navigator {
     }
 
     @Override
-    public <T extends Controller> T buildController(Class<T> controllerClass) {
-        final Optional<T> optionalController = this.serviceProvider.getService(controllerClass);
-        if (optionalController.isEmpty()) {
+    public <T extends ViewModel> T buildViewModel(Class<T> viewModelClass) {
+        final Optional<T> optionalViewModel = this.serviceProvider.getService(viewModelClass);
+        if (optionalViewModel.isEmpty()) {
             throw new NoSuchElementException();
         }
-        return optionalController.get();
+        return optionalViewModel.get();
     }
 
     @Override
-    public void pushControllerToStack(Controller controller, boolean clearNavigationStack) {
+    public void pushViewModelToStack(ViewModel viewModel, boolean clearNavigationStack) {
         if (clearNavigationStack) {
             this.navigationStack.clear();
         }
-        this.navigationStack.push(controller);
+        this.navigationStack.push(viewModel);
         this.navigationStackNotEmptyProperty.set(this.navigationStack.size() > 1);
-        this.selectedControllerProperty.set(controller);
+        this.selectedViewModelProperty.set(viewModel);
     }
 
     /**
@@ -48,7 +48,7 @@ public class NavigatorImpl implements Navigator {
         if (this.navigationStackNotEmptyProperty.getValue().equals(true)) {
             this.navigationStack.pop();
             this.navigationStackNotEmptyProperty.set(this.navigationStack.size() > 1);
-            this.selectedControllerProperty.set(this.navigationStack.peek());
+            this.selectedViewModelProperty.set(this.navigationStack.peek());
         }
     }
 
@@ -56,8 +56,8 @@ public class NavigatorImpl implements Navigator {
      * {@inheritDoc}
      */
     @Override
-    public ObjectProperty<Controller> selectedControllerProperty() {
-        return this.selectedControllerProperty;
+    public ObjectProperty<ViewModel> selectedViewModelProperty() {
+        return this.selectedViewModelProperty;
     }
 
     /**

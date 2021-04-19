@@ -3,13 +3,11 @@ package reega.views;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.TextFlow;
 import org.apache.commons.lang3.StringUtils;
-import reega.controllers.UserProfileController;
+import reega.controllers.UserProfileViewModel;
 import reega.users.User;
 import reega.viewcomponents.Card;
 import reega.viewcomponents.FlexibleGridPane;
@@ -35,7 +33,7 @@ public class UserProfileView extends VBox {
     @FXML
     private FlexibleGridPane userContracts;
 
-    public UserProfileView(UserProfileController controller) {
+    public UserProfileView(UserProfileViewModel viewModel) {
         final FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemClassLoader().getResource("views/UserProfile.fxml"));
 
         loader.setRoot(this);
@@ -47,8 +45,8 @@ public class UserProfileView extends VBox {
             e.printStackTrace();
         }
 
-        this.setUserProperties(controller.getUser());
-        this.buildUserContractsPane(controller);
+        this.setUserProperties(viewModel.getUser());
+        this.buildUserContractsPane(viewModel);
     }
 
     private void setUserProperties(User user) {
@@ -59,16 +57,16 @@ public class UserProfileView extends VBox {
         this.userFiscalCode.setText("Fiscal code: " + user.getFiscalCode());
     }
 
-    private void buildUserContractsPane(UserProfileController controller) {
+    private void buildUserContractsPane(UserProfileViewModel viewModel) {
         this.userContracts.getChildren().clear();
-        this.userContracts.getChildren().addAll(controller.getUserContracts().stream().map(contract -> {
+        this.userContracts.getChildren().addAll(viewModel.getUserContracts().stream().map(contract -> {
             Card contractCard = ViewUtils.wrapNodeWithStyleClasses(new Card(), "contract-card");
             HBox deleteContractBox = ViewUtils.wrapNodeWithStyleClasses(new HBox(), "delete-contract-box");
             deleteContractBox.setAlignment(Pos.CENTER_RIGHT);
             ToggleButton deleteContractButton = ViewUtils.wrapNodeWithStyleClasses(new ToggleButton(), "delete-contract-button");
             deleteContractButton.setOnAction(e -> {
-                controller.deleteUserContract(contract);
-                this.buildUserContractsPane(controller);
+                viewModel.deleteUserContract(contract);
+                this.buildUserContractsPane(viewModel);
             });
             deleteContractBox.getChildren().add(deleteContractButton);
             WrappableLabel contractAddress = ViewUtils.wrapNodeWithStyleClasses(new WrappableLabel("Address: " + contract.getAddress()), "contract-label");

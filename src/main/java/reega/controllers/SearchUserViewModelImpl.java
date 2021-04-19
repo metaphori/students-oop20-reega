@@ -12,16 +12,15 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.tuple.Pair;
 
 import reega.data.ContractController;
-import reega.data.DataController;
 import reega.data.UserController;
 import reega.data.models.Contract;
 import reega.logging.ExceptionHandler;
 import reega.users.User;
-import reega.viewutils.AbstractController;
+import reega.viewutils.AbstractViewModel;
 import reega.viewutils.EventArgs;
 import reega.viewutils.EventHandler;
 
-public class SearchUserControllerImpl extends AbstractController implements SearchUserController {
+public class SearchUserViewModelImpl extends AbstractViewModel implements SearchUserViewModel {
 
     private EventHandler<User> userEventHandler;
     private EventHandler<Pair<User, Contract>> contractEventHandler;
@@ -30,8 +29,8 @@ public class SearchUserControllerImpl extends AbstractController implements Sear
     private ExceptionHandler exceptionHandler;
 
     @Inject
-    public SearchUserControllerImpl(UserController userController, ContractController contractController,
-            ExceptionHandler exceptionHandler) {
+    public SearchUserViewModelImpl(UserController userController, ContractController contractController,
+                                   ExceptionHandler exceptionHandler) {
         this.userController = userController;
         this.contractController = contractController;
         this.exceptionHandler = exceptionHandler;

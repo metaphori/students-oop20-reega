@@ -10,9 +10,9 @@ import reega.users.NewUser;
 import reega.users.Role;
 import reega.util.FiscalCodeValidator;
 import reega.util.ValueResult;
-import reega.viewutils.AbstractController;
+import reega.viewutils.AbstractViewModel;
 
-public class RegistrationControllerImpl extends AbstractController implements RegistrationController {
+public class RegistrationViewModelImpl extends AbstractViewModel implements RegistrationViewModel {
 
     private String name;
     private String surname;
@@ -23,7 +23,7 @@ public class RegistrationControllerImpl extends AbstractController implements Re
     private final AuthManager authManager;
 
     @Inject
-    public RegistrationControllerImpl(final AuthManager authManager) {
+    public RegistrationViewModelImpl(final AuthManager authManager) {
         this.authManager = authManager;
     }
 
@@ -32,7 +32,7 @@ public class RegistrationControllerImpl extends AbstractController implements Re
      */
     @Override
     public void jumpToLogin() {
-        this.pushController(LoginController.class, true);
+        this.pushViewModel(LoginViewModel.class, true);
     }
 
     /**

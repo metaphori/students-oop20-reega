@@ -8,10 +8,10 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import reega.data.models.Contract;
 import reega.users.User;
-import reega.viewutils.Controller;
+import reega.viewutils.ViewModel;
 import reega.viewutils.EventHandler;
 
-public interface SearchUserController extends Controller {
+public interface SearchUserViewModel extends ViewModel {
 
     /**
      * Search for the specified users

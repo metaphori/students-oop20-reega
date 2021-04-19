@@ -8,7 +8,7 @@ import javafx.collections.ObservableList;
 import reega.data.models.Contract;
 import reega.users.User;
 
-public interface OperatorMainController extends MainController {
+public interface OperatorMainViewModel extends MainViewModel {
     /**
      * Selected user property
      *

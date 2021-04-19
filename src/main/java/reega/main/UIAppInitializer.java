@@ -70,7 +70,7 @@ public class UIAppInitializer implements AppInitializer {
         private ServiceProvider buildServiceProvider() {
                 final ServiceCollection svcCollection = new ServiceCollection();
                 svcCollection.addSingleton(Navigator.class, (Function<ServiceProvider, Navigator>) NavigatorImpl::new);
-                svcCollection.addSingleton(MasterController.class);
+                svcCollection.addSingleton(MasterViewModel.class);
                 svcCollection.addSingleton(AuthController.class, AuthControllerFactory.getDefaultAuthController(null));
                 svcCollection.addSingleton(IOController.class, IOControllerFactory.getDefaultIOController());
                 svcCollection.addSingleton(TokenIOController.class, IOControllerFactory.getDefaultTokenIOController());
@@ -88,9 +88,9 @@ public class UIAppInitializer implements AppInitializer {
                 svcCollection.addSingleton(OperatorContractManager.class, OperatorContractManagerImpl.class);
                 svcCollection.addTransient(StatisticsController.class, StatisticsControllerImpl.class);
                 svcCollection.addTransient(DataPlotter.class, DataPlotterImpl.class);
-                svcCollection.addTransient(LoginController.class, LoginControllerImpl.class);
-                svcCollection.addTransient(RegistrationController.class, RegistrationControllerImpl.class);
-                svcCollection.addTransient(MainController.class, (svcProvider) -> {
+                svcCollection.addTransient(LoginViewModel.class, LoginViewModelImpl.class);
+                svcCollection.addTransient(RegistrationViewModel.class, RegistrationViewModelImpl.class);
+                svcCollection.addTransient(MainViewModel.class, (svcProvider) -> {
                         final StatisticsController statisticsController = svcProvider.getRequiredService(
                                 StatisticsController.class);
                         final DataPlotter dataPlotter = svcProvider.getRequiredService(DataPlotter.class);
@@ -101,10 +101,10 @@ public class UIAppInitializer implements AppInitializer {
 
                         dataPlotter.setStatisticController(statisticsController);
 
-                        return new MainControllerImpl(statisticsController, dataPlotter, exceptionHandler, dataFetcher,
+                        return new MainViewModelImpl(statisticsController, dataPlotter, exceptionHandler, dataFetcher,
                                 contractManager);
                 });
-                svcCollection.addTransient(OperatorMainController.class, (svcProvider) -> {
+                svcCollection.addTransient(OperatorMainViewModel.class, (svcProvider) -> {
                         final StatisticsController statisticsController = svcProvider.getRequiredService(
                                 StatisticsController.class);
                         final DataPlotter dataPlotter = svcProvider.getRequiredService(DataPlotter.class);
@@ -117,12 +117,12 @@ public class UIAppInitializer implements AppInitializer {
 
                         dataPlotter.setStatisticController(statisticsController);
 
-                        return new OperatorMainControllerImpl(statisticsController, dataPlotter, exceptionHandler,
+                        return new OperatorMainViewModelImpl(statisticsController, dataPlotter, exceptionHandler,
                                 dataFetcher, contractFetcher);
                 });
-                svcCollection.addTransient(SearchUserController.class, SearchUserControllerImpl.class);
-                svcCollection.addTransient(ContractCreationController.class, ContractCreationControllerImpl.class);
-                svcCollection.addTransient(UserProfileController.class, UserProfileControllerImpl.class);
+                svcCollection.addTransient(SearchUserViewModel.class, SearchUserViewModelImpl.class);
+                svcCollection.addTransient(ContractCreationViewModel.class, ContractCreationViewModelImpl.class);
+                svcCollection.addTransient(UserProfileViewModel.class, UserProfileViewModelImpl.class);
                 svcCollection.addTransient(HistoryViewModel.class, HistoryViewModelImpl.class);
                 svcCollection.addSingleton(BaseLayoutView.class);
                 return svcCollection.buildServiceProvider();
@@ -133,67 +133,67 @@ public class UIAppInitializer implements AppInitializer {
          */
         private void initializeTemplateManager() {
                 final DataTemplateManager templateManager = DataTemplateManager.instance;
-                templateManager.addTemplate(new DataTemplate<RegistrationControllerImpl>() {
-                        @Override public Class<RegistrationControllerImpl> getDataObjectClass() {
-                                return RegistrationControllerImpl.class;
+                templateManager.addTemplate(new DataTemplate<RegistrationViewModelImpl>() {
+                        @Override public Class<RegistrationViewModelImpl> getDataObjectClass() {
+                                return RegistrationViewModelImpl.class;
                         }
 
                         @Override public Supplier<? extends Parent> getControlFactory(
-                                final RegistrationControllerImpl controller) {
+                                final RegistrationViewModelImpl controller) {
                                 return () -> new RegistrationView(controller);
                         }
                 });
-                templateManager.addTemplate(new DataTemplate<LoginControllerImpl>() {
-                        @Override public Class<LoginControllerImpl> getDataObjectClass() {
-                                return LoginControllerImpl.class;
+                templateManager.addTemplate(new DataTemplate<LoginViewModelImpl>() {
+                        @Override public Class<LoginViewModelImpl> getDataObjectClass() {
+                                return LoginViewModelImpl.class;
                         }
 
                         @Override public Supplier<? extends Parent> getControlFactory(
-                                final LoginControllerImpl controller) {
+                                final LoginViewModelImpl controller) {
                                 return () -> new LoginView(controller);
                         }
                 });
-                templateManager.addTemplate(new DataTemplate<MainControllerImpl>() {
-                        @Override public Class<MainControllerImpl> getDataObjectClass() {
-                                return MainControllerImpl.class;
+                templateManager.addTemplate(new DataTemplate<MainViewModelImpl>() {
+                        @Override public Class<MainViewModelImpl> getDataObjectClass() {
+                                return MainViewModelImpl.class;
                         }
 
                         @Override public Supplier<? extends Parent> getControlFactory(
-                                final MainControllerImpl controller) {
+                                final MainViewModelImpl controller) {
                                 return () -> new UserMainView(controller);
                         }
                 });
-                templateManager.addTemplate(new DataTemplate<OperatorMainControllerImpl>() {
+                templateManager.addTemplate(new DataTemplate<OperatorMainViewModelImpl>() {
 
-                        @Override public Class<OperatorMainControllerImpl> getDataObjectClass() {
-                                return OperatorMainControllerImpl.class;
+                        @Override public Class<OperatorMainViewModelImpl> getDataObjectClass() {
+                                return OperatorMainViewModelImpl.class;
                         }
 
                         @Override public Supplier<? extends Parent> getControlFactory(
-                                OperatorMainControllerImpl controller) {
+                                OperatorMainViewModelImpl controller) {
                                 return () -> new OperatorMainView(controller);
                         }
 
                 });
-                templateManager.addTemplate(new DataTemplate<SearchUserControllerImpl>() {
+                templateManager.addTemplate(new DataTemplate<SearchUserViewModelImpl>() {
 
-                        @Override public Class<SearchUserControllerImpl> getDataObjectClass() {
-                                return SearchUserControllerImpl.class;
+                        @Override public Class<SearchUserViewModelImpl> getDataObjectClass() {
+                                return SearchUserViewModelImpl.class;
                         }
 
                         @Override public Supplier<? extends Parent> getControlFactory(
-                                SearchUserControllerImpl controller) {
+                                SearchUserViewModelImpl controller) {
                                 return () -> new UserSearchView(controller);
                         }
                 });
-                templateManager.addTemplate(new DataTemplate<UserProfileControllerImpl>() {
+                templateManager.addTemplate(new DataTemplate<UserProfileViewModelImpl>() {
 
-                        @Override public Class<UserProfileControllerImpl> getDataObjectClass() {
-                                return UserProfileControllerImpl.class;
+                        @Override public Class<UserProfileViewModelImpl> getDataObjectClass() {
+                                return UserProfileViewModelImpl.class;
                         }
 
                         @Override public Supplier<? extends Parent> getControlFactory(
-                                UserProfileControllerImpl controller) {
+                                UserProfileViewModelImpl controller) {
                                 return () -> new UserProfileView(controller);
                         }
                 });
@@ -207,14 +207,14 @@ public class UIAppInitializer implements AppInitializer {
                                 return () -> new HistoryView(controller);
                         }
                 });
-                templateManager.addTemplate(new DataTemplate<ContractCreationControllerImpl>() {
+                templateManager.addTemplate(new DataTemplate<ContractCreationViewModelImpl>() {
 
-                        @Override public Class<ContractCreationControllerImpl> getDataObjectClass() {
-                                return ContractCreationControllerImpl.class;
+                        @Override public Class<ContractCreationViewModelImpl> getDataObjectClass() {
+                                return ContractCreationViewModelImpl.class;
                         }
 
                         @Override public Supplier<? extends Parent> getControlFactory(
-                                ContractCreationControllerImpl controller) {
+                                ContractCreationViewModelImpl controller) {
                                 return () -> new ContractCreationView(controller);
                         }
                 });

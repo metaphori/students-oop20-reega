@@ -10,7 +10,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
-import reega.controllers.LoginController;
+import reega.controllers.LoginViewModel;
 import reega.util.ValueResult;
 import reega.viewutils.DialogFactory;
 
@@ -29,10 +29,10 @@ public class LoginView extends GridPane {
     @FXML
     private CheckBox rememberMeCheckBox;
 
-    private final LoginController loginController;
+    private final LoginViewModel loginViewModel;
 
-    public LoginView(final LoginController controller) {
-        this.loginController = controller;
+    public LoginView(final LoginViewModel viewModel) {
+        this.loginViewModel = viewModel;
         final FXMLLoader fxmlLoader = new FXMLLoader(
                 ClassLoader.getSystemClassLoader().getResource("views/Login.fxml"));
         fxmlLoader.setRoot(this);
@@ -43,31 +43,31 @@ public class LoginView extends GridPane {
             ex.printStackTrace();
         }
 
-        ValueResult<Void> tryLoginResult = controller.tryLogin();
+        ValueResult<Void> tryLoginResult = viewModel.tryLogin();
         if (tryLoginResult.isInvalid()) {
             DialogFactory.buildAlert(AlertType.ERROR,
                     "Error when trying to login with the token",
-                    controller.tryLogin().getMessage(),
+                    viewModel.tryLogin().getMessage(),
                     ButtonType.CLOSE).showAndWait();
         }
 
         // Change email or fiscal code on lost focus
         this.emailOrFiscalCodeField.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
-                this.loginController.setEmailOrFiscalCode(this.emailOrFiscalCodeField.getText());
+                this.loginViewModel.setEmailOrFiscalCode(this.emailOrFiscalCodeField.getText());
             }
         });
         // Change password on lost focus
         this.passwordField.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
-                this.loginController.setPassword(this.passwordField.getText());
+                this.loginViewModel.setPassword(this.passwordField.getText());
             }
         });
 
         this.emailOrFiscalCodeField.setOnAction((e) -> this.passwordField.requestFocus());
 
         this.passwordField.setOnAction((e) -> {
-            this.loginController.setPassword(this.passwordField.getText());
+            this.loginViewModel.setPassword(this.passwordField.getText());
             this.login();
         });
     }
@@ -77,7 +77,7 @@ public class LoginView extends GridPane {
      */
     @FXML
     private void jumpToRegistration() {
-        this.loginController.jumpToRegistration();
+        this.loginViewModel.jumpToRegistration();
     }
 
     /**
@@ -85,7 +85,7 @@ public class LoginView extends GridPane {
      */
     @FXML
     private void login() {
-        final ValueResult<Void> valueResult = this.loginController.login(this.rememberMeCheckBox.isSelected());
+        final ValueResult<Void> valueResult = this.loginViewModel.login(this.rememberMeCheckBox.isSelected());
         if (valueResult.isInvalid()) {
             DialogFactory.buildAlert(AlertType.ERROR, "Login error", valueResult.getMessage())
                     .showAndWait();

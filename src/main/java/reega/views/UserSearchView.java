@@ -13,12 +13,11 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.VBox;
-import reega.controllers.SearchUserController;
+import reega.controllers.SearchUserViewModel;
 import reega.data.models.Contract;
 import reega.users.User;
 import reega.viewcomponents.Card;
@@ -39,7 +38,7 @@ public class UserSearchView extends VBox {
     @FXML
     private FlexibleGridPane cardsPane;
 
-    public UserSearchView(SearchUserController controller) {
+    public UserSearchView(SearchUserViewModel viewModel) {
         final FXMLLoader loader = new FXMLLoader(
                 ClassLoader.getSystemClassLoader().getResource("views/UserSearch.fxml"));
 
@@ -54,9 +53,9 @@ public class UserSearchView extends VBox {
 
         EventHandler<ActionEvent> action = e -> {
             if (this.userSearch.isSelected()) {
-                this.populateCardBoxByUser(controller);
+                this.populateCardBoxByUser(viewModel);
             } else {
-                this.populateCardBoxByContract(controller);
+                this.populateCardBoxByContract(viewModel);
             }
         };
         this.searchBar.setOnAction(action);
@@ -67,8 +66,8 @@ public class UserSearchView extends VBox {
         this.contractSearch.setOnAction(e -> searchBar.setPromptText("Search for services, address or accountholder"));
     }
 
-    protected void populateCardBoxByUser(SearchUserController controller) {
-        List<User> users = controller.searchUser(this.searchBar.getText());
+    protected void populateCardBoxByUser(SearchUserViewModel viewModel) {
+        List<User> users = viewModel.searchUser(this.searchBar.getText());
         // add cards with user information to the cardsBox
         this.cardsPane.getChildren().clear();
         this.cardsPane.getChildren().addAll(users.stream().map(user -> {
@@ -80,15 +79,15 @@ public class UserSearchView extends VBox {
                             ViewUtils.wrapNodeWithStyleClasses(new WrappableLabel("email: " + user.getEmail()), "search-text"));
             card.setOnMouseClicked(e -> {
                 if (e.getButton() == MouseButton.PRIMARY) {
-                    controller.setUserFound(user);
+                    viewModel.setUserFound(user);
                 }
             });
             return card;
         }).collect(Collectors.toList()));
     }
 
-    protected void populateCardBoxByContract(SearchUserController controller) {
-        Map<User, Set<Contract>> contracts = controller.searchContract(this.searchBar.getText());
+    protected void populateCardBoxByContract(SearchUserViewModel viewModel) {
+        Map<User, Set<Contract>> contracts = viewModel.searchContract(this.searchBar.getText());
         // add cards with contract informations to the cardsBox
         this.cardsPane.getChildren().clear();
         this.cardsPane.getChildren().addAll(contracts.entrySet().stream().flatMap(userContracts -> {
@@ -113,7 +112,7 @@ public class UserSearchView extends VBox {
                                         .collect(Collectors.joining(", "))), "search-text"));
                 card.setOnMouseClicked(e -> {
                     if (e.getButton() == MouseButton.PRIMARY) {
-                        controller.setContractFound(user, contract);
+                        viewModel.setContractFound(user, contract);
                     }
                 });
                 return card;

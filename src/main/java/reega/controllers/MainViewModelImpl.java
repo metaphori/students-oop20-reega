@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class MainControllerImpl extends AbstractController implements MainController {
+public class MainViewModelImpl extends AbstractViewModel implements MainViewModel {
 
     private User currentUser;
     private final StatisticsController statisticsController;
@@ -36,11 +36,11 @@ public class MainControllerImpl extends AbstractController implements MainContro
     private final ContractManager contractManager;
 
     @Inject
-    public MainControllerImpl(final StatisticsController statisticsController,
-                              final DataPlotter dataPlotter,
-                              final ExceptionHandler exceptionHandler,
-                              final DataFetcher dataFetcher,
-                              final ContractManager contractManager) {
+    public MainViewModelImpl(final StatisticsController statisticsController,
+                             final DataPlotter dataPlotter,
+                             final ExceptionHandler exceptionHandler,
+                             final DataFetcher dataFetcher,
+                             final ContractManager contractManager) {
         this.statisticsController = statisticsController;
         this.dataPlotter = dataPlotter;
         this.exceptionHandler = exceptionHandler;
@@ -182,7 +182,7 @@ public class MainControllerImpl extends AbstractController implements MainContro
     @Override
     public void logout() {
         this.logoutEventHandler.handle(null);
-        this.pushController(LoginController.class, true);
+        this.pushViewModel(LoginViewModel.class, true);
     }
 
     /**

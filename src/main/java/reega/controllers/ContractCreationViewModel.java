@@ -4,7 +4,7 @@ import reega.data.models.Contract;
 import reega.data.models.gson.NewContract;
 import reega.viewutils.EventHandler;
 
-public interface ContractCreationController extends UserController{
+public interface ContractCreationViewModel extends UserViewModel {
         
         /**
          * Register a new contract associated with the current user
