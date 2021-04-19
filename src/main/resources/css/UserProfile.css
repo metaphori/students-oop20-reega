@@ -20,3 +20,13 @@
     -fx-background-position: center bottom;
     -fx-background-repeat: no-repeat no-repeat;
 }
+
+#deleteUserButton {
+    -fx-pref-height: 32px;
+    -fx-pref-width: 32px;
+    -fx-background-color: transparent;
+    -fx-background-image: url("/images/Delete_Icon.png");
+    -fx-background-size: contain;
+    -fx-background-position: center bottom;
+    -fx-background-repeat: no-repeat no-repeat;
+}

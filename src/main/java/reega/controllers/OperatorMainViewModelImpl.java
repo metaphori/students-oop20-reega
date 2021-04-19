@@ -109,6 +109,10 @@ public class OperatorMainViewModelImpl extends MainViewModelImpl implements Oper
                                                                         this.removeSelectedContract(contractToDelete);
                                                                 }
                                                         });
+                                                        userProfileController.setDeleteUserHandler(evtArgs -> {
+                                                                this.removeSelectedUser();
+                                                                this.popViewModel();
+                                                        });
                                                 }, false)),
                                 new LabeledCommand("Add contract to the selected user", args -> {
                                         this.pushViewModel(ContractCreationViewModel.class,

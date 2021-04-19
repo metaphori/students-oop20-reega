@@ -3,15 +3,19 @@ package reega.views;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.apache.commons.lang3.StringUtils;
 import reega.controllers.UserProfileViewModel;
 import reega.users.User;
+import reega.util.ValueResult;
 import reega.viewcomponents.Card;
 import reega.viewcomponents.FlexibleGridPane;
 import reega.viewcomponents.WrappableLabel;
+import reega.viewutils.DialogFactory;
 import reega.viewutils.ViewUtils;
 
 import java.io.IOException;
@@ -32,6 +36,8 @@ public class UserProfileView extends VBox {
     private WrappableLabel userFiscalCode;
     @FXML
     private FlexibleGridPane userContracts;
+    @FXML
+    private ToggleButton deleteUserButton;
 
     public UserProfileView(UserProfileViewModel viewModel) {
         final FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemClassLoader().getResource("views/UserProfile.fxml"));
@@ -47,6 +53,12 @@ public class UserProfileView extends VBox {
 
         this.setUserProperties(viewModel.getUser());
         this.buildUserContractsPane(viewModel);
+        this.deleteUserButton.setOnAction(e -> {
+            ValueResult<Void> deleteResult = viewModel.deleteCurrentUser();
+            if (deleteResult.isInvalid()) {
+                DialogFactory.buildAlert(Alert.AlertType.ERROR, "Something went wrong with the deletion", deleteResult.getMessage(), ButtonType.CLOSE);
+            }
+        });
     }
 
     private void setUserProperties(User user) {

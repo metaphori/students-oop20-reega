@@ -14,6 +14,11 @@
          alignment="CENTER"
          stylesheets="@/css/UserProfile.css">
     <children>
+        <HBox alignment="CENTER_RIGHT">
+            <children>
+                <ToggleButton fx:id="deleteUserButton"/>
+            </children>
+        </HBox>
         <WrappableLabel fx:id="userName" styleClass="user-label"/>
         <WrappableLabel fx:id="userSurname" styleClass="user-label"/>
         <WrappableLabel fx:id="userRole" styleClass="user-label"/>

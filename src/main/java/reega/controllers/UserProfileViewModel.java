@@ -2,6 +2,8 @@ package reega.controllers;
 
 
 import reega.data.models.Contract;
+import reega.users.User;
+import reega.util.ValueResult;
 import reega.viewutils.EventHandler;
 
 import java.util.List;
@@ -30,4 +32,16 @@ public interface UserProfileViewModel extends UserViewModel {
      * @param deleteUserContractHandler delete user contract event handler
      */
     void setDeleteUserContractHandler(EventHandler<Contract> deleteUserContractHandler);
+
+    /**
+     * Set the delete user handler
+     * @param deleteUserHandler delete user handler
+     */
+    void setDeleteUserHandler(EventHandler<User> deleteUserHandler);
+
+    /**
+     * Delete the current user
+     * @return Return a valid {@link ValueResult} if the deletion succeeded, an invalid one otherwise
+     */
+    ValueResult<Void> deleteCurrentUser();
 }
