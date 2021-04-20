@@ -14,6 +14,7 @@ import reega.data.models.ServiceType;
 import reega.viewcomponents.Card;
 import reega.viewcomponents.FlexibleGridPane;
 import reega.viewcomponents.WrappableLabel;
+import reega.viewutils.ReegaFXMLLoader;
 import reega.viewutils.ViewUtils;
 
 import java.io.IOException;
@@ -27,15 +28,7 @@ public class HistoryView extends VBox {
 
 
     public HistoryView(HistoryViewModel historyViewModel) {
-        final FXMLLoader fxmlLoader = new FXMLLoader(
-                ClassLoader.getSystemClassLoader().getResource("views/History.fxml"));
-        fxmlLoader.setRoot(this);
-        fxmlLoader.setController(this);
-        try {
-            fxmlLoader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        ReegaFXMLLoader.loadFXML(this,"views/History.fxml");
         this.contractsLabel.setText(historyViewModel.getContracts().stream().map(Contract::getAddress).collect(Collectors.joining(", ")));
 
         this.cardsList.getChildren().addAll(

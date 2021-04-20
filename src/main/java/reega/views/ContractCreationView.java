@@ -11,6 +11,7 @@ import reega.data.models.ServiceType;
 import reega.data.models.gson.NewContract;
 import reega.users.User;
 import reega.viewutils.DialogFactory;
+import reega.viewutils.ReegaFXMLLoader;
 import reega.viewutils.ViewUtils;
 
 import java.io.IOException;
@@ -27,17 +28,7 @@ public class ContractCreationView extends VBox {
         @FXML private Button contractButton;
 
         public ContractCreationView(ContractCreationViewModel viewModel) {
-                final FXMLLoader loader = new FXMLLoader(
-                        ClassLoader.getSystemClassLoader().getResource("views/ContractCreation.fxml"));
-
-                loader.setRoot(this);
-                loader.setController(this);
-
-                try {
-                        loader.load();
-                } catch (final IOException e) {
-                        e.printStackTrace();
-                }
+                ReegaFXMLLoader.loadFXML(this,"views/ContractCreation.fxml");
                 this.userLabel.setText("User: " + viewModel.getUser().getName() + viewModel.getUser().getSurname());
                 // services list init
                 this.servicesBox.getChildren().addAll(List.of(ServiceType.values()).stream().map(svc -> {

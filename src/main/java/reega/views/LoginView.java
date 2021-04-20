@@ -13,6 +13,7 @@ import javafx.scene.layout.GridPane;
 import reega.controllers.LoginViewModel;
 import reega.util.ValueResult;
 import reega.viewutils.DialogFactory;
+import reega.viewutils.ReegaFXMLLoader;
 
 /**
  * Class for the Login View Component
@@ -33,15 +34,7 @@ public class LoginView extends GridPane {
 
     public LoginView(final LoginViewModel viewModel) {
         this.loginViewModel = viewModel;
-        final FXMLLoader fxmlLoader = new FXMLLoader(
-                ClassLoader.getSystemClassLoader().getResource("views/Login.fxml"));
-        fxmlLoader.setRoot(this);
-        fxmlLoader.setController(this);
-        try {
-            fxmlLoader.load();
-        } catch (final IOException ex) {
-            ex.printStackTrace();
-        }
+        ReegaFXMLLoader.loadFXML(this, "views/Login.fxml");
 
         ValueResult<Void> tryLoginResult = viewModel.tryLogin();
         if (tryLoginResult.isInvalid()) {

@@ -33,6 +33,7 @@ import reega.viewcomponents.FlexibleGridPane;
 import reega.viewcomponents.MaxWidthButton;
 import reega.viewcomponents.WrappableLabel;
 import reega.viewutils.Command;
+import reega.viewutils.ReegaFXMLLoader;
 import reega.viewutils.ViewUtils;
 
 public abstract class MainView extends GridPane {
@@ -53,16 +54,7 @@ public abstract class MainView extends GridPane {
     private ToggleButton logoutButton;
 
     public MainView(final MainViewModel viewModel) {
-        final FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemClassLoader().getResource("views/Main.fxml"));
-
-        loader.setRoot(this);
-        loader.setController(this);
-
-        try {
-            loader.load();
-        } catch (final IOException e) {
-            e.printStackTrace();
-        }
+        ReegaFXMLLoader.loadFXML(this, "views/Main.fxml");
 
         this.userEmail.setText("Logged in as: " + viewModel.getUser().getFullName());
         this.populateButtonsPane(viewModel);

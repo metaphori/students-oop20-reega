@@ -11,6 +11,7 @@ import javafx.scene.layout.GridPane;
 import reega.controllers.RegistrationViewModel;
 import reega.util.ValueResult;
 import reega.viewutils.DialogFactory;
+import reega.viewutils.ReegaFXMLLoader;
 
 /**
  * Class for the Registration View Component
@@ -37,15 +38,7 @@ public class RegistrationView extends GridPane {
 
     public RegistrationView(final RegistrationViewModel registrationViewModel) {
         this.registrationViewModel = registrationViewModel;
-        final FXMLLoader fxmlLoader = new FXMLLoader(
-                ClassLoader.getSystemClassLoader().getResource("views/Registration.fxml"));
-        fxmlLoader.setRoot(this);
-        fxmlLoader.setController(this);
-        try {
-            fxmlLoader.load();
-        } catch (final IOException ex) {
-            ex.printStackTrace();
-        }
+        ReegaFXMLLoader.loadFXML(this, "views/Registration.fxml");
 
         // Change name on lost focus
         this.nameField.focusedProperty().addListener((observable, oldValue, newValue) -> {

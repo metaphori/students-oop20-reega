@@ -23,6 +23,7 @@ import reega.users.User;
 import reega.viewcomponents.Card;
 import reega.viewcomponents.FlexibleGridPane;
 import reega.viewcomponents.WrappableLabel;
+import reega.viewutils.ReegaFXMLLoader;
 import reega.viewutils.ViewUtils;
 
 public class UserSearchView extends VBox {
@@ -39,17 +40,7 @@ public class UserSearchView extends VBox {
     private FlexibleGridPane cardsPane;
 
     public UserSearchView(SearchUserViewModel viewModel) {
-        final FXMLLoader loader = new FXMLLoader(
-                ClassLoader.getSystemClassLoader().getResource("views/UserSearch.fxml"));
-
-        loader.setRoot(this);
-        loader.setController(this);
-
-        try {
-            loader.load();
-        } catch (final IOException e) {
-            e.printStackTrace();
-        }
+        ReegaFXMLLoader.loadFXML(this, "views/UserSearch.fxml");
 
         EventHandler<ActionEvent> action = e -> {
             if (this.userSearch.isSelected()) {

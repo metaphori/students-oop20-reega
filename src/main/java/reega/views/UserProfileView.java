@@ -16,6 +16,7 @@ import reega.viewcomponents.Card;
 import reega.viewcomponents.FlexibleGridPane;
 import reega.viewcomponents.WrappableLabel;
 import reega.viewutils.DialogFactory;
+import reega.viewutils.ReegaFXMLLoader;
 import reega.viewutils.ViewUtils;
 
 import java.io.IOException;
@@ -40,16 +41,7 @@ public class UserProfileView extends VBox {
     private ToggleButton deleteUserButton;
 
     public UserProfileView(UserProfileViewModel viewModel) {
-        final FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemClassLoader().getResource("views/UserProfile.fxml"));
-
-        loader.setRoot(this);
-        loader.setController(this);
-
-        try {
-            loader.load();
-        } catch (final IOException e) {
-            e.printStackTrace();
-        }
+        ReegaFXMLLoader.loadFXML(this, "views/UserProfile.fxml");
 
         this.setUserProperties(viewModel.getUser());
         this.buildUserContractsPane(viewModel);

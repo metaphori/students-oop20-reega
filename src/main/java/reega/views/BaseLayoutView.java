@@ -13,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import reega.controllers.MasterViewModel;
 import reega.viewutils.ContentControl;
+import reega.viewutils.ReegaFXMLLoader;
 
 /**
  * @author Marco
@@ -27,15 +28,7 @@ public class BaseLayoutView extends ScrollPane {
 
     @Inject
     public BaseLayoutView(final MasterViewModel viewModel) {
-        final FXMLLoader fxmlLoader = new FXMLLoader(
-                ClassLoader.getSystemClassLoader().getResource("views/BaseLayout.fxml"));
-        fxmlLoader.setRoot(this);
-        fxmlLoader.setController(this);
-        try {
-            fxmlLoader.load();
-        } catch (final IOException e) {
-            e.printStackTrace();
-        }
+        ReegaFXMLLoader.loadFXML(this, "views/BaseLayout.fxml");
         this.contentControl.objectProperty().bind(viewModel.getNavigator().selectedViewModelProperty());
         this.backArrowButton.visibleProperty().bind(viewModel.getNavigator().navigationStackNotEmptyProperty());
         this.backArrowButton.setOnAction(e -> viewModel.getNavigator().popController());
