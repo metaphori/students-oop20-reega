@@ -1,16 +1,15 @@
 package reega.views;
 
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-import javafx.collections.ListChangeListener;
 import org.apache.commons.lang3.StringUtils;
+
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.chart.AreaChart;
@@ -60,7 +59,6 @@ public abstract class MainView extends GridPane implements ReegaView {
         this.userEmail.setText("Logged in as: " + viewModel.getUser().getFullName());
         this.populateButtonsPane(viewModel);
 
-
         this.graphPane.setVisible(false);
         this.graphPane.visibleProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
@@ -84,7 +82,7 @@ public abstract class MainView extends GridPane implements ReegaView {
     }
 
     /**
-     * Get the services pane
+     * Get the services pane.
      *
      * @return the services pane
      */
@@ -93,7 +91,7 @@ public abstract class MainView extends GridPane implements ReegaView {
     }
 
     /**
-     * Get the contracts pane
+     * Get the contracts pane.
      *
      * @return the contracts pane
      */
@@ -102,7 +100,7 @@ public abstract class MainView extends GridPane implements ReegaView {
     }
 
     /**
-     * Get the graphPane pane
+     * Get the graphPane pane.
      *
      * @return the graph pane
      */
@@ -111,7 +109,7 @@ public abstract class MainView extends GridPane implements ReegaView {
     }
 
     /**
-     * Populate the {@link #buttonsPane}
+     * Populate the {@link #buttonsPane}.
      *
      * @param viewModel viewModel used to populate the {@link #buttonsPane}
      */
@@ -127,14 +125,14 @@ public abstract class MainView extends GridPane implements ReegaView {
     }
 
     /**
-     * Populate the {@link #servicesPane}
+     * Populate the {@link #servicesPane}.
      *
      * @param viewModel viewModel used to populate the {@link #servicesPane}
      */
     protected final void populateServicesPane(final MainViewModel viewModel) {
         this.getServicesPane().getChildren().clear();
         viewModel.getAvailableServiceTypes().forEach(svcType -> {
-            String svcTypeMeasurementUnit = ServiceType.getMeasurementUnit(svcType);
+            final String svcTypeMeasurementUnit = ServiceType.getMeasurementUnit(svcType);
             final Card serviceCard = ViewUtils.wrapNodeWithStyleClasses(new Card(), "svc-card");
             // Set the service card mouse clicked event
             serviceCard.setOnMouseClicked(e -> {
@@ -145,30 +143,29 @@ public abstract class MainView extends GridPane implements ReegaView {
             });
             final ObservableList<Node> serviceCardChildren = serviceCard.getChildren();
             // Add the header of the card
-            serviceCardChildren.add(ViewUtils
-                    .wrapNodeWithStyleClasses(new WrappableLabel(StringUtils.capitalize(svcType.getName())), "svc-header"));
+            serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(
+                    new WrappableLabel(StringUtils.capitalize(svcType.getName())), "svc-header"));
             // Add the peek if it's present
             viewModel.getPeek(svcType).ifPresent(peek -> {
-                DateFormat usDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+                final DateFormat usDateFormat = new SimpleDateFormat("yyyy/MM/dd", Locale.US);
                 serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(
                         new WrappableLabel("Peek date: " + usDateFormat.format(peek.getKey())), "svc-peek"));
-                serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(
-                        new WrappableLabel(String.format(Locale.US, "Peek value: %.2f %s", peek.getValue(), svcTypeMeasurementUnit)), "svc-peek"));
+                serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(new WrappableLabel(
+                        String.format(Locale.US, "Peek value: %.2f %s", peek.getValue(), svcTypeMeasurementUnit)),
+                        "svc-peek"));
             });
             // Add the average usage
-            serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(
-                    new WrappableLabel(String.format(Locale.US, "Average usage: %.2f %s", viewModel.getAverageUsage(svcType), svcTypeMeasurementUnit)),
-                    "svc-avg"));
+            serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(new WrappableLabel(String.format(Locale.US,
+                    "Average usage: %.2f %s", viewModel.getAverageUsage(svcType), svcTypeMeasurementUnit)), "svc-avg"));
             // Add the total usage
-            serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(
-                    new WrappableLabel(String.format(Locale.US, "Total usage: %.2f %s", viewModel.getTotalUsage(svcType), svcTypeMeasurementUnit)),
-                    "svc-tot"));
+            serviceCardChildren.add(ViewUtils.wrapNodeWithStyleClasses(new WrappableLabel(String.format(Locale.US,
+                    "Total usage: %.2f %s", viewModel.getTotalUsage(svcType), svcTypeMeasurementUnit)), "svc-tot"));
             this.getServicesPane().getChildren().add(serviceCard);
         });
     }
 
     /**
-     * Populate the {@link #contractsPane}
+     * Populate the {@link #contractsPane}.
      *
      * @param viewModel viewModel used to populate the {@link #contractsPane}
      */
@@ -184,9 +181,8 @@ public abstract class MainView extends GridPane implements ReegaView {
                 // Add the contract if the selectedProperty is true
                 if (newValue) {
                     viewModel.addSelectedContract(contract);
-                }
-                // Remove the contract if the selectedProperty is false
-                else {
+                } else {
+                    // Remove the contract if the selectedProperty is false
                     viewModel.removeSelectedContract(contract);
                 }
                 this.populateServicesPane(viewModel);
@@ -200,62 +196,64 @@ public abstract class MainView extends GridPane implements ReegaView {
     }
 
     /**
-     * Populate the {@link #graphPane}
+     * Populate the {@link #graphPane}.
      */
     protected final void populateGraphPane() {
         this.getGraphPane().getChildren().clear();
         // prepare axis
-        NumberAxis xAxis = new NumberAxis();
+        final NumberAxis xAxis = new NumberAxis();
         xAxis.setLabel("Day of the month");
         xAxis.setTickLabelFormatter(ViewUtils.getDateStringConverter());
-        NumberAxis yAxis = new NumberAxis();
+        final NumberAxis yAxis = new NumberAxis();
         // auto ranging is true by default
         yAxis.setForceZeroInRange(false);
         xAxis.setForceZeroInRange(false);
         // prepare chart
-        AreaChart<Number, Number> chart = new AreaChart<>(xAxis, yAxis);
+        final AreaChart<Number, Number> chart = new AreaChart<>(xAxis, yAxis);
         chart.setLegendVisible(false);
-        chart.setMinSize(500.0, 300.0);
+        final double minWidth = 500.0;
+        final double minHeight = 300.0;
+        chart.setMinSize(minWidth, minHeight);
         this.graphPane.getChildren().add(chart);
         // prepare button
-        Button button = new Button();
+        final Button button = new Button();
         button.setText("Back to usage");
-        button.setOnMouseClicked((e) -> {
+        button.setOnMouseClicked(e -> {
             if (e.getButton() == MouseButton.PRIMARY) {
                 this.graphPane.setVisible(false);
             }
         });
         // prepare box
-        HBox innerbox = ViewUtils.wrapNodeWithStyleClasses(new HBox(button), "back-button");
+        final HBox innerbox = ViewUtils.wrapNodeWithStyleClasses(new HBox(button), "back-button");
         innerbox.setAlignment(Pos.BOTTOM_RIGHT);
         this.graphPane.getChildren().add(innerbox);
         VBox.setVgrow(this.graphPane, Priority.ALWAYS);
     }
 
     /**
-     * Updates data to be shown and sets the graphPane visible
+     * Updates data to be shown and sets the graphPane visible.
      *
      * @param dataPlotter
      */
-    protected void updateAndShowGraph(DataPlotter dataPlotter) {
+    protected void updateAndShowGraph(final DataPlotter dataPlotter) {
         this.updateGraph(dataPlotter);
         this.graphPane.setVisible(true);
     }
 
     /**
-     * Updates graph based on the given data type and dataPlotter
+     * Updates graph based on the given data type and dataPlotter.
      *
      * @param dataPlotter
      */
-    protected void updateGraph(DataPlotter dataPlotter) {
-        AreaChart<Number, Number> chart = (AreaChart<Number, Number>) this.graphPane.getChildren().get(0);
+    protected void updateGraph(final DataPlotter dataPlotter) {
+        final AreaChart<Number, Number> chart = (AreaChart<Number, Number>) this.graphPane.getChildren().get(0);
         // set chart title
         chart.setTitle(StringUtils.capitalize(dataPlotter.getServiceType().getName()));
         // set
         chart.getYAxis().setLabel("Usage in " + ServiceType.getMeasurementUnit(dataPlotter.getServiceType()));
         // remove, create and add data to the chart
         chart.getData().clear();
-        Series<Number, Number> dataSeries = new Series<>();
+        final Series<Number, Number> dataSeries = new Series<>();
         dataSeries.getData()
                 .addAll(dataPlotter.getData()
                         .entrySet()

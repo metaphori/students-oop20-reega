@@ -1,9 +1,6 @@
 package reega.views;
 
-import java.io.IOException;
-
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
@@ -17,10 +14,7 @@ import reega.viewutils.ReegaFXMLLoader;
 import reega.viewutils.ReegaView;
 
 /**
- * Class for the Registration View Component
- *
- * @author Marco
- *
+ * Class for the Registration View Component.
  */
 public class RegistrationView extends GridPane implements ReegaView {
 
@@ -86,14 +80,14 @@ public class RegistrationView extends GridPane implements ReegaView {
     }
 
     /**
-     * Register into the Reega platform
+     * Register into the REEGA platform.
+     *
      * @param registrationViewModel viewmodel used for the registration
      */
-    private void register(RegistrationViewModel registrationViewModel) {
+    private void register(final RegistrationViewModel registrationViewModel) {
         final ValueResult<Void> result = registrationViewModel.register();
         if (result.isInvalid()) {
-            DialogFactory.buildAlert(AlertType.ERROR, "Create user error", result.getMessage())
-                    .showAndWait();
+            DialogFactory.buildAlert(AlertType.ERROR, "Create user error", result.getMessage()).showAndWait();
         }
     }
 

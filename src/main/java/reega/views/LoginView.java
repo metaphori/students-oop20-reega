@@ -1,24 +1,22 @@
 package reega.views;
 
-import java.io.IOException;
-
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import reega.controllers.LoginViewModel;
 import reega.util.ValueResult;
-import reega.viewcomponents.MaxWidthButton;
 import reega.viewutils.DialogFactory;
 import reega.viewutils.ReegaFXMLLoader;
 import reega.viewutils.ReegaView;
 
 /**
- * Class for the Login View Component
- *
- * @author Marco
- *
+ * Class for the Login View Component.
  */
 public class LoginView extends GridPane implements ReegaView {
 
@@ -36,12 +34,12 @@ public class LoginView extends GridPane implements ReegaView {
     public LoginView(final LoginViewModel viewModel) {
         ReegaFXMLLoader.loadFXML(this, "views/Login.fxml");
 
-        ValueResult<Void> tryLoginResult = viewModel.tryLogin();
+        final ValueResult<Void> tryLoginResult = viewModel.tryLogin();
         if (tryLoginResult.isInvalid()) {
-            DialogFactory.buildAlert(AlertType.ERROR,
-                    "Error when trying to login with the token",
-                    viewModel.tryLogin().getMessage(),
-                    ButtonType.CLOSE).showAndWait();
+            DialogFactory
+                    .buildAlert(AlertType.ERROR, "Error when trying to login with the token",
+                            viewModel.tryLogin().getMessage(), ButtonType.CLOSE)
+                    .showAndWait();
         }
 
         // Change email or fiscal code on lost focus
@@ -72,18 +70,17 @@ public class LoginView extends GridPane implements ReegaView {
             viewModel.jumpToRegistration();
         });
 
-
     }
 
     /**
-     * Execute the login
+     * Execute the login.
+     *
      * @param loginViewModel viewmodel used for the login
      */
-    private void login(LoginViewModel loginViewModel) {
+    private void login(final LoginViewModel loginViewModel) {
         final ValueResult<Void> valueResult = loginViewModel.login(this.rememberMeCheckBox.isSelected());
         if (valueResult.isInvalid()) {
-            DialogFactory.buildAlert(AlertType.ERROR, "Login error", valueResult.getMessage())
-                    .showAndWait();
+            DialogFactory.buildAlert(AlertType.ERROR, "Login error", valueResult.getMessage()).showAndWait();
         }
     }
 }

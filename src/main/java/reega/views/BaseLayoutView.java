@@ -13,8 +13,7 @@ import reega.viewcomponents.ContentControl;
 import reega.viewutils.ReegaFXMLLoader;
 
 /**
- * @author Marco
- *
+ * Base view that contains the {@link ContentControl} used for hosting a variable view.
  */
 public class BaseLayoutView extends ScrollPane {
 
