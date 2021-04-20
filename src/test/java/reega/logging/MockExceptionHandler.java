@@ -1,7 +1,7 @@
 /**
  *
  */
-package reega.auth;
+package reega.logging;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;

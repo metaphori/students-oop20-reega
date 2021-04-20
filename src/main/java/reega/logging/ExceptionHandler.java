@@ -1,16 +1,12 @@
-/**
- *
- */
 package reega.logging;
 
 /**
- * @author Marco
  *
  */
 public interface ExceptionHandler {
 
     /**
-     * Try to handle an exception
+     * Try to handle an exception.
      *
      * @param e exception to handle
      */
@@ -19,7 +15,7 @@ public interface ExceptionHandler {
     }
 
     /**
-     * Try to handle an exception and use {@code message} for other information
+     * Try to handle an exception and use {@code message} for other information.
      *
      * @param e       exception to handle
      * @param message message to use for other informations

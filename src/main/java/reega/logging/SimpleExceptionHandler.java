@@ -1,6 +1,3 @@
-/**
- *
- */
 package reega.logging;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -8,8 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Marco
- *
+ * {@link ExceptionHandler} that only logs the exception.
  */
 public class SimpleExceptionHandler implements ExceptionHandler {
 
