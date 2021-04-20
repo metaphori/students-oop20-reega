@@ -3,8 +3,18 @@
  */
 package reega.auth;
 
-import org.junit.jupiter.api.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.Optional;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+
 import reega.data.factory.AuthControllerFactory;
 import reega.data.factory.UserControllerFactory;
 import reega.data.mock.TestConnection;
@@ -15,10 +25,6 @@ import reega.io.TokenIOController;
 import reega.users.NewUser;
 import reega.users.Role;
 import reega.users.User;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Optional;
 
 /**
  * @author Marco
@@ -33,21 +39,19 @@ class RemindableAuthManagerTest {
 
     @BeforeAll
     public void setup() throws IOException {
-        connection = new TestConnection().getTestConnection("admin@reega.it", "AES_PASSWORD");
-        ioController = IOControllerFactory.createTokenIOController(new MockIOController());
-        authManager = new RemindableAuthManager(
-                AuthControllerFactory.getRemoteAuthController(connection),
-                UserControllerFactory.getRemoteUserController(connection),
-                ioController,
+        this.connection = new TestConnection().getTestConnection("admin@reega.it", "AES_PASSWORD");
+        this.ioController = IOControllerFactory.createTokenIOController(new MockIOController());
+        this.authManager = new RemindableAuthManager(AuthControllerFactory.getRemoteAuthController(this.connection),
+                UserControllerFactory.getRemoteUserController(this.connection), this.ioController,
                 new MockExceptionHandler());
-        authManager.logout();
-        connection.logout();
+        this.authManager.logout();
+        this.connection.logout();
     }
 
     @AfterAll
     public void cleanup() throws IOException {
-        connection.getService().terminateTest().execute();
-        connection.logout();
+        this.connection.getService().terminateTest().execute();
+        this.connection.logout();
     }
 
     @AfterEach
@@ -72,14 +76,14 @@ class RemindableAuthManagerTest {
         this.authManager.createUser(newUser);
         u = this.authManager.emailLogin("addusertest1@reega.it", "PASSWORD", false).getValue();
         Assertions.assertTrue(u.isPresent());
-        connection.logout();
+        this.connection.logout();
 
         // Create a new user and try a fiscal code login
         newUser = new NewUser(Role.USER, "test", "surname", "addusertest2@reega.it", "AUT2", "PASSWORD");
         this.authManager.createUser(newUser);
         u = this.authManager.fiscalCodeLogin("AUT2", "PASSWORD", false).getValue();
         Assertions.assertTrue(u.isPresent());
-        connection.logout();
+        this.connection.logout();
     }
 
     @Test
@@ -91,13 +95,12 @@ class RemindableAuthManagerTest {
         this.authManager.createUser(newUser2);
 
         // Login the second user and save the token
-        this.authManager.emailLogin("tokentest2@reega.it", "PASSWORD",
-                true);
+        this.authManager.emailLogin("tokentest2@reega.it", "PASSWORD", true);
 
         this.connection.logout();
 
         // Try the login without password
-        Optional<User> usr = this.authManager.tryLoginWithoutPassword().getValue();
+        final Optional<User> usr = this.authManager.tryLoginWithoutPassword().getValue();
         Assertions.assertTrue(usr.isPresent());
         Assertions.assertEquals(newUser2.getEmail(), usr.get().getEmail());
         this.authManager.logout();
