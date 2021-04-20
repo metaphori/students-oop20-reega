@@ -6,8 +6,7 @@ package reega.viewutils;
 import java.util.function.Consumer;
 
 /**
- * @author Marco
- *
+ * @param <T> type of the viewmodel
  */
 @FunctionalInterface
 public interface ViewModelChangedEventHandler<T extends ViewModel> extends EventHandler<Class<? extends T>> {
@@ -22,7 +21,7 @@ public interface ViewModelChangedEventHandler<T extends ViewModel> extends Event
 
     /**
      * Handle a viewmodel change event that can have an action that needs to be invoked after the creation of the
-     * controller
+     * controller.
      *
      * @param eventArgs                    event args
      * @param actionToExecuteAfterCreation action to execute after the creation of the viewmodel
@@ -40,21 +39,18 @@ public interface ViewModelChangedEventHandler<T extends ViewModel> extends Event
     }
 
     /**
-     * Handle a viewmodel change event with its {@link ViewModelChangedArgs}
+     * Handle a viewmodel change event with its {@link ViewModelChangedArgs}.
      *
      * @param args event args to use
      */
     void handle(ViewModelChangedArgs<T> args);
 
     /**
-     * Event args for the {@link ViewModelChangedEventHandler}
-     *
-     * @author Marco
+     * Event args for the {@link ViewModelChangedEventHandler}.
      *
      * @param <T> type of the viewmodel of the {@link ViewModelChangedEventHandler}
      */
-    final class ViewModelChangedArgs<T extends ViewModel>
-            extends EventArgs<Class<? extends T>> {
+    final class ViewModelChangedArgs<T extends ViewModel> extends EventArgs<Class<? extends T>> {
 
         private final Consumer<T> actionToExecuteAfterCreation;
         private final boolean clearNavigationStack;
@@ -72,8 +68,8 @@ public interface ViewModelChangedEventHandler<T extends ViewModel> extends Event
          *                                  <code>actionToExecuteAfterCreation</code> is not null
          */
         public ViewModelChangedArgs(final Class<? extends T> eventItem, final Object source,
-                                    final Consumer<T> actionToExecuteAfterCreation, final boolean clearNavigationStack,
-                                    final ViewModelChangedEventType eventType) {
+                final Consumer<T> actionToExecuteAfterCreation, final boolean clearNavigationStack,
+                final ViewModelChangedEventType eventType) {
             super(eventItem, source);
             if (eventType == ViewModelChangedEventType.POP && actionToExecuteAfterCreation != null) {
                 throw new IllegalArgumentException(
@@ -85,7 +81,7 @@ public interface ViewModelChangedEventHandler<T extends ViewModel> extends Event
         }
 
         /**
-         * Get the action to execute after the creation of the viewmodel
+         * Get the action to execute after the creation of the viewmodel.
          *
          * @return the action to execute after the creation of the viewmodel
          */
@@ -94,7 +90,7 @@ public interface ViewModelChangedEventHandler<T extends ViewModel> extends Event
         }
 
         /**
-         * Execute {@link #getActionToExecuteAfterCreation()} only if it's not null
+         * Execute {@link #getActionToExecuteAfterCreation()} only if it's not null.
          *
          * @param viewmodel viewmodel used for the argument of the action
          */
@@ -105,7 +101,7 @@ public interface ViewModelChangedEventHandler<T extends ViewModel> extends Event
         }
 
         /**
-         * Boolean to indicate if there's a need to clear the navigation stack before pushing the new viewmodel
+         * Boolean to indicate if there's a need to clear the navigation stack before pushing the new viewmodel.
          *
          * @return true if you want to clear the navigation stack, false otherwise
          */
@@ -114,7 +110,7 @@ public interface ViewModelChangedEventHandler<T extends ViewModel> extends Event
         }
 
         /**
-         * Get the {@link ViewModelChangedEventType} of the request
+         * Get the {@link ViewModelChangedEventType} of the request.
          *
          * @return a {@link ViewModelChangedEventType} that is the event type of the request
          */

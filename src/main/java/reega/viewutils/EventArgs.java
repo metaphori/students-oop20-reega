@@ -1,9 +1,7 @@
 package reega.viewutils;
 
 /**
- * Arguments for {@link EventHandler}
- *
- * @author Marco
+ * Arguments for {@link EventHandler}.
  *
  * @param <T> type of the item involved in the args
  */
@@ -17,7 +15,7 @@ public class EventArgs<T> {
     }
 
     /**
-     * Get the item involved in this event
+     * Get the item involved in this event.
      *
      * @return item involved in the event
      */
@@ -26,7 +24,7 @@ public class EventArgs<T> {
     }
 
     /**
-     * Get the source object of the event
+     * Get the source object of the event.
      *
      * @return the source object of the event
      */

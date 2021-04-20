@@ -21,8 +21,11 @@ public class NavigatorImpl implements Navigator {
         this.serviceProvider = provider;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public <T extends ViewModel> T buildViewModel(Class<T> viewModelClass) {
+    public <T extends ViewModel> T buildViewModel(final Class<T> viewModelClass) {
         final Optional<T> optionalViewModel = this.serviceProvider.getService(viewModelClass);
         if (optionalViewModel.isEmpty()) {
             throw new NoSuchElementException();
@@ -30,8 +33,11 @@ public class NavigatorImpl implements Navigator {
         return optionalViewModel.get();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void pushViewModelToStack(ViewModel viewModel, boolean clearNavigationStack) {
+    public void pushViewModelToStack(final ViewModel viewModel, final boolean clearNavigationStack) {
         if (clearNavigationStack) {
             this.navigationStack.clear();
         }

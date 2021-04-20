@@ -9,25 +9,34 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * Manager for all the {@link DataTemplate} of this application
- *
- * @author Marco
- *
+ * Manager for all the {@link DataTemplate} of this application.
  */
 public final class DataTemplateManager {
+
+    /**
+     * Instance of a {@link DataTemplateManager}.
+     */
+    private static DataTemplateManager instance;
+
+    private final ConcurrentMap<Class<?>, DataTemplate<?>> templates = new ConcurrentHashMap<>();
 
     private DataTemplateManager() {
     }
 
     /**
-     * Instance of a {@link DataTemplateManager}
+     * Get the static instance of the {@link DataTemplateManager}.
+     *
+     * @return the static instance of the {@link DataTemplateManager}
      */
-    public static DataTemplateManager instance = new DataTemplateManager();
-
-    private final ConcurrentMap<Class<?>, DataTemplate<?>> templates = new ConcurrentHashMap<>();
+    public static synchronized DataTemplateManager getInstance() {
+        if (DataTemplateManager.instance == null) {
+            DataTemplateManager.instance = new DataTemplateManager();
+        }
+        return DataTemplateManager.instance;
+    }
 
     /**
-     * Add a data template
+     * Add a data template.
      *
      * @param template template to add
      */
@@ -37,7 +46,7 @@ public final class DataTemplateManager {
     }
 
     /**
-     * Remove a template
+     * Remove a template.
      *
      * @param template template to remove
      */
@@ -47,7 +56,7 @@ public final class DataTemplateManager {
     }
 
     /**
-     * Remove a template based on its {@link DataTemplate#getDataObjectClass()}
+     * Remove a template based on its {@link DataTemplate#getDataObjectClass()}.
      *
      * @param dataObjectClass data object class to remove
      */
@@ -57,7 +66,7 @@ public final class DataTemplateManager {
     }
 
     /**
-     * Get the the template associated with {@code dataObjectClass}
+     * Get the the template associated with {@code dataObjectClass}.
      *
      * @param dataObjectClass data object class to search
      * @return an Optional filled in with a {@link DataTemplate} if it has been found, an empty Optional otherwise

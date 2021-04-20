@@ -10,15 +10,12 @@ import javafx.scene.control.DialogPane;
 import reega.io.JavaFXSaveDialog;
 import reega.io.SaveDialog;
 
-/**
- * @author Marco
- *
- */
 public final class DialogFactory {
-    private DialogFactory() {}
+    private DialogFactory() {
+    }
 
     /**
-     * Build an alert
+     * Build an alert.
      *
      * @param alertType type of the alert
      * @param title     title of the alert
@@ -40,13 +37,14 @@ public final class DialogFactory {
                 .add(ClassLoader.getSystemClassLoader().getResource("css/Common.css").toExternalForm());
         dialogPane.getStylesheets()
                 .add(ClassLoader.getSystemClassLoader().getResource("css/Button.css").toExternalForm());
-		dialogPane.getStyleClass().add("commonDialog");
+        dialogPane.getStyleClass().add("commonDialog");
         return alert;
     }
 
     /**
-     * Get the default save dialog
-     * @return the default save dialog implementation
+     * Get the default {@link SaveDialog}.
+     *
+     * @return the default {@link SaveDialog} implementation
      */
     public static SaveDialog getDefaultSaveDialog() {
         return new JavaFXSaveDialog();

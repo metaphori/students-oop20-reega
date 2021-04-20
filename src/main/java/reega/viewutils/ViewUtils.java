@@ -1,52 +1,62 @@
 package reega.viewutils;
 
-import javafx.scene.Node;
-import javafx.util.StringConverter;
-
 import java.sql.Date;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.Locale;
 
-/**
- * <a href="https://it.wikipedia.org/wiki/Atto_di_dolore_(preghiera)">source</a>
- *
- * Mio Dio mi pento e mi dolgo con tutto il cuore dei miei peccati, perché peccando ho meritato i tuoi castighi, e molto
- * più perché ho offeso Te, infinitamente buono e degno di essere amato sopra ogni cosa. Propongo con il tuo santo aiuto
- * di non offenderti mai più e di fuggire le occasioni prossime di peccato. Signore, misericordia, perdonami
- */
+import org.apache.commons.lang3.exception.ExceptionUtils;
+
+import javafx.scene.Node;
+import javafx.util.StringConverter;
+
 public final class ViewUtils {
     private ViewUtils() {
     }
 
-    public static <T extends Node> T wrapNodeWithStyleClasses(T node, String... classes) {
+    /**
+     * Wrap <code>node</code> with classes.
+     *
+     * @param <T>     type of the node
+     * @param node    node that needs to be wrapped with style classes
+     * @param classes classes of the node
+     * @return a node with all the styles classes defined by <code>classes</code>
+     */
+    public static <T extends Node> T wrapNodeWithStyleClasses(final T node, final String... classes) {
         node.getStyleClass().addAll(classes);
         return node;
     }
 
+    /**
+     * String converter that converts a date to a string and viceversa.
+     *
+     * @return a {@link StringConverter} that converts a date to a string and viceversa
+     */
     public static StringConverter<Number> getDateStringConverter() {
-        return new StringConverter<Number>() {
+        return new StringConverter<>() {
 
-            private final DateFormat usDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+            private final DateFormat usDateFormat = new SimpleDateFormat("yyyy/MM/dd", Locale.US);
 
             @Override
-            public String toString(Number object) {
-                return usDateFormat.format(new Date(object.longValue()));
+            public String toString(final Number object) {
+                return this.usDateFormat.format(new Date(object.longValue()));
             }
 
             @Override
-            public Number fromString(String string) {
+            public Number fromString(final String string) {
                 try {
-                    return usDateFormat.parse(string).getTime();
-                } catch (ParseException e) {
-                    throw new IllegalStateException();
+                    return this.usDateFormat.parse(string).getTime();
+                } catch (final ParseException e) {
+                    throw new IllegalStateException("Error occurred when parsing the string: " + string
+                            + " into a Date. Trace: " + ExceptionUtils.getStackTrace(e));
                 }
             }
         };
     }
 
-    public static Long getDayOfTheMonth(int day) {
+    public static Long getDayOfTheMonth(final int day) {
         return Date.valueOf(LocalDate.now().withDayOfMonth(day)).getTime();
     }
 }
