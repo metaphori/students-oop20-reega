@@ -1,15 +1,17 @@
 package reega.data;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static reega.data.utils.ContractUtils.insertContract;
-import static reega.data.utils.FileUtils.getFileFromResourcesAsString;
-
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import com.google.gson.JsonParser;
 
@@ -19,10 +21,12 @@ import reega.data.mock.TestConnection;
 import reega.data.models.Data;
 import reega.data.models.DataType;
 import reega.data.remote.RemoteConnection;
+import reega.data.utils.ContractUtils;
+import reega.data.utils.FileUtils;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class BillReportTest {
+public final class BillReportTest {
     private RemoteConnection connection;
     private ContractController contractController;
     private DataController dataController;
@@ -44,18 +48,18 @@ public class BillReportTest {
     @Order(1)
     public void ensureEmpty() throws IOException {
         final var reports = this.contractController.getBillsForContracts(List.of(0));
-        assertNotNull(reports);
-        assertEquals(0, reports.size());
+        Assertions.assertNotNull(reports);
+        Assertions.assertEquals(0, reports.size());
     }
 
     @Test
     @Order(2)
     public void insertData() throws IOException {
         final var timestamp = 1615000000000L;
-        insertContract(this.contractController, "Test Address", "ABC123", timestamp);
+        ContractUtils.insertContract(this.contractController, "Test Address", "ABC123", timestamp);
         final var contracts = this.contractController.getUserContracts();
-        assertNotNull(contracts);
-        assertEquals(1, contracts.size());
+        Assertions.assertNotNull(contracts);
+        Assertions.assertEquals(1, contracts.size());
         final var contractID = contracts.get(0).getId();
 
         for (final DataType type : DataType.values()) {
@@ -71,15 +75,15 @@ public class BillReportTest {
     @Order(3)
     public void getBillReport() throws IOException, URISyntaxException {
         final var contracts = this.contractController.getUserContracts();
-        assertNotNull(contracts);
-        assertEquals(1, contracts.size());
+        Assertions.assertNotNull(contracts);
+        Assertions.assertEquals(1, contracts.size());
 
         final var reports = this.contractController.getBillsForContracts(List.of(contracts.get(0).getId()));
-        assertNotNull(reports);
-        assertEquals(1, reports.size());
+        Assertions.assertNotNull(reports);
+        Assertions.assertEquals(1, reports.size());
         final String report = reports.get(0).toString();
-        final String expected = getFileFromResourcesAsString("reports/report0.json");
+        final String expected = FileUtils.getFileFromResourcesAsString("reports/report0.json");
 
-        assertEquals(JsonParser.parseString(expected), JsonParser.parseString(report));
+        Assertions.assertEquals(JsonParser.parseString(expected), JsonParser.parseString(report));
     }
 }

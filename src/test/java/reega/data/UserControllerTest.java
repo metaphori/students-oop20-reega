@@ -1,13 +1,17 @@
 package reega.data;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import reega.data.factory.AuthControllerFactory;
 import reega.data.factory.ContractControllerFactory;
@@ -20,11 +24,11 @@ import reega.users.NewUser;
 import reega.users.Role;
 
 /**
- * Some functions of UserController are already tested in DataControllerTest
+ * Some functions of UserController are already tested in DataControllerTest.
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class UserControllerTest {
+public final class UserControllerTest {
     private RemoteConnection connection;
     private ContractController contractController;
     private UserController userController;
@@ -56,7 +60,7 @@ public class UserControllerTest {
         this.contractController.addContract(newContract);
 
         final var contracts = this.contractController.getContractsForUser("TTT111");
-        assertEquals(1, contracts.size());
+        Assertions.assertEquals(1, contracts.size());
     }
 
     @Test
@@ -64,34 +68,34 @@ public class UserControllerTest {
     public void getUserFromContract() throws IOException {
         this.connection.logout();
         var user = this.authController.emailLogin("test@reega.it", "PASSWORD");
-        assertNotNull(user);
+        Assertions.assertNotNull(user);
         final var contracts = this.contractController.getUserContracts();
-        assertEquals(1, contracts.size());
+        Assertions.assertEquals(1, contracts.size());
         this.connection.logout();
         user = this.authController.emailLogin("admin@reega.it", "AES_PASSWORD");
-        assertNotNull(user);
+        Assertions.assertNotNull(user);
         user = this.userController.getUserFromContract(contracts.get(0).getId());
-        assertNotNull(user);
-        assertNotNull(user.getEmail());
-        assertEquals("test@reega.it", user.getEmail());
+        Assertions.assertNotNull(user);
+        Assertions.assertNotNull(user.getEmail());
+        Assertions.assertEquals("test@reega.it", user.getEmail());
     }
 
     @Test
     @Order(3)
     public void searchForUserTest() throws IOException {
         var users = this.userController.searchUser("Zamboni");
-        assertEquals(0, users.size());
+        Assertions.assertEquals(0, users.size());
 
         users = this.userController.searchUser("zamboni");
-        assertEquals(0, users.size());
+        Assertions.assertEquals(0, users.size());
 
         users = this.userController.searchUser("TTT");
-        assertEquals(1, users.size());
+        Assertions.assertEquals(1, users.size());
 
         users = this.userController.searchUser("reega");
-        assertEquals(3, users.size());
+        Assertions.assertEquals(3, users.size());
 
         users = this.userController.searchUser("test");
-        assertEquals(1, users.size());
+        Assertions.assertEquals(1, users.size());
     }
 }

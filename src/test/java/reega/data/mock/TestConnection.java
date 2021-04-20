@@ -7,7 +7,7 @@ import reega.data.remote.RemoteConnection;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class TestConnection {
+public final class TestConnection {
     private String baseUrl = "http://52.208.47.221:1958/test/";
 
     public RemoteConnection getTestConnection(final String email, final String psk) throws IOException {

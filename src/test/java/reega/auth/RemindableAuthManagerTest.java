@@ -22,14 +22,11 @@ import reega.data.remote.RemoteConnection;
 import reega.io.IOControllerFactory;
 import reega.io.MockIOController;
 import reega.io.TokenIOController;
+import reega.logging.MockExceptionHandler;
 import reega.users.NewUser;
 import reega.users.Role;
 import reega.users.User;
 
-/**
- * @author Marco
- *
- */
 @TestInstance(Lifecycle.PER_CLASS)
 class RemindableAuthManagerTest {
 

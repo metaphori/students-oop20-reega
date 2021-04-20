@@ -1,12 +1,15 @@
 package reega.data;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
 import java.io.IOException;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import reega.data.factory.AuthControllerFactory;
 import reega.data.factory.UserControllerFactory;
@@ -18,7 +21,7 @@ import reega.users.Role;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class AuthControllerTest {
+public final class AuthControllerTest {
     private RemoteConnection connection;
     private AuthController authController;
     private UserController userController;
@@ -44,30 +47,30 @@ public class AuthControllerTest {
     public void addUserAndLoginTest() throws IOException {
         // test null on user not present in DB
         var u = this.authController.emailLogin("not_present@reega.it", "AES_PASSWORD");
-        assertNull(u);
+        Assertions.assertNull(u);
         u = this.authController.fiscalCodeLogin("ZZZ999", "PASSWORD");
-        assertNull(u);
+        Assertions.assertNull(u);
 
         // add user as not autenticated
         NewUser newUser = new NewUser(Role.USER, "test", "surname", "test@reega.it", "TTT111", "PASSWORD");
         this.userController.addUser(newUser);
         var user = this.authController.emailLogin("test@reega.it", "PASSWORD");
-        assertNotNull(user);
-        assertEquals("test", user.getName());
-        assertEquals("surname", user.getSurname());
-        assertEquals("test@reega.it", user.getEmail());
-        assertEquals(Role.USER, user.getRole());
+        Assertions.assertNotNull(user);
+        Assertions.assertEquals("test", user.getName());
+        Assertions.assertEquals("surname", user.getSurname());
+        Assertions.assertEquals("test@reega.it", user.getEmail());
+        Assertions.assertEquals(Role.USER, user.getRole());
 
         this.connection.logout();
 
         newUser = new NewUser(Role.USER, "test", "surname", "test2@reega.it", "ZZZ999", "PASSWORD");
         this.userController.addUser(newUser);
         user = this.authController.fiscalCodeLogin("ZZZ999", "PASSWORD");
-        assertNotNull(user);
-        assertEquals("test", user.getName());
-        assertEquals("surname", user.getSurname());
-        assertEquals("test2@reega.it", user.getEmail());
-        assertEquals(Role.USER, user.getRole());
+        Assertions.assertNotNull(user);
+        Assertions.assertEquals("test", user.getName());
+        Assertions.assertEquals("surname", user.getSurname());
+        Assertions.assertEquals("test2@reega.it", user.getEmail());
+        Assertions.assertEquals(Role.USER, user.getRole());
 
         this.connection.logout();
     }
@@ -79,7 +82,7 @@ public class AuthControllerTest {
 
         this.userController.removeUser("ZZZ999");
         final var user = this.authController.fiscalCodeLogin("ZZZ999", "PASSWORD");
-        assertNull(user);
+        Assertions.assertNull(user);
 
         this.connection.logout();
     }
@@ -92,7 +95,7 @@ public class AuthControllerTest {
         this.userController.addUser(newUser);
 
         var u = this.authController.emailLogin("remind@reega.it", "PASSWORD");
-        assertNotNull(u);
+        Assertions.assertNotNull(u);
 
         // store token for the default user (0)
         final UserAuth auth = new UserAuth();
@@ -100,16 +103,16 @@ public class AuthControllerTest {
 
         this.connection.logout();
         u = this.authController.emailLogin("admin@reega.it", "AES_PASSWORD");
-        assertNotNull(u);
+        Assertions.assertNotNull(u);
 
         this.userController.removeUser("BBB222");
         this.connection.logout();
 
         u = this.authController.fiscalCodeLogin("BBB222", "PASSWORD");
-        assertNull(u);
+        Assertions.assertNull(u);
 
         u = this.authController.tokenLogin(auth);
-        assertNull(u);
+        Assertions.assertNull(u);
 
         this.connection.logout();
     }
@@ -120,8 +123,8 @@ public class AuthControllerTest {
         final NewUser newUser = new NewUser(Role.USER, "test", "surname", "token_login@reega.it", "CCC333", "PASSWORD");
         this.userController.addUser(newUser);
         var user = this.authController.emailLogin("token_login@reega.it", "PASSWORD");
-        assertNotNull(user);
-        assertEquals("token_login@reega.it", user.getEmail());
+        Assertions.assertNotNull(user);
+        Assertions.assertEquals("token_login@reega.it", user.getEmail());
 
         final UserAuth auth = new UserAuth("abcd", "efgh");
         this.authController.storeUserCredentials(auth.getSelector(), auth.getValidator());
@@ -129,8 +132,8 @@ public class AuthControllerTest {
         this.connection.logout();
 
         user = this.authController.tokenLogin(auth);
-        assertNotNull(user);
-        assertEquals("token_login@reega.it", user.getEmail());
+        Assertions.assertNotNull(user);
+        Assertions.assertEquals("token_login@reega.it", user.getEmail());
         this.connection.logout();
     }
 
@@ -140,16 +143,16 @@ public class AuthControllerTest {
         // simulate login with remember-me
         final UserAuth auth = new UserAuth("abcd", "efgh");
         var user = this.authController.tokenLogin(auth);
-        assertNotNull(user);
-        assertEquals("token_login@reega.it", user.getEmail());
+        Assertions.assertNotNull(user);
+        Assertions.assertEquals("token_login@reega.it", user.getEmail());
 
         this.authController.userLogout();
         this.connection.logout();
 
         user = this.authController.tokenLogin(auth);
-        assertNull(user);
+        Assertions.assertNull(user);
 
         user = this.authController.emailLogin("token_login@reega.it", "PASSWORD");
-        assertNotNull(user);
+        Assertions.assertNotNull(user);
     }
 }

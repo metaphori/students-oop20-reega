@@ -1,11 +1,5 @@
 package reega.data.export;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-import static reega.data.utils.FileUtils.getFileFromResources;
-import static reega.data.utils.FileUtils.getFileFromResourcesAsString;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -16,7 +10,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import com.google.gson.JsonParser;
 
@@ -38,8 +39,8 @@ import reega.io.IOControllerFactory;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class DataExportTest {
-    private final long baseTimestamp = 1898938800000L;
+public final class DataExportTest {
+    private static final long BASE_TIMESTAMP = 1898938800000L;
     private String basePath;
     private RemoteConnection connection;
     private ContractController contractController;
@@ -80,7 +81,7 @@ public class DataExportTest {
     @Order(2)
     public void insertData() throws IOException {
         final var contracts = this.contractController.getUserContracts();
-        assertEquals(2, contracts.size());
+        Assertions.assertEquals(2, contracts.size());
         for (final Contract c : contracts) {
             this.insertData(c.getId());
         }
@@ -108,34 +109,34 @@ public class DataExportTest {
 
     private void checkJsonOutput(final String fileName) throws URISyntaxException, IOException {
         final File file = new File(this.basePath + fileName);
-        assertTrue(file.exists());
+        Assertions.assertTrue(file.exists());
         final String fileContent = new String(Files.readAllBytes(file.toPath()));
-        final String testContent = getFileFromResourcesAsString("exporter/" + fileName);
+        final String testContent = reega.data.utils.FileUtils.getFileFromResourcesAsString("exporter/" + fileName);
 
-        assertEquals(JsonParser.parseString(testContent), JsonParser.parseString(fileContent));
+        Assertions.assertEquals(JsonParser.parseString(testContent), JsonParser.parseString(fileContent));
     }
 
     private void checkFileContent(final String fileName) throws IOException, URISyntaxException {
         final File file = new File(this.basePath + fileName);
-        assertTrue(file.exists());
+        Assertions.assertTrue(file.exists());
 
-        final File testFile = getFileFromResources("exporter/" + fileName);
-        assertTrue(FileUtils.contentEquals(testFile, file));
+        final File testFile = reega.data.utils.FileUtils.getFileFromResources("exporter/" + fileName);
+        Assertions.assertTrue(FileUtils.contentEquals(testFile, file));
     }
 
     private void deleteFile(final String fileName) {
         final File file = new File(this.basePath + fileName);
         if (!file.exists() || !file.isFile() || !file.delete()) {
-            fail("Invalid test file " + file.getAbsolutePath());
+            Assertions.fail("Invalid test file " + file.getAbsolutePath());
         }
     }
 
     private void insertData(final int contractID) throws IOException {
         final Map<Long, Double> data = new HashMap<>() {
             {
-                this.put(DataExportTest.this.baseTimestamp + 1000, 5.5);
-                this.put(DataExportTest.this.baseTimestamp + 2000, 6.4);
-                this.put(DataExportTest.this.baseTimestamp + 3000, 7.3);
+                this.put(DataExportTest.BASE_TIMESTAMP + 1000, 5.5);
+                this.put(DataExportTest.BASE_TIMESTAMP + 2000, 6.4);
+                this.put(DataExportTest.BASE_TIMESTAMP + 3000, 7.3);
             }
         };
 
@@ -148,7 +149,8 @@ public class DataExportTest {
 
     private void addContract(final String address) throws IOException {
         final List<ServiceType> services = List.of(ServiceType.ELECTRICITY, ServiceType.GARBAGE);
-        final NewContract newContract = new NewContract(address, services, "ABC123", new Date(this.baseTimestamp));
+        final NewContract newContract = new NewContract(address, services, "ABC123",
+                new Date(DataExportTest.BASE_TIMESTAMP));
         this.contractController.addContract(newContract);
     }
 }

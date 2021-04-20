@@ -1,125 +1,130 @@
 package reega.statistics;
 
-import org.apache.commons.lang3.SerializationException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+
 import reega.data.models.Data;
 import reega.data.models.DataType;
 import reega.data.models.ServiceType;
 
-import java.util.*;
-
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class StatisticsControllerImplTest {
+public final class StatisticsControllerImplTest {
+    private static final double COMMON_AVERAGE = 26.0d;
+    private static final double COMMON_TOTAL = 52.0;
     private final List<Data> data = new ArrayList<>();
     private final StatisticsController statisticsController = new StatisticsControllerImpl();
-    private final Date peekDate = new GregorianCalendar(2021,Calendar.APRIL,3).getTime();
-    private final Pair<Date,Double> commonPeek = Pair.of(peekDate, 27.0);
-    private final double commonAverage = 26.0d;
-    private final double commonTotal = 52.0;
+    private final Date peekDate = new GregorianCalendar(2021, Calendar.APRIL, 3).getTime();
+    private final Pair<Date, Double> commonPeek = Pair.of(this.peekDate, 27.0);
 
     @BeforeAll
     public void setupBeforeAll() {
-        Data gasFirstContract = new Data(1, DataType.GAS);
-        addRecordToData(gasFirstContract);
-        Data electricityFirstContract = new Data(1, DataType.ELECTRICITY);
-        addRecordToData(electricityFirstContract);
-        Data waterFirstContract = new Data(1, DataType.WATER);
-        addRecordToData(waterFirstContract);
-        //GARBAGE
-        Data plasticFirstContract = new Data(1, DataType.PLASTIC);
-        addRecordToData(plasticFirstContract);
-        Data glassFirstContract = new Data(1, DataType.GLASS);
-        addRecordToData(glassFirstContract);
-        Data paperFirstContract = new Data(1, DataType.PAPER);
-        addRecordToData(paperFirstContract);
-        Data mixedFirstContract = new Data(1, DataType.MIXED);
-        addRecordToData(mixedFirstContract);
-        data.addAll(List.of(gasFirstContract, electricityFirstContract, waterFirstContract,
-                plasticFirstContract, glassFirstContract, paperFirstContract, mixedFirstContract));
-        this.statisticsController.setData(data);
+        final Data gasFirstContract = new Data(1, DataType.GAS);
+        this.addRecordToData(gasFirstContract);
+        final Data electricityFirstContract = new Data(1, DataType.ELECTRICITY);
+        this.addRecordToData(electricityFirstContract);
+        final Data waterFirstContract = new Data(1, DataType.WATER);
+        this.addRecordToData(waterFirstContract);
+        // GARBAGE
+        final Data plasticFirstContract = new Data(1, DataType.PLASTIC);
+        this.addRecordToData(plasticFirstContract);
+        final Data glassFirstContract = new Data(1, DataType.GLASS);
+        this.addRecordToData(glassFirstContract);
+        final Data paperFirstContract = new Data(1, DataType.PAPER);
+        this.addRecordToData(paperFirstContract);
+        final Data mixedFirstContract = new Data(1, DataType.MIXED);
+        this.addRecordToData(mixedFirstContract);
+        this.data.addAll(List.of(gasFirstContract, electricityFirstContract, waterFirstContract, plasticFirstContract,
+                glassFirstContract, paperFirstContract, mixedFirstContract));
+        this.statisticsController.setData(this.data);
     }
 
-    private void addRecordToData(Data data) {
-        data.addRecord(new GregorianCalendar(2021,Calendar.APRIL,2).getTimeInMillis(), 25.0d);
-        data.addRecord(peekDate.getTime(), 27.0d);
+    private void addRecordToData(final Data data) {
+        data.addRecord(new GregorianCalendar(2021, Calendar.APRIL, 2).getTimeInMillis(), 25.0d);
+        data.addRecord(this.peekDate.getTime(), 27.0d);
     }
 
-    private Pair<Date,Double> peekTest(ServiceType svcType) {
+    private Pair<Date, Double> peekTest(final ServiceType svcType) {
         return this.statisticsController.getPeek(svcType).get();
     }
 
-    private double averageTest(ServiceType svcType) {
+    private double averageTest(final ServiceType svcType) {
         return this.statisticsController.getAverageUsage(svcType);
     }
 
-    private double totalTest(ServiceType svcType) {
+    private double totalTest(final ServiceType svcType) {
         return this.statisticsController.getTotalUsage(svcType);
     }
 
     @Test
     public void gasPeekTest() {
-        Assertions.assertEquals(peekTest(ServiceType.GAS), commonPeek);
+        Assertions.assertEquals(this.peekTest(ServiceType.GAS), this.commonPeek);
     }
 
     @Test
     public void electricityPeekTest() {
-        Assertions.assertEquals(peekTest(ServiceType.ELECTRICITY), commonPeek);
+        Assertions.assertEquals(this.peekTest(ServiceType.ELECTRICITY), this.commonPeek);
     }
 
     @Test
     public void garbagePeekTest() {
-        //Multiply it by 4 because the 4 types of garbage are summed
-        Assertions.assertEquals(peekTest(ServiceType.GARBAGE), Pair.of(commonPeek.getLeft(), commonPeek.getRight() * 4));
+        // Multiply it by 4 because the 4 types of garbage are summed
+        Assertions.assertEquals(this.peekTest(ServiceType.GARBAGE),
+                Pair.of(this.commonPeek.getLeft(), this.commonPeek.getRight() * 4));
     }
 
     @Test
     public void waterPeekTest() {
-        Assertions.assertEquals(peekTest(ServiceType.WATER), commonPeek);
+        Assertions.assertEquals(this.peekTest(ServiceType.WATER), this.commonPeek);
     }
 
     @Test
     public void gasAverageTest() {
-        Assertions.assertEquals(averageTest(ServiceType.GAS), commonAverage);
+        Assertions.assertEquals(this.averageTest(ServiceType.GAS), StatisticsControllerImplTest.COMMON_AVERAGE);
     }
 
     @Test
     public void electricityAverageTest() {
-        Assertions.assertEquals(averageTest(ServiceType.ELECTRICITY), commonAverage);
+        Assertions.assertEquals(this.averageTest(ServiceType.ELECTRICITY), StatisticsControllerImplTest.COMMON_AVERAGE);
     }
 
     @Test
     public void garbageAverageTest() {
-        //Multiply it by 4 because the 4 types of garbage are summed
-        Assertions.assertEquals(averageTest(ServiceType.GARBAGE), commonAverage * 4);
+        // Multiply it by 4 because the 4 types of garbage are summed
+        Assertions.assertEquals(this.averageTest(ServiceType.GARBAGE), StatisticsControllerImplTest.COMMON_AVERAGE * 4);
     }
 
     @Test
     public void waterAverageTest() {
-        Assertions.assertEquals(averageTest(ServiceType.WATER), commonAverage);
+        Assertions.assertEquals(this.averageTest(ServiceType.WATER), StatisticsControllerImplTest.COMMON_AVERAGE);
     }
 
     @Test
     public void gasTotalTest() {
-        Assertions.assertEquals(totalTest(ServiceType.GAS), commonTotal);
+        Assertions.assertEquals(this.totalTest(ServiceType.GAS), StatisticsControllerImplTest.COMMON_TOTAL);
     }
 
     @Test
     public void electricityTotalTest() {
-        Assertions.assertEquals(totalTest(ServiceType.ELECTRICITY), commonTotal);
+        Assertions.assertEquals(this.totalTest(ServiceType.ELECTRICITY), StatisticsControllerImplTest.COMMON_TOTAL);
     }
 
     @Test
     public void garbageTotalTest() {
-        //Multiply it by 4 because the 4 types of garbage are summed
-        Assertions.assertEquals(totalTest(ServiceType.GARBAGE), commonTotal * 4);
+        // Multiply it by 4 because the 4 types of garbage are summed
+        Assertions.assertEquals(this.totalTest(ServiceType.GARBAGE), StatisticsControllerImplTest.COMMON_TOTAL * 4);
     }
 
     @Test
     public void waterTotalTest() {
-        Assertions.assertEquals(totalTest(ServiceType.WATER), commonTotal);
+        Assertions.assertEquals(this.totalTest(ServiceType.WATER), StatisticsControllerImplTest.COMMON_TOTAL);
     }
 }

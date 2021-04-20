@@ -1,13 +1,17 @@
 package reega.data;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import reega.data.factory.ContractControllerFactory;
 import reega.data.mock.TestConnection;
@@ -18,7 +22,7 @@ import reega.data.remote.RemoteConnection;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class ContractsTest {
+public final class ContractsTest {
     private RemoteConnection connection;
     private ContractController controller;
 
@@ -38,12 +42,12 @@ public class ContractsTest {
     @Order(1)
     public void ensureEmpty() throws IOException {
         var contracts = this.controller.getUserContracts();
-        assertNotNull(contracts);
-        assertEquals(0, contracts.size());
+        Assertions.assertNotNull(contracts);
+        Assertions.assertEquals(0, contracts.size());
 
         contracts = this.controller.searchContract("reega");
-        assertNotNull(contracts);
-        assertEquals(0, contracts.size());
+        Assertions.assertNotNull(contracts);
+        Assertions.assertEquals(0, contracts.size());
     }
 
     @Test
@@ -53,75 +57,75 @@ public class ContractsTest {
                 ServiceType.ELECTRICITY);
         final NewContract newContract = new NewContract("Test Address", services, "ABC123", new Date(1614942000000L));
         final var insertedContract = this.controller.addContract(newContract);
-        assertNotNull(insertedContract);
+        Assertions.assertNotNull(insertedContract);
     }
 
     @Test
     @Order(3)
     public void searchContracts() throws IOException {
         var contracts = this.controller.searchContract("ABC123");
-        assertNotNull(contracts);
-        assertEquals(1, contracts.size());
+        Assertions.assertNotNull(contracts);
+        Assertions.assertEquals(1, contracts.size());
 
         contracts = this.controller.searchContract("not existing");
-        assertNotNull(contracts);
-        assertEquals(0, contracts.size());
+        Assertions.assertNotNull(contracts);
+        Assertions.assertEquals(0, contracts.size());
 
         contracts = this.controller.searchContract("test");
-        assertNotNull(contracts);
-        assertEquals(1, contracts.size());
+        Assertions.assertNotNull(contracts);
+        Assertions.assertEquals(1, contracts.size());
 
         contracts = this.controller.searchContract("test address");
-        assertNotNull(contracts);
-        assertEquals(1, contracts.size());
+        Assertions.assertNotNull(contracts);
+        Assertions.assertEquals(1, contracts.size());
 
         contracts = this.controller.searchContract("ABC123");
-        assertNotNull(contracts);
-        assertEquals(1, contracts.size());
+        Assertions.assertNotNull(contracts);
+        Assertions.assertEquals(1, contracts.size());
 
         contracts = this.controller.searchContract("reega");
-        assertNotNull(contracts);
-        assertEquals(1, contracts.size());
+        Assertions.assertNotNull(contracts);
+        Assertions.assertEquals(1, contracts.size());
 
         contracts = this.controller.searchContract("admin");
-        assertNotNull(contracts);
-        assertEquals(1, contracts.size());
+        Assertions.assertNotNull(contracts);
+        Assertions.assertEquals(1, contracts.size());
     }
 
     @Test
     @Order(4)
     public void getUserContracts() throws IOException {
         final var contracts = this.controller.getUserContracts();
-        assertNotNull(contracts);
-        assertEquals(1, contracts.size());
+        Assertions.assertNotNull(contracts);
+        Assertions.assertEquals(1, contracts.size());
         final Contract contract = contracts.get(0);
-        assertEquals(new Date(1614942000000L), contract.getStartDate());
+        Assertions.assertEquals(new Date(1614942000000L), contract.getStartDate());
     }
 
     @Test
     @Order(5)
     public void getAllContracts() throws IOException {
         final var contracts = this.controller.getAllContracts();
-        assertEquals(1, contracts.size());
+        Assertions.assertEquals(1, contracts.size());
     }
 
     @Test
     @Order(6)
     public void getSpecificUserContracts() throws IOException {
         final var contracts = this.controller.getContractsForUser("ABC123");
-        assertEquals(1, contracts.size());
-        assertEquals(new Date(1614942000000L), contracts.get(0).getStartDate());
+        Assertions.assertEquals(1, contracts.size());
+        Assertions.assertEquals(new Date(1614942000000L), contracts.get(0).getStartDate());
     }
 
     @Test
     @Order(7)
     public void deleteContract() throws IOException {
         var contracts = this.controller.getUserContracts();
-        assertEquals(1, contracts.size());
+        Assertions.assertEquals(1, contracts.size());
         final var contractID = contracts.get(0).getId();
         this.controller.removeContract(contractID);
 
         contracts = this.controller.getUserContracts();
-        assertEquals(0, contracts.size());
+        Assertions.assertEquals(0, contracts.size());
     }
 }
