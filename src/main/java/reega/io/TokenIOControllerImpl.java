@@ -16,14 +16,13 @@ import java.util.Optional;
 import reega.data.models.UserAuth;
 
 /**
- * @author Marco
  *
  */
 class TokenIOControllerImpl implements TokenIOController {
 
     private final IOController ioController;
 
-    public TokenIOControllerImpl(final IOController ioController) {
+    TokenIOControllerImpl(final IOController ioController) {
         this.ioController = ioController;
     }
 
@@ -52,7 +51,7 @@ class TokenIOControllerImpl implements TokenIOController {
     }
 
     /**
-     * Get the token file
+     * Get the token file.
      *
      * @return the token file
      */

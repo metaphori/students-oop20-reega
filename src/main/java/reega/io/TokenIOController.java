@@ -10,39 +10,42 @@ import java.util.Optional;
 import reega.data.models.UserAuth;
 
 /**
- * @author Marco
  *
  */
 public interface TokenIOController extends IOController {
 
     /**
-     * Get the file path of the token file
+     * Get the file path of the token file.
      *
      * @return the file path of the token
      */
     String getTokenFilePath();
 
     /**
-     * Store the user authentication
+     * Store the user authentication.
      *
      * @param userAuth user authentication to store
+     * @throws IOException
      */
     void storeUserAuthentication(UserAuth userAuth) throws IOException;
 
     /**
-     * Delete the user authentication
+     * Delete the user authentication.
+     *
+     * @throws IOException
      */
     void deleteUserAuthentication() throws IOException;
 
     /**
-     * Read the user authentication
+     * Read the user authentication.
      *
      * @return an empty optional if no authentication has been found, a filled in optional otherwise
+     * @throws IOException
      */
     Optional<UserAuth> readUserAuthentication() throws IOException;
 
     /**
-     * Check if the token file exists
+     * Check if the token file exists.
      *
      * @return true if it exists, false otherwise
      */

@@ -4,17 +4,15 @@
 package reega.io;
 
 /**
- * @author Marco
  *
  */
-public class IOControllerFactory {
+public final class IOControllerFactory {
 
     private IOControllerFactory() {
-
     }
 
     /**
-     * Get the default {@link IOController}
+     * Get the default {@link IOController}.
      *
      * @return the default {@link IOController}
      */
@@ -23,7 +21,7 @@ public class IOControllerFactory {
     }
 
     /**
-     * Get the default {@link TokenIOController}
+     * Get the default {@link TokenIOController}.
      *
      * @return the default {@link TokenIOController}
      */
@@ -32,7 +30,7 @@ public class IOControllerFactory {
     }
 
     /**
-     * Create a {@link TokenIOController} with {@code ioController} as the controller
+     * Create a {@link TokenIOController} with {@code ioController} as the controller.
      *
      * @param ioController {@link IOController} to use
      * @return a new {@link TokenIOController} that uses {@code ioController} as its controller

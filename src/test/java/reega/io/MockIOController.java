@@ -7,8 +7,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * @author Marco
- *
+ * {@link IOController} that has the default directory path to the temp folder.
  */
 public class MockIOController implements IOController {
 

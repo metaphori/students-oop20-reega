@@ -8,22 +8,13 @@ import java.io.File;
 import org.apache.commons.lang3.SystemUtils;
 
 /**
- * @author Marco
  *
  */
-public class IOControllerImpl implements IOController {
+public final class IOControllerImpl implements IOController {
 
-    private static IOControllerImpl INSTANCE;
-
-    public synchronized static IOControllerImpl getInstance() {
-        if (IOControllerImpl.INSTANCE == null) {
-            IOControllerImpl.INSTANCE = new IOControllerImpl();
-        }
-        return IOControllerImpl.INSTANCE;
-    }
-
+    private static IOControllerImpl instance;
     /**
-     * URI of the directory of the app
+     * URI of the directory of the app.
      */
     private static final String APP_DIRECTORY_URI;
 
@@ -43,6 +34,21 @@ public class IOControllerImpl implements IOController {
             // Create the directory if it doesn't exist
             dir.mkdir();
         }
+    }
+
+    /**
+     * Get the static instance of the {@link IOControllerImpl}.
+     *
+     * @return the static instance of the {@link IOControllerImpl}
+     */
+    public static synchronized IOControllerImpl getInstance() {
+        if (IOControllerImpl.instance == null) {
+            IOControllerImpl.instance = new IOControllerImpl();
+        }
+        return IOControllerImpl.instance;
+    }
+
+    private IOControllerImpl() {
     }
 
     /**
