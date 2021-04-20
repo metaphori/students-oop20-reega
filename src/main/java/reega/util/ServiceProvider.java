@@ -4,9 +4,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 /**
- * Class for retrieving services stored in a {@link ServiceCollection}
- *
- * @author Marco
+ * Class for retrieving services stored in a {@link ServiceCollection}.
  *
  */
 public class ServiceProvider {
@@ -18,7 +16,7 @@ public class ServiceProvider {
     }
 
     /**
-     * Get a service or an empty optional if no service has been found
+     * Get a service or an empty optional if no service has been found.
      *
      * @param <T>  Type of the service
      * @param type Class type
@@ -29,7 +27,7 @@ public class ServiceProvider {
     }
 
     /**
-     * Get a service
+     * Get a service.
      *
      * @param <T>  Type of the service
      * @param type Class type

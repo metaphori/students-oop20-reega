@@ -6,8 +6,9 @@ package reega.util;
 import java.util.Objects;
 
 /**
- * @author Marco
+ * Class for holding a result that can be valid or invalid. If invalid a message can be provided
  *
+ * @param <T> type of the resulting object
  */
 public class ValueResult<T> {
     private final T value;
@@ -15,7 +16,7 @@ public class ValueResult<T> {
     private final boolean valid;
 
     /**
-     * Construct a not valid result
+     * Construct an invalid result.
      *
      * @param value   resulting value
      * @param message message associated with the invalid result
@@ -28,7 +29,7 @@ public class ValueResult<T> {
     }
 
     /**
-     * Construct a not valid result with a null value
+     * Construct an invalid result with a null value.
      *
      * @param message message associated with the invalid result
      */
@@ -40,7 +41,7 @@ public class ValueResult<T> {
     }
 
     /**
-     * Construct a valid result
+     * Construct a valid result.
      *
      * @param value resulting value
      */
@@ -51,7 +52,7 @@ public class ValueResult<T> {
     }
 
     /**
-     * Get the value resulted
+     * Get the result value.
      *
      * @return the value
      */
@@ -60,7 +61,7 @@ public class ValueResult<T> {
     }
 
     /**
-     * Get the message associated with the value
+     * Get the message associated with the value.
      *
      * @return the message
      */
@@ -69,7 +70,7 @@ public class ValueResult<T> {
     }
 
     /**
-     * Check if the result is valid
+     * Check if the result is valid.
      *
      * @return true if the result is valid, false if not
      */
@@ -78,7 +79,7 @@ public class ValueResult<T> {
     }
 
     /**
-     * Check if the result is invalid
+     * Check if the result is invalid.
      *
      * @return true if the result is invalid, false otherwise
      */
@@ -87,15 +88,15 @@ public class ValueResult<T> {
     }
 
     /**
-     * Merge this {@link ValueResult} with a {@link Void} {@link ValueResult} with an AND
+     * Merge this {@link ValueResult} with a {@link Void} {@link ValueResult} with an AND.
+     *
      * @param otherValueResult other {@link ValueResult}
-     * @param <X> Type of the other {@link ValueResult} that must extend {@link Void}
-     * @return an invalid {@link ValueResult} with {@link this#getValue()} as the value and the messages joined if <code>otherValueResult</code> is invalid;
-     * an invalid {@link ValueResult} with {@link this#getValue()} and the message of this object if this object is invalid;
-     * else return a valid {@link ValueResult}
+     * @return an invalid {@link ValueResult} with {@link this#getValue()} as the value and the messages joined if
+     *         <code>otherValueResult</code> is invalid; an invalid {@link ValueResult} with {@link this#getValue()} and
+     *         the message of this object if this object is invalid; else return a valid {@link ValueResult}
      */
-    public <X extends Void> ValueResult<T> merge(ValueResult<X> otherValueResult) {
-        if (otherValueResult.isInvalid()){
+    public ValueResult<T> merge(final ValueResult<Void> otherValueResult) {
+        if (otherValueResult.isInvalid()) {
             return new ValueResult<>(this.getValue(), this.getMessage() + "\n" + otherValueResult.getMessage());
         }
         if (this.isInvalid()) {

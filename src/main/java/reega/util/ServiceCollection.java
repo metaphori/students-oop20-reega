@@ -1,6 +1,7 @@
 package reega.util;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -12,6 +13,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
+
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import javafx.util.Pair;
 
@@ -27,7 +30,7 @@ public class ServiceCollection {
     }
 
     /**
-     * Set the service provider
+     * Set the service provider.
      *
      * @param svcProvider service provider to set
      */
@@ -36,7 +39,7 @@ public class ServiceCollection {
     }
 
     /**
-     * Adds a singleton with a constant value
+     * Adds a singleton with a constant value.
      *
      * @param <T>   Type of the class
      * @param type  Class type
@@ -49,7 +52,7 @@ public class ServiceCollection {
     }
 
     /**
-     * Adds a singleton with an implementation function
+     * Adds a singleton with an implementation function.
      *
      * @param <T>                    Type of the class
      * @param type                   Class type
@@ -65,7 +68,7 @@ public class ServiceCollection {
 
     /**
      * Adds a singleton based on the {@link Inject} annotated constructor or a no parameter constructor if no
-     * {@link Inject} annotated constructor is found
+     * {@link Inject} annotated constructor is found.
      *
      * @param <T>  Type of the class
      * @param type Class type
@@ -82,7 +85,7 @@ public class ServiceCollection {
 
     /**
      * Adds a singleton based on the {@link Inject} annotated constructor of {@code implementationType} or a no
-     * parameter constructor if no {@link Inject} annotated constructor is found
+     * parameter constructor if no {@link Inject} annotated constructor is found.
      *
      * @param <T>                Interface type
      * @param interfaceType      Interface class
@@ -104,7 +107,7 @@ public class ServiceCollection {
     }
 
     /**
-     * Adds a transient with an implementation function
+     * Adds a transient with an implementation function.
      *
      * @param <T>                    Type of the class
      * @param type                   Class type
@@ -118,8 +121,9 @@ public class ServiceCollection {
 
     /**
      * Adds a transient based on the {@link Inject} annotated constructor or a no parameter constructor if no
-     * {@link Inject} annotated constructor is found
+     * {@link Inject} annotated constructor is found.
      *
+     * @param <T>  Type of the class
      * @param type Class type
      * @throws Exception                if there are 0 or more than 1 {@link Inject} annotated constructors
      * @throws IllegalArgumentException if {@code type} is an interface or an abstract class
@@ -133,7 +137,7 @@ public class ServiceCollection {
 
     /**
      * Adds a transient based on the {@link Inject} annotated constructor of {@code implementationType} or a no
-     * parameter constructor if no {@link Inject} annotated constructor is found
+     * parameter constructor if no {@link Inject} annotated constructor is found.
      *
      * @param <T>                Interface type
      * @param interfaceType      Interface class
@@ -154,7 +158,7 @@ public class ServiceCollection {
     }
 
     /**
-     * Get a service
+     * Get a service.
      *
      * @param <T>  Type of the service
      * @param type Class type
@@ -173,7 +177,7 @@ public class ServiceCollection {
     }
 
     /**
-     * Get the constructor and the parameters of the constructor of the class {@code type}
+     * Get the constructor and the parameters of the constructor of the class {@code type}.
      *
      * @param type Class type
      * @return a Pair of a constructor and its resolved parameters implementation
@@ -214,7 +218,7 @@ public class ServiceCollection {
     }
 
     /**
-     * Create an instance of the class {@code type}
+     * Create an instance of the class {@code type}.
      *
      * @param type
      * @return
@@ -225,13 +229,15 @@ public class ServiceCollection {
 
         try {
             return (T) constructorAndParameters.getKey().newInstance(constructorAndParameters.getValue());
-        } catch (final Exception e) {
-            throw new IllegalArgumentException("Cannot create a new instance");
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException e) {
+            throw new IllegalArgumentException(
+                    "Cannot create a new instance because of: " + ExceptionUtils.getStackTrace(e));
         }
     }
 
     /**
-     * Build the service provider from this service collection
+     * Build the service provider from this service collection.
      *
      * @return a service provider that manages this services
      * @throws IllegalStateException if a service provider has already been built with this collection
@@ -241,7 +247,7 @@ public class ServiceCollection {
     }
 
     /**
-     * Build a service provider
+     * Build a service provider.
      *
      * @param checkForSecondCall true if you want to check if the service provider has been already built, false
      *                           otherwise
@@ -262,7 +268,7 @@ public class ServiceCollection {
     }
 
     /**
-     * Check if a {@link Class} is an interface or an abstract class
+     * Check if a {@link Class} is an interface or an abstract class.
      *
      * @param clazz class to check
      * @return true if it an interface or an abstract class, false otherwise
