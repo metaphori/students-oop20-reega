@@ -17,7 +17,7 @@
          type="GridPane"
          prefHeight="400.0" prefWidth="600.0"
          alignment="CENTER"
-         stylesheets="css/Logo.css">
+         stylesheets="@/css/Logo.css">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" halignment="CENTER" percentWidth="25.0"/>
         <ColumnConstraints hgrow="SOMETIMES" halignment="CENTER" percentWidth="50.0"/>
@@ -39,11 +39,11 @@
                 <TextField fx:id="emailField" promptText="Email"/>
                 <PasswordField fx:id="passwordField" promptText="Password"/>
                 <PasswordField fx:id="confirmPasswordField" promptText="Confirm Password"/>
-                <MaxWidthButton onAction="#register">Create an account</MaxWidthButton>
+                <MaxWidthButton fx:id="registerButton">Create an account</MaxWidthButton>
                 <TextFlow textAlignment="CENTER">
                     <children>
                         <Text>You already have an account?</Text>
-                        <Hyperlink onAction="#jumpToLogin">Login here</Hyperlink>
+                        <Hyperlink fx:id="jumpToLoginHyperlink">Login here</Hyperlink>
                     </children>
                 </TextFlow>
             </children>

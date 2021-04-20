@@ -35,12 +35,12 @@
                            promptText="Email or fiscal code"/>
                 <PasswordField fx:id="passwordField"
                                promptText="Password"/>
-                <MaxWidthButton onAction="#login">Login</MaxWidthButton>
+                <MaxWidthButton fx:id="loginButton">Login</MaxWidthButton>
                 <CheckBox fx:id="rememberMeCheckBox">Remember me</CheckBox>
                 <TextFlow textAlignment="CENTER" focusTraversable="false">
                     <children>
                         <Text>Don't have an account?</Text>
-                        <Hyperlink onAction="#jumpToRegistration">Click here</Hyperlink>
+                        <Hyperlink fx:id="jumpToRegistrationHyperLink">Click here</Hyperlink>
                     </children>
                 </TextFlow>
             </children>
