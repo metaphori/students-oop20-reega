@@ -4,12 +4,12 @@ import java.util.Random;
 
 public interface Generator {
 
-	/**
-	 * generates a random value.
-	 *
-	 * @return a new generated value.
-	 */
-	default double nextValue() {
-		return new Random().nextDouble();
-	}
+    /**
+     * Generates a random value.
+     *
+     * @return a new generated value.
+     */
+    default double nextValue() {
+        return new Random().nextDouble();
+    }
 }
