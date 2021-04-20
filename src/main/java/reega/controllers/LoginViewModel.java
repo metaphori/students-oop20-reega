@@ -6,33 +6,36 @@ import reega.viewutils.ViewModel;
 public interface LoginViewModel extends ViewModel {
 
     /**
-     * Jump to the registration page
+     * Jump to the registration page.
      */
     void jumpToRegistration();
 
     /**
-     * Set the email or the fiscal code
+     * Set the email or the fiscal code.
      *
      * @param emailOrFiscalCode email or fiscal code
      */
     void setEmailOrFiscalCode(String emailOrFiscalCode);
 
     /**
-     * Set the password
+     * Set the password.
      *
      * @param password password to set
      */
     void setPassword(String password);
 
     /**
-     * Login into the the app
+     * Login into the the app.
      *
-     * @return login into the app
+     * @param rememberMe true if the user wants to be remembered, false otherwise
+     *
+     * @return a {@link ValueResult} that is valid if the login succeeded, invalid otherwise
      */
     ValueResult<Void> login(boolean rememberMe);
 
     /**
-     * Try the login without the credentials
+     * Try the login without the credentials.
+     *
      * @return a {@link ValueResult} that is valid if the login succeeded, invalid otherwise
      */
     ValueResult<Void> tryLogin();

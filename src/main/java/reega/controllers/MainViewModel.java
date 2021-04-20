@@ -18,15 +18,13 @@ import reega.viewutils.Command;
 import reega.viewutils.EventHandler;
 
 /**
- * Interface for a viewModel that is represented by the page after the login
- *
- * @author Marco
+ * Interface for a viewModel that is represented by the page after the login.
  *
  */
 public interface MainViewModel extends UserViewModel {
 
     /**
-     * Get the peek usage
+     * Get the peek usage.
      *
      * @param svcType service type used to get the average usage
      * @return the date(day) of the peek usage and the value of the peek
@@ -34,7 +32,7 @@ public interface MainViewModel extends UserViewModel {
     Optional<Pair<Date, Double>> getPeek(ServiceType svcType);
 
     /**
-     * Get the average usage
+     * Get the average usage.
      *
      * @param svcType service type used to get the average usage
      * @return the average usage (by day)
@@ -42,7 +40,7 @@ public interface MainViewModel extends UserViewModel {
     double getAverageUsage(ServiceType svcType);
 
     /**
-     * Get the total usage
+     * Get the total usage.
      *
      * @param svcType service type used to get the total usage
      * @return the total usage (by day)
@@ -50,62 +48,63 @@ public interface MainViewModel extends UserViewModel {
     double getTotalUsage(ServiceType svcType);
 
     /**
-     * Get all the available service types for the current selected contracts
+     * Get all the available service types for the current selected contracts.
      *
      * @return a set of the available service types
      */
     Set<ServiceType> getAvailableServiceTypes();
 
     /**
-     * Get the selected contracts of the {@link #user()}
+     * Get the selected contracts of the {@link #user()}.
      *
      * @return the selected contracts of the {@link #user()}
      */
     ObservableList<Contract> getSelectedContracts();
 
     /**
-     * Get all the contracts of the user
+     * Get all the contracts of the user.
      *
      * @return all the contracts of the user
      */
     List<Contract> getContracts();
 
     /**
-     * Get all the commands available for the user
+     * Get all the commands available for the user.
      *
      * @return a map containing the label as the key and the command as the value
      */
     ObservableList<Command> getCommands();
 
     /**
-     * Add <code>contract</code> to the selected contracts
+     * Add <code>contract</code> to the selected contracts.
      *
      * @param contract contract to be marked as selected
      */
     void addSelectedContract(Contract contract);
 
     /**
-     * Remove <code>contract</code> from the selected contracts
+     * Remove <code>contract</code> from the selected contracts.
      *
      * @param contract contract to be unmarked as selected
      */
     void removeSelectedContract(Contract contract);
 
     /**
-     * Get data plotter
+     * Get data plotter.
      *
      * @return the {@link DataPlotter}
      */
     DataPlotter getDataPlotter();
 
     /**
-     * Set the event handler when the user wants to logout
+     * Set the event handler when the user wants to logout.
+     *
      * @param evtHandler event handler for logout
      */
     void setOnLogout(EventHandler<Void> evtHandler);
 
     /**
-     * Logout from the current application
+     * Logout from the current application.
      */
     void logout();
 }

@@ -1,10 +1,10 @@
 package reega.controllers;
 
+import java.util.List;
+
 import reega.data.models.Contract;
 import reega.data.models.MonthlyReport;
 import reega.viewutils.ViewModel;
-
-import java.util.List;
 
 public interface HistoryViewModel extends ViewModel {
 

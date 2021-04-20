@@ -1,8 +1,20 @@
 package reega.controllers;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+
+import javax.inject.Inject;
+
+import org.apache.commons.lang3.tuple.Pair;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import org.apache.commons.lang3.tuple.Pair;
 import reega.data.ContractManager;
 import reega.data.DataFetcher;
 import reega.data.exporter.ExportFormat;
@@ -14,13 +26,11 @@ import reega.logging.ExceptionHandler;
 import reega.statistics.DataPlotter;
 import reega.statistics.StatisticsController;
 import reega.users.User;
-import reega.viewutils.*;
-
-import javax.inject.Inject;
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
+import reega.viewutils.AbstractViewModel;
+import reega.viewutils.Command;
+import reega.viewutils.DialogFactory;
+import reega.viewutils.EventHandler;
+import reega.viewutils.LabeledCommand;
 
 public class MainViewModelImpl extends AbstractViewModel implements MainViewModel {
 
@@ -36,11 +46,9 @@ public class MainViewModelImpl extends AbstractViewModel implements MainViewMode
     private final ContractManager contractManager;
 
     @Inject
-    public MainViewModelImpl(final StatisticsController statisticsController,
-                             final DataPlotter dataPlotter,
-                             final ExceptionHandler exceptionHandler,
-                             final DataFetcher dataFetcher,
-                             final ContractManager contractManager) {
+    public MainViewModelImpl(final StatisticsController statisticsController, final DataPlotter dataPlotter,
+            final ExceptionHandler exceptionHandler, final DataFetcher dataFetcher,
+            final ContractManager contractManager) {
         this.statisticsController = statisticsController;
         this.dataPlotter = dataPlotter;
         this.exceptionHandler = exceptionHandler;
@@ -48,17 +56,22 @@ public class MainViewModelImpl extends AbstractViewModel implements MainViewMode
         this.contractManager = contractManager;
     }
 
+    /**
+     * Initialize the commands.
+     */
     protected void initializeCommands() {
-        this.commands.add(new LabeledCommand("Export to CSV", args ->
-                DialogFactory.getDefaultSaveDialog().openSaveDialog("CSV Files", ".csv").ifPresent(file ->
-                        this.exportDataToFile(ExportFormat.CSV, file))));
-        this.commands.add(new LabeledCommand("Export to JSON", args ->
-                DialogFactory.getDefaultSaveDialog().openSaveDialog("JSON Files", ".json").ifPresent(file ->
-                        this.exportDataToFile(ExportFormat.JSON, file))));
+        this.commands.add(new LabeledCommand("Export to CSV",
+                args -> DialogFactory.getDefaultSaveDialog()
+                        .openSaveDialog("CSV Files", ".csv")
+                        .ifPresent(file -> this.exportDataToFile(ExportFormat.CSV, file))));
+        this.commands.add(new LabeledCommand("Export to JSON",
+                args -> DialogFactory.getDefaultSaveDialog()
+                        .openSaveDialog("JSON Files", ".json")
+                        .ifPresent(file -> this.exportDataToFile(ExportFormat.JSON, file))));
     }
 
     /**
-     * Get the contract manager
+     * Get the contract manager.
      *
      * @return the contract manager
      */
@@ -67,7 +80,7 @@ public class MainViewModelImpl extends AbstractViewModel implements MainViewMode
     }
 
     /**
-     * Get the data fetcher
+     * Get the data fetcher.
      *
      * @return the data fetcher
      */
@@ -76,7 +89,7 @@ public class MainViewModelImpl extends AbstractViewModel implements MainViewMode
     }
 
     /**
-     * Get the statistics controller
+     * Get the statistics controller.
      *
      * @return the statistics controller
      */
@@ -84,12 +97,12 @@ public class MainViewModelImpl extends AbstractViewModel implements MainViewMode
         return this.statisticsController;
     }
 
-    protected final void setUserContracts(List<Contract> contracts) {
+    protected final void setUserContracts(final List<Contract> contracts) {
         this.contracts = contracts;
     }
 
     /**
-     * Initialize the statistics when a new user is set
+     * Initialize the statistics when a new user is set.
      *
      * @param user user used for the statistics calculations
      */
@@ -98,37 +111,51 @@ public class MainViewModelImpl extends AbstractViewModel implements MainViewMode
         this.contracts = allContracts;
         this.selectedContracts.clear();
         this.selectedContracts.addAll(allContracts);
-        List<Data> initialData = this.dataFetcher.fetchAllUserData(user, allContracts);
+        final List<Data> initialData = this.dataFetcher.fetchAllUserData(user, allContracts);
         this.getStatisticsController().setData(initialData);
     }
 
-    private void exportDataToFile(ExportFormat format, File file) {
+    private void exportDataToFile(final ExportFormat format, final File file) {
         try {
             ReegaExporterFactory.export(format, this.statisticsController.getCurrentData(), file.getAbsolutePath());
-        } catch (IOException e) {
+        } catch (final IOException e) {
             this.exceptionHandler.handleException(e);
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ObservableList<Command> getCommands() {
         return this.commands;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void addSelectedContract(Contract contract) {
-        List<Data> newData = this.dataFetcher.pushAndFetchContract(this.getStatisticsController().getCurrentData(), contract);
+    public void addSelectedContract(final Contract contract) {
+        final List<Data> newData = this.dataFetcher
+                .pushAndFetchContract(this.getStatisticsController().getCurrentData(), contract);
         this.getStatisticsController().setData(newData);
         this.selectedContracts.add(contract);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void removeSelectedContract(Contract contract) {
-        final List<Data> newData = this.dataFetcher.removeAndFetchContract(this.getStatisticsController().getCurrentData(), contract);
+    public void removeSelectedContract(final Contract contract) {
+        final List<Data> newData = this.dataFetcher
+                .removeAndFetchContract(this.getStatisticsController().getCurrentData(), contract);
         this.getStatisticsController().setData(newData);
         this.selectedContracts.remove(contract);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setUser(final User newUser) {
         this.initializeStatistics(newUser);
@@ -136,49 +163,75 @@ public class MainViewModelImpl extends AbstractViewModel implements MainViewMode
         this.currentUser = newUser;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public User getUser() {
         return this.currentUser;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Pair<Date, Double>> getPeek(final ServiceType svcType) {
         return this.statisticsController.getPeek(svcType);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public double getAverageUsage(final ServiceType svcType) {
         return this.statisticsController.getAverageUsage(svcType);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public double getTotalUsage(final ServiceType svcType) {
         return this.statisticsController.getTotalUsage(svcType);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ObservableList<Contract> getSelectedContracts() {
         return this.selectedContracts;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Contract> getContracts() {
         return this.contracts;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Set<ServiceType> getAvailableServiceTypes() {
-        return this.selectedContracts
-                .stream()
+        return this.selectedContracts.stream()
                 .flatMap(elem -> elem.getServices().stream())
                 .collect(Collectors.toCollection(TreeSet::new));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void setOnLogout(EventHandler<Void> evtHandler) {
+    public void setOnLogout(final EventHandler<Void> evtHandler) {
         this.logoutEventHandler = evtHandler;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void logout() {
         this.logoutEventHandler.handle(null);

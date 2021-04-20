@@ -2,7 +2,6 @@ package reega.controllers;
 
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 
 import reega.auth.AuthManager;
@@ -84,23 +83,23 @@ public class RegistrationViewModelImpl extends AbstractViewModel implements Regi
     }
 
     private ValueResult<Void> validate() {
-        final StringBuffer errors = new StringBuffer();
-        if (StringUtils.isBlank(this.name)) {
+        final StringBuffer errors = new StringBuffer(117);
+        if (this.name.isBlank()) {
             errors.append("Name is missing");
         }
-        if (StringUtils.isBlank(this.surname)) {
+        if (this.surname.isBlank()) {
             errors.append("Surname is missing");
         }
-        if (StringUtils.isBlank(this.email)) {
+        if (this.email.isBlank()) {
             errors.append("Email is missing");
         }
-        if (StringUtils.isBlank(this.fiscalCode)) {
+        if (this.fiscalCode.isBlank()) {
             errors.append("Fiscal code is missing");
         }
-        if (StringUtils.isBlank(this.password)) {
+        if (this.password.isBlank()) {
             errors.append("Password is missing");
         }
-        if (StringUtils.isBlank(this.confirmPassword)) {
+        if (this.confirmPassword.isBlank()) {
             errors.append("Confirm password is missing");
         }
         if (errors.length() != 0) {
@@ -123,7 +122,7 @@ public class RegistrationViewModelImpl extends AbstractViewModel implements Regi
             return new ValueResult<>("Invalid email");
         }
 
-        if (!FiscalCodeValidator.getInstance().isFiscalCodeValid(this.fiscalCode)) {
+        if (!FiscalCodeValidator.isFiscalCodeValid(this.fiscalCode)) {
             return new ValueResult<>("Invalid fiscal code");
         }
 
@@ -131,15 +130,15 @@ public class RegistrationViewModelImpl extends AbstractViewModel implements Regi
             return new ValueResult<>("Confirm password field and password field don't correspond");
         }
 
-        final ValueResult<Void> hasCreatedUser = this.authManager.createUser(
+        final ValueResult<Void> createdUserResult = this.authManager.createUser(
                 new NewUser(Role.USER, this.name, this.surname, this.email, this.fiscalCode, this.password));
 
-        if (hasCreatedUser.isInvalid()) {
-            return hasCreatedUser;
+        if (createdUserResult.isInvalid()) {
+            return createdUserResult;
         }
 
         this.jumpToLogin();
 
-        return hasCreatedUser;
+        return createdUserResult;
     }
 }

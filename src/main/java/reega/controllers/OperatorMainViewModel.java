@@ -10,14 +10,14 @@ import reega.users.User;
 
 public interface OperatorMainViewModel extends MainViewModel {
     /**
-     * Selected user property
+     * Selected user property.
      *
      * @return the selected user property that contains the selected user
      */
     ObjectProperty<User> selectedUser();
 
     /**
-     * Get the selected user
+     * Get the selected user.
      *
      * @return an Optional with the user inside if the {@link #selectedUser()} is not null, an empty {@link Optional}
      *         otherwise
@@ -25,17 +25,17 @@ public interface OperatorMainViewModel extends MainViewModel {
     Optional<User> getSelectedUser();
 
     /**
-     * Jump to the search user controller
+     * Jump to the search user controller.
      */
     void jumpToSearchUser();
 
     /**
-     * Remove the selected user
+     * Remove the selected user.
      */
     void removeSelectedUser();
 
     /**
-     * Get the selected contracts of the {@link #selectedUser()}
+     * Get the selected contracts of the {@link #selectedUser()}.
      *
      * @return the selected contracts of the {@link #selectedUser()}, an empty list if the selected user is not set
      */
@@ -43,7 +43,7 @@ public interface OperatorMainViewModel extends MainViewModel {
     ObservableList<Contract> getSelectedContracts();
 
     /**
-     * Get all the contracts of the {@link #selectedUser()}
+     * Get all the contracts of the {@link #selectedUser()}.
      *
      * @return all the contracts of the {@link #selectedUser()}, an empty list if the selected user is not set
      */

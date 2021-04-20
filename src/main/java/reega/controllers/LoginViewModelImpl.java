@@ -1,10 +1,13 @@
 package reega.controllers;
 
+import java.util.Locale;
 import java.util.Optional;
 
 import javax.inject.Inject;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
+
 import reega.auth.AuthManager;
 import reega.users.Role;
 import reega.users.User;
@@ -63,8 +66,9 @@ public class LoginViewModelImpl extends AbstractViewModel implements LoginViewMo
         ValueResult<Optional<User>> user;
         if (EmailValidator.getInstance().isValid(this.emailOrFiscalCode)) {
             user = this.authManager.emailLogin(this.emailOrFiscalCode, this.password, rememberMe);
-        } else if (FiscalCodeValidator.getInstance().isFiscalCodeValid(this.emailOrFiscalCode.toUpperCase())) {
-            user = this.authManager.fiscalCodeLogin(this.emailOrFiscalCode.toUpperCase(), this.password, rememberMe);
+        } else if (FiscalCodeValidator.isFiscalCodeValid(this.emailOrFiscalCode.toUpperCase(Locale.US))) {
+            user = this.authManager.fiscalCodeLogin(this.emailOrFiscalCode.toUpperCase(Locale.US), this.password,
+                    rememberMe);
         } else {
             return new ValueResult<>("Incorrect format for a fiscal code or an email");
         }
@@ -83,20 +87,28 @@ public class LoginViewModelImpl extends AbstractViewModel implements LoginViewMo
         return new ValueResult<>((Void) null);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ValueResult<Void> tryLogin() {
-        ValueResult<Optional<User>> tokenLogin = this.authManager.tryLoginWithoutPassword();
+        final ValueResult<Optional<User>> tokenLogin = this.authManager.tryLoginWithoutPassword();
         if (tokenLogin.isValid()) {
             if (tokenLogin.getValue().isPresent()) {
                 this.jumpToNextPage(tokenLogin.getValue().get());
             }
-            return new ValueResult<>((Void)null);
+            return new ValueResult<>((Void) null);
         }
         return new ValueResult<>(null, tokenLogin.getMessage());
     }
 
+    /**
+     * Jump to the next page.
+     *
+     * @param user new user that has logged in
+     */
     private void jumpToNextPage(final User user) {
-        final EventHandler<Void> logoutEvtHandler = (evtArgs) -> this.authManager.logout();
+        final EventHandler<Void> logoutEvtHandler = evtArgs -> this.authManager.logout();
         if (user.getRole() == Role.USER) {
             this.pushViewModel(MainViewModel.class, newViewModel -> {
                 newViewModel.setUser(user);

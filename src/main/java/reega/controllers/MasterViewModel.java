@@ -2,9 +2,9 @@ package reega.controllers;
 
 import javax.inject.Inject;
 
+import reega.viewutils.Navigator;
 import reega.viewutils.ViewModel;
 import reega.viewutils.ViewModelChangedEventHandler.ViewModelChangedEventType;
-import reega.viewutils.Navigator;
 
 public class MasterViewModel {
     private final Navigator navigator;
@@ -26,14 +26,14 @@ public class MasterViewModel {
     }
 
     /**
-     * Start the app with the default controller
+     * Start the app with the default controller.
      */
     public void initializeApp() {
         this.navigator.pushViewModel(LoginViewModel.class, false);
     }
 
     /**
-     * Get the main navigator of the app
+     * Get the main navigator of the app.
      *
      * @return the main navigator of the app
      */

@@ -1,5 +1,9 @@
 package reega.controllers;
 
+import java.io.IOException;
+
+import javax.inject.Inject;
+
 import reega.data.ContractController;
 import reega.data.models.Contract;
 import reega.data.models.gson.NewContract;
@@ -8,47 +12,56 @@ import reega.viewutils.AbstractViewModel;
 import reega.viewutils.EventArgs;
 import reega.viewutils.EventHandler;
 
-import javax.inject.Inject;
-import java.io.IOException;
-
 public class ContractCreationViewModelImpl extends AbstractViewModel implements ContractCreationViewModel {
 
-        private User user;
-        private ContractController contractController;
-        private EventHandler<Contract> contractEventHandler;
+    private User user;
+    private final ContractController contractController;
+    private EventHandler<Contract> contractEventHandler;
 
-        @Inject
-        public ContractCreationViewModelImpl(ContractController contractController) {
-                this.contractController = contractController;
-        }
+    @Inject
+    public ContractCreationViewModelImpl(final ContractController contractController) {
+        this.contractController = contractController;
+    }
 
-        @Override
-        public boolean registerContract(NewContract contract) {
-                try {
-                        Contract newContract = this.contractController.addContract(contract);
-                        if (newContract != null) {
-                                this.contractEventHandler.handle(new EventArgs<Contract>(newContract, this));
-                        } else {
-                                return false;
-                        }
-                } catch (IOException e) {
-                        return false;
-                }
-                return true;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean registerContract(final NewContract contract) {
+        try {
+            final Contract newContract = this.contractController.addContract(contract);
+            if (newContract != null) {
+                this.contractEventHandler.handle(new EventArgs<>(newContract, this));
+            } else {
+                return false;
+            }
+        } catch (final IOException e) {
+            return false;
         }
-        
-        @Override
-        public void setContractCreateEventHandler(EventHandler<Contract> eventHandler) {
-                this.contractEventHandler = eventHandler;
-        }
+        return true;
+    }
 
-        @Override
-        public void setUser(User newUser) {
-                this.user = newUser;
-        }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setContractCreateEventHandler(final EventHandler<Contract> eventHandler) {
+        this.contractEventHandler = eventHandler;
+    }
 
-        @Override
-        public User getUser() {
-                return this.user;
-        }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setUser(final User newUser) {
+        this.user = newUser;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public User getUser() {
+        return this.user;
+    }
 }
