@@ -15,12 +15,13 @@ import reega.viewcomponents.Card;
 import reega.viewcomponents.FlexibleGridPane;
 import reega.viewcomponents.WrappableLabel;
 import reega.viewutils.ReegaFXMLLoader;
+import reega.viewutils.ReegaView;
 import reega.viewutils.ViewUtils;
 
 import java.io.IOException;
 import java.util.stream.Collectors;
 
-public class HistoryView extends VBox {
+public class HistoryView extends VBox implements ReegaView {
     @FXML
     WrappableLabel contractsLabel;
     @FXML

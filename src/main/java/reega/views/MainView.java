@@ -34,9 +34,10 @@ import reega.viewcomponents.MaxWidthButton;
 import reega.viewcomponents.WrappableLabel;
 import reega.viewutils.Command;
 import reega.viewutils.ReegaFXMLLoader;
+import reega.viewutils.ReegaView;
 import reega.viewutils.ViewUtils;
 
-public abstract class MainView extends GridPane {
+public abstract class MainView extends GridPane implements ReegaView {
 
     @FXML
     private WrappableLabel userEmail;

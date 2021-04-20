@@ -24,9 +24,10 @@ import reega.viewcomponents.Card;
 import reega.viewcomponents.FlexibleGridPane;
 import reega.viewcomponents.WrappableLabel;
 import reega.viewutils.ReegaFXMLLoader;
+import reega.viewutils.ReegaView;
 import reega.viewutils.ViewUtils;
 
-public class UserSearchView extends VBox {
+public class UserSearchView extends VBox implements ReegaView {
 
     @FXML
     private TextField searchBar;

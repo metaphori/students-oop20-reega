@@ -3,16 +3,13 @@
  */
 package reega.views;
 
-import java.io.IOException;
-
 import javax.inject.Inject;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import reega.controllers.MasterViewModel;
-import reega.viewutils.ContentControl;
+import reega.viewcomponents.ContentControl;
 import reega.viewutils.ReegaFXMLLoader;
 
 /**

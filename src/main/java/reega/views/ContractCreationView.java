@@ -12,6 +12,7 @@ import reega.data.models.gson.NewContract;
 import reega.users.User;
 import reega.viewutils.DialogFactory;
 import reega.viewutils.ReegaFXMLLoader;
+import reega.viewutils.ReegaView;
 import reega.viewutils.ViewUtils;
 
 import java.io.IOException;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class ContractCreationView extends VBox {
+public class ContractCreationView extends VBox implements ReegaView {
 
         @FXML private Label userLabel;
         @FXML private HBox servicesBox;

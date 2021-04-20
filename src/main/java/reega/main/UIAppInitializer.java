@@ -25,10 +25,7 @@ import reega.statistics.StatisticsControllerImpl;
 import reega.util.ServiceCollection;
 import reega.util.ServiceProvider;
 import reega.views.*;
-import reega.viewutils.DataTemplate;
-import reega.viewutils.DataTemplateManager;
-import reega.viewutils.Navigator;
-import reega.viewutils.NavigatorImpl;
+import reega.viewutils.*;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -138,7 +135,7 @@ public class UIAppInitializer implements AppInitializer {
                                 return RegistrationViewModelImpl.class;
                         }
 
-                        @Override public Supplier<? extends Parent> getControlFactory(
+                        @Override public Supplier<? extends ReegaView> getControlFactory(
                                 final RegistrationViewModelImpl controller) {
                                 return () -> new RegistrationView(controller);
                         }
@@ -148,7 +145,7 @@ public class UIAppInitializer implements AppInitializer {
                                 return LoginViewModelImpl.class;
                         }
 
-                        @Override public Supplier<? extends Parent> getControlFactory(
+                        @Override public Supplier<? extends ReegaView> getControlFactory(
                                 final LoginViewModelImpl controller) {
                                 return () -> new LoginView(controller);
                         }
@@ -158,7 +155,7 @@ public class UIAppInitializer implements AppInitializer {
                                 return MainViewModelImpl.class;
                         }
 
-                        @Override public Supplier<? extends Parent> getControlFactory(
+                        @Override public Supplier<? extends ReegaView> getControlFactory(
                                 final MainViewModelImpl controller) {
                                 return () -> new UserMainView(controller);
                         }
@@ -169,7 +166,7 @@ public class UIAppInitializer implements AppInitializer {
                                 return OperatorMainViewModelImpl.class;
                         }
 
-                        @Override public Supplier<? extends Parent> getControlFactory(
+                        @Override public Supplier<? extends ReegaView> getControlFactory(
                                 OperatorMainViewModelImpl controller) {
                                 return () -> new OperatorMainView(controller);
                         }
@@ -181,7 +178,7 @@ public class UIAppInitializer implements AppInitializer {
                                 return SearchUserViewModelImpl.class;
                         }
 
-                        @Override public Supplier<? extends Parent> getControlFactory(
+                        @Override public Supplier<? extends ReegaView> getControlFactory(
                                 SearchUserViewModelImpl controller) {
                                 return () -> new UserSearchView(controller);
                         }
@@ -192,7 +189,7 @@ public class UIAppInitializer implements AppInitializer {
                                 return UserProfileViewModelImpl.class;
                         }
 
-                        @Override public Supplier<? extends Parent> getControlFactory(
+                        @Override public Supplier<? extends ReegaView> getControlFactory(
                                 UserProfileViewModelImpl controller) {
                                 return () -> new UserProfileView(controller);
                         }
@@ -203,7 +200,7 @@ public class UIAppInitializer implements AppInitializer {
                                 return HistoryViewModelImpl.class;
                         }
 
-                        @Override public Supplier<? extends Parent> getControlFactory(HistoryViewModelImpl controller) {
+                        @Override public Supplier<? extends ReegaView> getControlFactory(HistoryViewModelImpl controller) {
                                 return () -> new HistoryView(controller);
                         }
                 });
@@ -213,7 +210,7 @@ public class UIAppInitializer implements AppInitializer {
                                 return ContractCreationViewModelImpl.class;
                         }
 
-                        @Override public Supplier<? extends Parent> getControlFactory(
+                        @Override public Supplier<? extends ReegaView> getControlFactory(
                                 ContractCreationViewModelImpl controller) {
                                 return () -> new ContractCreationView(controller);
                         }

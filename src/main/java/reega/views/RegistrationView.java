@@ -14,6 +14,7 @@ import reega.controllers.RegistrationViewModel;
 import reega.util.ValueResult;
 import reega.viewutils.DialogFactory;
 import reega.viewutils.ReegaFXMLLoader;
+import reega.viewutils.ReegaView;
 
 /**
  * Class for the Registration View Component
@@ -21,7 +22,7 @@ import reega.viewutils.ReegaFXMLLoader;
  * @author Marco
  *
  */
-public class RegistrationView extends GridPane {
+public class RegistrationView extends GridPane implements ReegaView {
 
     @FXML
     private TextField nameField;

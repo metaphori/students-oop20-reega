@@ -6,7 +6,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<?import reega.viewutils.ContentControl?>
+<?import reega.viewcomponents.ContentControl?>
 
 <fx:root xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"

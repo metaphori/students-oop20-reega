@@ -23,7 +23,7 @@ public interface DataTemplate<T> {
      * Get the factory for creating a control based on the controller
      *
      * @param controller controller to use
-     * @return a {@link Parent} that is the view representation of the controller
+     * @return a {@link ReegaView} that is the view representation of the controller
      */
-    Supplier<? extends Parent> getControlFactory(T controller);
+    Supplier<? extends ReegaView> getControlFactory(T controller);
 }

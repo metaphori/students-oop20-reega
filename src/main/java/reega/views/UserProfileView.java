@@ -17,13 +17,14 @@ import reega.viewcomponents.FlexibleGridPane;
 import reega.viewcomponents.WrappableLabel;
 import reega.viewutils.DialogFactory;
 import reega.viewutils.ReegaFXMLLoader;
+import reega.viewutils.ReegaView;
 import reega.viewutils.ViewUtils;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.stream.Collectors;
 
-public class UserProfileView extends VBox {
+public class UserProfileView extends VBox implements ReegaView {
 
     @FXML
     private WrappableLabel userName;

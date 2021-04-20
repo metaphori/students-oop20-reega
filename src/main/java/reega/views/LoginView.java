@@ -12,6 +12,7 @@ import reega.util.ValueResult;
 import reega.viewcomponents.MaxWidthButton;
 import reega.viewutils.DialogFactory;
 import reega.viewutils.ReegaFXMLLoader;
+import reega.viewutils.ReegaView;
 
 /**
  * Class for the Login View Component
@@ -19,7 +20,7 @@ import reega.viewutils.ReegaFXMLLoader;
  * @author Marco
  *
  */
-public class LoginView extends GridPane {
+public class LoginView extends GridPane implements ReegaView {
 
     @FXML
     private TextField emailOrFiscalCodeField;
