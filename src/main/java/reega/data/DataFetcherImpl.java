@@ -1,30 +1,38 @@
 package reega.data;
 
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.inject.Inject;
+
 import reega.data.models.Contract;
 import reega.data.models.Data;
 import reega.logging.ExceptionHandler;
 import reega.users.User;
 
-import javax.inject.Inject;
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 public class DataFetcherImpl implements DataFetcher {
 
     private Map<Contract, List<Data>> currentDataByContract;
-    private DataController contractController;
-    private ExceptionHandler exceptionHandler;
+    private final DataController contractController;
+    private final ExceptionHandler exceptionHandler;
 
     @Inject
-    public DataFetcherImpl(DataController contractController, ExceptionHandler exceptionHandler) {
+    public DataFetcherImpl(final DataController contractController, final ExceptionHandler exceptionHandler) {
         this.contractController = contractController;
         this.exceptionHandler = exceptionHandler;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public List<Data> fetchAllUserData(User user, List<Contract> contracts) {
+    public List<Data> fetchAllUserData(final User user, final List<Contract> contracts) {
         this.currentDataByContract = new HashMap<>();
         return contracts.stream().flatMap(contract -> {
             final List<Data> monthlyData = this.getDataByContract(contract);
@@ -33,28 +41,29 @@ public class DataFetcherImpl implements DataFetcher {
         }).collect(Collectors.toList());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public List<Data> pushAndFetchContract(List<Data> oldData, Contract contract) {
+    public List<Data> pushAndFetchContract(final List<Data> oldData, final Contract contract) {
         final List<Data> monthlyData = this.getDataByContract(contract);
         final Stream<Data> newDataStream = monthlyData.stream();
-        final List<Data> allData = Stream
-                .concat(newDataStream, oldData.stream())
-                .collect(Collectors.toList());
+        final List<Data> allData = Stream.concat(newDataStream, oldData.stream()).collect(Collectors.toList());
         this.currentDataByContract.put(contract, monthlyData);
         return allData;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public List<Data> removeAndFetchContract(List<Data> oldData, Contract contract) {
+    public List<Data> removeAndFetchContract(final List<Data> oldData, final Contract contract) {
         this.currentDataByContract.remove(contract);
-        return this.currentDataByContract.values()
-                .stream()
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+        return this.currentDataByContract.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
     }
 
     /**
-     * Get the data controller
+     * Get the data controller.
      *
      * @return the data controller
      */
@@ -63,7 +72,7 @@ public class DataFetcherImpl implements DataFetcher {
     }
 
     /**
-     * Get the exception handler
+     * Get the exception handler.
      *
      * @return the exception handler
      */
@@ -72,7 +81,7 @@ public class DataFetcherImpl implements DataFetcher {
     }
 
     /**
-     * Get the data by a contract
+     * Get the data by a contract.
      *
      * @param contract contract to search
      * @return a list of data containing data for the contract

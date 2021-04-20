@@ -1,34 +1,37 @@
 package reega.data.remote;
 
-import okhttp3.OkHttpClient;
+import java.io.IOException;
+
+import javax.annotation.Nullable;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import okhttp3.OkHttpClient;
 import reega.data.models.gson.LoginResponse;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import javax.annotation.Nullable;
-import java.io.IOException;
-
 /**
- * Handle the connection to the server and the http methods authentication
+ * Handle the connection to the server and the http methods authentication.
  */
 public class RemoteConnection {
-    private static final Logger logger = LoggerFactory.getLogger(RemoteConnection.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RemoteConnection.class);
+    private static final int INITIAL_ERROR_CODE = 299;
     private static Retrofit retrofit;
     private static ReegaService service;
     private static boolean forcedService = false;
     private String baseUrl;
-    private String JWT;
+    private String jwt;
 
-    public RemoteConnection(final String baseUrl, boolean forceNewInstance) {
+    public RemoteConnection(final String baseUrl, final boolean forceNewInstance) {
         this.baseUrl = baseUrl;
-        buildRetrofit(forceNewInstance, null);
-        service = retrofit.create(ReegaService.class);
+        this.buildRetrofit(forceNewInstance, null);
+        RemoteConnection.service = RemoteConnection.retrofit.create(ReegaService.class);
     }
 
-    public RemoteConnection(String baseUrl) {
+    public RemoteConnection(final String baseUrl) {
         this(baseUrl, false);
     }
 
@@ -37,49 +40,64 @@ public class RemoteConnection {
     }
 
     /**
-     * Initialize the connection with the given service
+     * Initialize the connection with the given service.
      *
      * @param s
      */
     @Deprecated
     public RemoteConnection(final ReegaService s) {
-        forcedService = true;
-        service = s;
+        RemoteConnection.forcedService = true;
+        RemoteConnection.service = s;
     }
 
+    /**
+     * Override the current JWT Token.
+     *
+     * @param jwt JWT Token
+     */
     @Deprecated
-    public void overrideToken(final String JWT) {
-        this.JWT = JWT;
+    public void overrideToken(final String jwt) {
+        this.jwt = jwt;
         this.setClientAuth();
     }
 
+    /**
+     * Login into the REEGA Platform.
+     *
+     * @param loginMethod method of login
+     * @return a {@link LoginResponse} containing returned data
+     * @throws IOException
+     */
     public LoginResponse login(final LoginMethod loginMethod) throws IOException {
-        logger.info("logging-in...");
-        Response<LoginResponse> loginResponse = loginMethod.login();
-        logger.info("response: " + loginResponse.code());
-        if (loginResponse.code() > 299 || loginResponse.body() == null) {
-            logger.info("error: " + loginResponse.errorBody());
+        RemoteConnection.LOGGER.info("logging-in...");
+        final Response<LoginResponse> loginResponse = loginMethod.login();
+        RemoteConnection.LOGGER.info("response: " + loginResponse.code());
+        if (loginResponse.code() > RemoteConnection.INITIAL_ERROR_CODE || loginResponse.body() == null) {
+            RemoteConnection.LOGGER.info("error: " + loginResponse.errorBody());
             return null;
         }
-        JWT = loginResponse.body().jwt;
+        this.jwt = loginResponse.body().jwt;
         this.setClientAuth();
 
         return loginResponse.body();
     }
 
+    /**
+     * Logout from the REEGA Platform.
+     */
     public void logout() {
-        this.JWT = null;
-        buildRetrofit(true, null);
-        service = retrofit.create(ReegaService.class);
+        this.jwt = null;
+        this.buildRetrofit(true, null);
+        RemoteConnection.service = RemoteConnection.retrofit.create(ReegaService.class);
     }
 
-    private void buildRetrofit(boolean forceNewInstance, @Nullable OkHttpClient client) {
-        if (forceNewInstance || retrofit == null) {
-            var builder = new Retrofit.Builder();
+    private void buildRetrofit(final boolean forceNewInstance, @Nullable final OkHttpClient client) {
+        if (forceNewInstance || RemoteConnection.retrofit == null) {
+            final var builder = new Retrofit.Builder();
             if (client != null) {
                 builder.client(client);
             }
-            retrofit = builder.baseUrl(baseUrl)
+            RemoteConnection.retrofit = builder.baseUrl(this.baseUrl)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
@@ -87,20 +105,25 @@ public class RemoteConnection {
 
     private void setClientAuth() {
         // not touching the service as it's been specified at init time
-        if (forcedService) {
+        if (RemoteConnection.forcedService) {
             return;
         }
         final OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(chain -> chain
-                        .proceed(chain.request().newBuilder().addHeader("Authorization", "Bearer " + JWT).build()))
+                        .proceed(chain.request().newBuilder().addHeader("Authorization", "Bearer " + this.jwt).build()))
                 .build();
 
-        buildRetrofit(true, client);
-        service = retrofit.create(ReegaService.class);
+        this.buildRetrofit(true, client);
+        RemoteConnection.service = RemoteConnection.retrofit.create(ReegaService.class);
     }
 
+    /**
+     * Get the associated {@link ReegaService}.
+     *
+     * @return the associated {@link ReegaService}
+     */
     public ReegaService getService() {
-        return service;
+        return RemoteConnection.service;
     }
 
     public interface LoginMethod {

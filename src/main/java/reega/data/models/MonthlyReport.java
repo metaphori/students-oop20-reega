@@ -1,12 +1,13 @@
 package reega.data.models;
 
-import com.google.gson.Gson;
-import reega.main.Settings;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.TimeZone;
+
+import com.google.gson.Gson;
+
+import reega.main.Settings;
 
 public class MonthlyReport {
     private final String month;
@@ -20,19 +21,35 @@ public class MonthlyReport {
         this.reports = reports;
     }
 
+    /**
+     * Get the month of the report.
+     *
+     * @return the month of the report
+     */
     public String getMonth() {
-        return month;
+        return this.month;
     }
 
+    /**
+     * Get all the reports by {@link DataType}.
+     *
+     * @return a {@link Map} that have the {@link DataType} as key and {@link Report} as value
+     */
     public Map<DataType, Report> getReports() {
-        return reports;
+        return this.reports;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return new Gson().toJson(this);
     }
 
+    /**
+     * Record class used for describing a report summary.
+     */
     public static class Report {
         private final double sum;
         private final double avg;
@@ -42,10 +59,20 @@ public class MonthlyReport {
             this.sum = sum;
         }
 
+        /**
+         * Get the average.
+         *
+         * @return the average
+         */
         public double getAvg() {
             return this.avg;
         }
 
+        /**
+         * Get the total.
+         *
+         * @return the total
+         */
         public double getSum() {
             return this.sum;
         }

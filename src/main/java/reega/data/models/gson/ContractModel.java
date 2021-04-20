@@ -1,12 +1,13 @@
 package reega.data.models.gson;
 
-import com.google.gson.annotations.SerializedName;
-import reega.data.models.Contract;
-import reega.data.models.ServiceType;
-
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.google.gson.annotations.SerializedName;
+
+import reega.data.models.Contract;
+import reega.data.models.ServiceType;
 
 /**
  * API data model
@@ -23,7 +24,7 @@ public class ContractModel {
     @SerializedName("start_time")
     public Date startTime;
 
-    public ContractModel(Contract contract) {
+    public ContractModel(final Contract contract) {
         this.id = contract.getId();
         this.address = contract.getAddress();
         this.services = contract.getServices().stream().map(ServiceType::getName).collect(Collectors.toList());

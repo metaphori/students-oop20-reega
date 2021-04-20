@@ -1,18 +1,35 @@
 package reega.data.factory;
 
+import javax.annotation.Nullable;
 
 import reega.data.UserController;
 import reega.data.remote.RemoteConnection;
 import reega.data.remote.RemoteUserAPI;
 
-import javax.annotation.Nullable;
+/**
+ * This factory returns an implementation of {@link UserController} based on the needs.
+ */
+public final class UserControllerFactory {
+    private UserControllerFactory() {
+    }
 
-public class UserControllerFactory {
-    public static UserController getDefaultUserController(@Nullable RemoteConnection connection) {
+    /**
+     * Get the default {@link UserController}.
+     *
+     * @param connection {@link RemoteConnection} used to get the default user controller
+     * @return the default {@link UserController}
+     */
+    public static UserController getDefaultUserController(@Nullable final RemoteConnection connection) {
         return new RemoteUserAPI(connection);
     }
 
-    public static UserController getRemoteUserController(@Nullable RemoteConnection connection) {
+    /**
+     * Get the remote {@link UserController}.
+     *
+     * @param connection {@link RemoteConnection} used to get the remote user controller
+     * @return the remote {@link UserController}
+     */
+    public static UserController getRemoteUserController(@Nullable final RemoteConnection connection) {
         return new RemoteUserAPI(connection);
     }
 }

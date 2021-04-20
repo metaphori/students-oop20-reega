@@ -1,19 +1,35 @@
 package reega.data.factory;
 
 import org.jetbrains.annotations.Nullable;
+
 import reega.data.ContractController;
 import reega.data.remote.RemoteConnection;
 import reega.data.remote.RemoteContractAPI;
 
 /**
- * This factory returns an implementation of DataController based on the needs.
+ * This factory returns an implementation of {@link ContractController} based on the needs.
  */
 public final class ContractControllerFactory {
-    public static ContractController getDefaultDataController(@Nullable RemoteConnection connection) {
+    private ContractControllerFactory() {
+    }
+
+    /**
+     * Get the default {@link ContractController}.
+     *
+     * @param connection {@link RemoteConnection} used to get the default contract controller
+     * @return the default {@link ContractController}
+     */
+    public static ContractController getDefaultDataController(@Nullable final RemoteConnection connection) {
         return new RemoteContractAPI(connection);
     }
 
-    public static ContractController getRemoteDatabaseController(@Nullable RemoteConnection connection) {
+    /**
+     * Get the remote {@link ContractController}.
+     *
+     * @param connection {@link RemoteConnection} used to get the remote contract controller
+     * @return the remote {@link ContractController}
+     */
+    public static ContractController getRemoteDatabaseController(@Nullable final RemoteConnection connection) {
         return new RemoteContractAPI(connection);
     }
 }

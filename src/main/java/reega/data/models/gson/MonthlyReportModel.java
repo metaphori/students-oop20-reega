@@ -1,8 +1,8 @@
 package reega.data.models.gson;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.Date;
+
+import com.google.gson.annotations.SerializedName;
 
 public class MonthlyReportModel {
     @SerializedName("month")

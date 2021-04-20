@@ -12,7 +12,7 @@ public class LoginResponse extends User {
     public String jwt;
 
     public LoginResponse(final Integer id, final String name, final String surname, final String email,
-                         final String fiscalCode, final String role, final String jwt) {
+            final String fiscalCode, final String role, final String jwt) {
         this.id = id;
         this.name = name;
         this.surname = surname;

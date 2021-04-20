@@ -1,15 +1,16 @@
 package reega.data.models.gson;
 
-import com.google.gson.Gson;
-import com.google.gson.annotations.SerializedName;
-import reega.data.models.ServiceType;
-import reega.main.Settings;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
+
+import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
+
+import reega.data.models.ServiceType;
+import reega.main.Settings;
 
 public class NewContract {
     @SerializedName("address")
@@ -22,7 +23,7 @@ public class NewContract {
     public String startTime;
 
     public NewContract(final String address, final List<ServiceType> services, final String userFiscalCode,
-                       final Date startTime) {
+            final Date startTime) {
         this.address = address;
         this.services = new Gson().toJson(services.stream().map(ServiceType::getName).collect(Collectors.toList()));
         this.userFiscalCode = userFiscalCode;

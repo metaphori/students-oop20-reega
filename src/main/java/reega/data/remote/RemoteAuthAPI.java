@@ -1,7 +1,14 @@
 package reega.data.remote;
 
+import java.io.IOException;
+import java.util.Locale;
+import java.util.Objects;
+
+import javax.annotation.Nullable;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import reega.data.AuthController;
 import reega.data.models.UserAuth;
 import reega.data.models.gson.LoginResponse;
@@ -11,15 +18,12 @@ import reega.users.Role;
 import reega.users.User;
 import retrofit2.Response;
 
-import javax.annotation.Nullable;
-import java.io.IOException;
-import java.util.Objects;
-
 /**
- * AuthController implementation, using remote database via http requests
+ * {@link AuthController} implementation, using remote database via http requests.
  */
 public final class RemoteAuthAPI implements AuthController {
-    private static final Logger logger = LoggerFactory.getLogger(RemoteAuthAPI.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RemoteAuthAPI.class);
+    private static final int INITIAL_ERROR_CODE = 299;
     private final RemoteConnection connection;
 
     public RemoteAuthAPI(@Nullable final RemoteConnection connection) {
@@ -39,31 +43,34 @@ public final class RemoteAuthAPI implements AuthController {
     @Override
     public User tokenLogin(final UserAuth credentials) throws IOException {
         return this.genericLogin(() -> this.connection.getService()
-                .tokenCodeLogin(credentials.getSelector(), credentials.getValidator()).execute());
+                .tokenCodeLogin(credentials.getSelector(), credentials.getValidator())
+                .execute());
     }
 
     private User genericLogin(final RemoteConnection.LoginMethod loginMethod) throws IOException {
         final LoginResponse response = this.connection.login(loginMethod);
-        return response == null ? null :
-                new GenericUser(Role.valueOf(response.role.toUpperCase()), response.name, response.surname,
+        return response == null ? null
+                : new GenericUser(Role.valueOf(response.role.toUpperCase(Locale.US)), response.name, response.surname,
                         response.email, response.fiscalCode);
     }
 
     @Override
     public void storeUserCredentials(final String selector, final String validator) throws IOException {
-        final Response<Void> r = this.connection.getService().storeUserToken(new UserAuthToken(selector, validator)).execute();
-        logger.info("response: " + r.code());
-        if (r.code() > 299) {
-            logger.info("error: " + r.errorBody());
+        final Response<Void> r = this.connection.getService()
+                .storeUserToken(new UserAuthToken(selector, validator))
+                .execute();
+        RemoteAuthAPI.LOGGER.info("response: " + r.code());
+        if (r.code() > RemoteAuthAPI.INITIAL_ERROR_CODE) {
+            RemoteAuthAPI.LOGGER.info("error: " + r.errorBody());
         }
     }
 
     @Override
     public void userLogout() throws IOException {
         final Response<Void> r = this.connection.getService().logout().execute();
-        logger.info("response: " + r.code());
-        if (r.code() > 299) {
-            logger.info("error: " + r.errorBody());
+        RemoteAuthAPI.LOGGER.info("response: " + r.code());
+        if (r.code() > RemoteAuthAPI.INITIAL_ERROR_CODE) {
+            RemoteAuthAPI.LOGGER.info("error: " + r.errorBody());
         }
     }
 

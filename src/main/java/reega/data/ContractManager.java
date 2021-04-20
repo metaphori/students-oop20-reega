@@ -1,13 +1,13 @@
 package reega.data;
 
-import reega.data.models.Contract;
-import reega.users.User;
-
 import java.util.List;
+
+import reega.data.models.Contract;
 
 public interface ContractManager {
     /**
-     * Fetch the contracts of the current user
+     * Fetch the contracts of the current user.
+     *
      * @return the contracts of the current user
      */
     List<Contract> fetchUserContracts();

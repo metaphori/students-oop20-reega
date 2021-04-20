@@ -1,7 +1,14 @@
 package reega.data;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
 
 import org.junit.jupiter.api.*;
+
 import reega.data.factory.AuthControllerFactory;
 import reega.data.factory.ContractControllerFactory;
 import reega.data.factory.UserControllerFactory;
@@ -11,13 +18,6 @@ import reega.data.models.gson.NewContract;
 import reega.data.remote.RemoteConnection;
 import reega.users.NewUser;
 import reega.users.Role;
-
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Some functions of UserController are already tested in DataControllerTest
@@ -32,46 +32,45 @@ public class UserControllerTest {
 
     @BeforeAll
     public void setup() throws IOException {
-        connection = new TestConnection().getTestConnection("admin@reega.it", "AES_PASSWORD");
-        contractController = ContractControllerFactory.getRemoteDatabaseController(connection);
-        userController = UserControllerFactory.getRemoteUserController(connection);
-        authController = AuthControllerFactory.getRemoteAuthController(connection);
+        this.connection = new TestConnection().getTestConnection("admin@reega.it", "AES_PASSWORD");
+        this.contractController = ContractControllerFactory.getRemoteDatabaseController(this.connection);
+        this.userController = UserControllerFactory.getRemoteUserController(this.connection);
+        this.authController = AuthControllerFactory.getRemoteAuthController(this.connection);
     }
 
     @AfterAll
     public void cleanup() throws IOException {
-        connection.getService().terminateTest().execute();
-        connection.logout();
+        this.connection.getService().terminateTest().execute();
+        this.connection.logout();
     }
 
     @Test
     @Order(1)
     public void createUserAndContract() throws IOException {
-        NewUser newUser = new NewUser(Role.USER, "test", "surname", "test@reega.it", "TTT111", "PASSWORD");
-        userController.addUser(newUser);
+        final NewUser newUser = new NewUser(Role.USER, "test", "surname", "test@reega.it", "TTT111", "PASSWORD");
+        this.userController.addUser(newUser);
 
-        List<ServiceType> services = List.of(
-                ServiceType.ELECTRICITY
-        );
-        NewContract newContract = new NewContract("Via Zamboni, 33, 40126 Bologna BO", services, "TTT111", new Date(1614942000000L));
-        contractController.addContract(newContract);
+        final List<ServiceType> services = List.of(ServiceType.ELECTRICITY);
+        final NewContract newContract = new NewContract("Via Zamboni, 33, 40126 Bologna BO", services, "TTT111",
+                new Date(1614942000000L));
+        this.contractController.addContract(newContract);
 
-        var contracts = contractController.getContractsForUser("TTT111");
+        final var contracts = this.contractController.getContractsForUser("TTT111");
         assertEquals(1, contracts.size());
     }
 
     @Test
     @Order(2)
     public void getUserFromContract() throws IOException {
-        connection.logout();
-        var user = authController.emailLogin("test@reega.it", "PASSWORD");
+        this.connection.logout();
+        var user = this.authController.emailLogin("test@reega.it", "PASSWORD");
         assertNotNull(user);
-        var contracts = contractController.getUserContracts();
+        final var contracts = this.contractController.getUserContracts();
         assertEquals(1, contracts.size());
-        connection.logout();
-        user = authController.emailLogin("admin@reega.it", "AES_PASSWORD");
+        this.connection.logout();
+        user = this.authController.emailLogin("admin@reega.it", "AES_PASSWORD");
         assertNotNull(user);
-        user = userController.getUserFromContract(contracts.get(0).getId());
+        user = this.userController.getUserFromContract(contracts.get(0).getId());
         assertNotNull(user);
         assertNotNull(user.getEmail());
         assertEquals("test@reega.it", user.getEmail());
@@ -80,19 +79,19 @@ public class UserControllerTest {
     @Test
     @Order(3)
     public void searchForUserTest() throws IOException {
-        var users = userController.searchUser("Zamboni");
+        var users = this.userController.searchUser("Zamboni");
         assertEquals(0, users.size());
 
-        users = userController.searchUser("zamboni");
+        users = this.userController.searchUser("zamboni");
         assertEquals(0, users.size());
 
-        users = userController.searchUser("TTT");
+        users = this.userController.searchUser("TTT");
         assertEquals(1, users.size());
 
-        users = userController.searchUser("reega");
+        users = this.userController.searchUser("reega");
         assertEquals(3, users.size());
 
-        users = userController.searchUser("test");
+        users = this.userController.searchUser("test");
         assertEquals(1, users.size());
     }
 }

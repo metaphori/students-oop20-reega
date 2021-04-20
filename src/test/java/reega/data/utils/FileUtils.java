@@ -7,9 +7,9 @@ import java.net.URL;
 import java.nio.file.Files;
 
 public class FileUtils {
-    public static File getFileFromResources(String fileName) throws URISyntaxException {
-        ClassLoader classLoader = FileUtils.class.getClassLoader();
-        URL resource = classLoader.getResource(fileName);
+    public static File getFileFromResources(final String fileName) throws URISyntaxException {
+        final ClassLoader classLoader = FileUtils.class.getClassLoader();
+        final URL resource = classLoader.getResource(fileName);
         if (resource == null) {
             throw new IllegalArgumentException("file " + fileName + " not found");
         } else {
@@ -18,7 +18,7 @@ public class FileUtils {
 
     }
 
-    public static String getFileFromResourcesAsString(String fileName) throws IOException, URISyntaxException {
+    public static String getFileFromResourcesAsString(final String fileName) throws IOException, URISyntaxException {
         final File f = getFileFromResources(fileName);
         return new String(Files.readAllBytes(f.toPath()));
     }

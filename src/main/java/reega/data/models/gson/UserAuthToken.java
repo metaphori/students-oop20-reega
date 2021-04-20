@@ -1,8 +1,8 @@
 package reega.data.models.gson;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.Objects;
+
+import com.google.gson.annotations.SerializedName;
 
 /**
  * API data model

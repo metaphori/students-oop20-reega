@@ -1,25 +1,29 @@
 package reega.data;
 
-import reega.data.models.Data;
-import reega.logging.ExceptionHandler;
-
-import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import reega.data.models.Data;
+import reega.logging.ExceptionHandler;
+
 public class OperatorDataFetcherImpl extends DataFetcherImpl implements OperatorDataFetcher {
 
     @Inject
-    public OperatorDataFetcherImpl(DataController contractController, ExceptionHandler exceptionHandler) {
+    public OperatorDataFetcherImpl(final DataController contractController, final ExceptionHandler exceptionHandler) {
         super(contractController, exceptionHandler);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Data> getGeneralData() {
         try {
             return this.getDataController().getMonthlyData(null);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             this.getExceptionHandler().handleException(e);
             return Collections.emptyList();
         }

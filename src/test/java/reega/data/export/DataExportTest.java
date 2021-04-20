@@ -1,8 +1,25 @@
 package reega.data.export;
 
-import com.google.gson.JsonParser;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static reega.data.utils.FileUtils.getFileFromResources;
+import static reega.data.utils.FileUtils.getFileFromResourcesAsString;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.*;
+
+import com.google.gson.JsonParser;
+
 import reega.data.ContractController;
 import reega.data.DataController;
 import reega.data.exporter.ExportFormat;
@@ -19,19 +36,6 @@ import reega.data.remote.RemoteConnection;
 import reega.io.IOController;
 import reega.io.IOControllerFactory;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static reega.data.utils.FileUtils.getFileFromResources;
-import static reega.data.utils.FileUtils.getFileFromResourcesAsString;
-
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class DataExportTest {
@@ -43,109 +47,108 @@ public class DataExportTest {
 
     @BeforeAll
     public void setup() throws IOException {
-        connection = new TestConnection().getTestConnection("admin@reega.it", "AES_PASSWORD");
-        contractController = ContractControllerFactory.getRemoteDatabaseController(connection);
-        dataController = DataControllerFactory.getDefaultDataController(connection);
+        this.connection = new TestConnection().getTestConnection("admin@reega.it", "AES_PASSWORD");
+        this.contractController = ContractControllerFactory.getRemoteDatabaseController(this.connection);
+        this.dataController = DataControllerFactory.getDefaultDataController(this.connection);
 
-        addContract("Address 1");
-        addContract("Address 2");
+        this.addContract("Address 1");
+        this.addContract("Address 2");
 
-        IOController ioController = IOControllerFactory.getDefaultIOController();
-        basePath = ioController.getDefaultDirectoryPath() + File.separator;
+        final IOController ioController = IOControllerFactory.getDefaultIOController();
+        this.basePath = ioController.getDefaultDirectoryPath() + File.separator;
     }
 
     @AfterAll
     public void cleanup() throws IOException {
-        connection.getService().terminateTest().execute();
-        connection.logout();
+        this.connection.getService().terminateTest().execute();
+        this.connection.logout();
     }
 
     @Test
     @Order(1)
     public void exportEmptyData() throws IOException, URISyntaxException {
-        ReegaExporterFactory.export(ExportFormat.JSON, null, basePath + "json0.json");
-        checkJsonOutput("json0.json");
-        deleteFile("json0.json");
+        ReegaExporterFactory.export(ExportFormat.JSON, null, this.basePath + "json0.json");
+        this.checkJsonOutput("json0.json");
+        this.deleteFile("json0.json");
 
-        ReegaExporterFactory.export(ExportFormat.CSV, null, basePath + "csv0.csv");
-        checkFileContent("csv0.csv");
-        deleteFile("csv0.csv");
+        ReegaExporterFactory.export(ExportFormat.CSV, null, this.basePath + "csv0.csv");
+        this.checkFileContent("csv0.csv");
+        this.deleteFile("csv0.csv");
     }
 
     @Test
     @Order(2)
     public void insertData() throws IOException {
-        var contracts = contractController.getUserContracts();
+        final var contracts = this.contractController.getUserContracts();
         assertEquals(2, contracts.size());
-        for (Contract c : contracts) {
-            insertData(c.getId());
+        for (final Contract c : contracts) {
+            this.insertData(c.getId());
         }
     }
 
     @Test
     @Order(3)
     public void exportJSON() throws IOException, URISyntaxException {
-        var data = dataController.getMonthlyData(null);
+        final var data = this.dataController.getMonthlyData(null);
 
-        ReegaExporterFactory.export(ExportFormat.JSON, data, basePath + "json1.json");
-        checkJsonOutput("json1.json");
-        deleteFile("json1.json");
+        ReegaExporterFactory.export(ExportFormat.JSON, data, this.basePath + "json1.json");
+        this.checkJsonOutput("json1.json");
+        this.deleteFile("json1.json");
     }
 
     @Test
     @Order(4)
     public void exportCSV() throws IOException, URISyntaxException {
-        var data = dataController.getMonthlyData(null);
+        final var data = this.dataController.getMonthlyData(null);
 
-        ReegaExporterFactory.export(ExportFormat.CSV, data, basePath + "csv1.csv");
-        checkFileContent("csv1.csv");
-        deleteFile("csv1.csv");
+        ReegaExporterFactory.export(ExportFormat.CSV, data, this.basePath + "csv1.csv");
+        this.checkFileContent("csv1.csv");
+        this.deleteFile("csv1.csv");
     }
 
     private void checkJsonOutput(final String fileName) throws URISyntaxException, IOException {
-        final File file = new File(basePath + fileName);
+        final File file = new File(this.basePath + fileName);
         assertTrue(file.exists());
-        String fileContent = new String(Files.readAllBytes(file.toPath()));
-        String testContent = getFileFromResourcesAsString("exporter/" + fileName);
+        final String fileContent = new String(Files.readAllBytes(file.toPath()));
+        final String testContent = getFileFromResourcesAsString("exporter/" + fileName);
 
         assertEquals(JsonParser.parseString(testContent), JsonParser.parseString(fileContent));
     }
 
     private void checkFileContent(final String fileName) throws IOException, URISyntaxException {
-        final File file = new File(basePath + fileName);
+        final File file = new File(this.basePath + fileName);
         assertTrue(file.exists());
 
-        File testFile = getFileFromResources("exporter/" + fileName);
+        final File testFile = getFileFromResources("exporter/" + fileName);
         assertTrue(FileUtils.contentEquals(testFile, file));
     }
 
     private void deleteFile(final String fileName) {
-        File file = new File(basePath + fileName);
+        final File file = new File(this.basePath + fileName);
         if (!file.exists() || !file.isFile() || !file.delete()) {
             fail("Invalid test file " + file.getAbsolutePath());
         }
     }
 
-    private void insertData(int contractID) throws IOException {
-        final Map<Long, Double> data = new HashMap<>() {{
-            put(baseTimestamp + 1000, 5.5);
-            put(baseTimestamp + 2000, 6.4);
-            put(baseTimestamp + 3000, 7.3);
-        }};
+    private void insertData(final int contractID) throws IOException {
+        final Map<Long, Double> data = new HashMap<>() {
+            {
+                this.put(DataExportTest.this.baseTimestamp + 1000, 5.5);
+                this.put(DataExportTest.this.baseTimestamp + 2000, 6.4);
+                this.put(DataExportTest.this.baseTimestamp + 3000, 7.3);
+            }
+        };
 
-        dataController.putUserData(new Data(contractID, DataType.ELECTRICITY, data));
-        dataController.putUserData(new Data(contractID, DataType.GLASS, data));
-        dataController.putUserData(new Data(contractID, DataType.WATER, data));
-        dataController.putUserData(new Data(contractID, DataType.PAPER, data));
-        dataController.putUserData(new Data(contractID, DataType.MIXED, data));
+        this.dataController.putUserData(new Data(contractID, DataType.ELECTRICITY, data));
+        this.dataController.putUserData(new Data(contractID, DataType.GLASS, data));
+        this.dataController.putUserData(new Data(contractID, DataType.WATER, data));
+        this.dataController.putUserData(new Data(contractID, DataType.PAPER, data));
+        this.dataController.putUserData(new Data(contractID, DataType.MIXED, data));
     }
 
-    private void addContract(String address) throws IOException {
-        List<ServiceType> services = List.of(
-                ServiceType.ELECTRICITY,
-                ServiceType.GARBAGE
-        );
-        NewContract newContract = new NewContract(address, services, "ABC123", new Date(baseTimestamp));
-        contractController.addContract(newContract);
+    private void addContract(final String address) throws IOException {
+        final List<ServiceType> services = List.of(ServiceType.ELECTRICITY, ServiceType.GARBAGE);
+        final NewContract newContract = new NewContract(address, services, "ABC123", new Date(this.baseTimestamp));
+        this.contractController.addContract(newContract);
     }
 }
