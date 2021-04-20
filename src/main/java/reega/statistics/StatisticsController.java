@@ -11,14 +11,14 @@ import reega.data.models.ServiceType;
 
 public interface StatisticsController {
     /**
-     * Set the current data
+     * Set the current data.
      *
      * @param data data used for manipulation
      */
     void setData(List<Data> data);
 
     /**
-     * Get the peek usage
+     * Get the peek usage.
      *
      * @param svcType service type used to get the average usage
      * @return the date(day) of the peek usage and the value of the peek
@@ -26,7 +26,7 @@ public interface StatisticsController {
     Optional<Pair<Date, Double>> getPeek(ServiceType svcType);
 
     /**
-     * Get the average usage by day
+     * Get the average usage by day.
      *
      * @param svcType service type used to get the average usage
      * @return the average usage by day
@@ -34,7 +34,7 @@ public interface StatisticsController {
     double getAverageUsage(ServiceType svcType);
 
     /**
-     * Get the total usage by day
+     * Get the total usage by day.
      *
      * @param svcType service type used to get the total usage
      * @return the total usage by day
@@ -42,7 +42,7 @@ public interface StatisticsController {
     double getTotalUsage(ServiceType svcType);
 
     /**
-     * Get the current data
+     * Get the current data.
      *
      * @return the current data as a list of data
      */

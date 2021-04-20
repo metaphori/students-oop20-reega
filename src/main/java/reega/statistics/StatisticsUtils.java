@@ -19,15 +19,16 @@ public final class StatisticsUtils {
     }
 
     /**
-     * Group the data by day
+     * Group the data by day.
      *
+     * @param data    data that needs to be grouped
      * @param svcType service type needed for this type of data
      * @return a {@link Stream} containing pairs of Day-Value
      */
     public static Stream<Map.Entry<Date, Double>> groupDataByDay(final List<Data> data, final ServiceType svcType) {
         // If the service type is not GARBAGE then data is produced once a day
         // Else it's produced every hour
-        return filterBySvcTypeAndGetData(data, svcType)
+        return StatisticsUtils.filterBySvcTypeAndGetData(data, svcType)
                 .collect(Collectors.groupingBy(elem -> DateUtils.truncate(new Date(elem.getKey()), Calendar.DATE),
                         Collectors.summingDouble(Entry::getValue)))
                 .entrySet()
@@ -35,8 +36,9 @@ public final class StatisticsUtils {
     }
 
     /**
-     * Filter data by <code>svcType</code>
+     * Filter data by <code>svcType</code>.
      *
+     * @param data    data that needs to be filtered
      * @param svcType svcType used for filtering data
      * @return a {@link Stream} containing pairs of TimeStamp-Value containing all the data
      */

@@ -7,28 +7,28 @@ import reega.data.models.ServiceType;
 public interface DataPlotter {
 
     /**
-     * sets the statistic controller used to gather the data
+     * Set the statistic controller used to gather the data.
      *
-     * @param statisticsController
+     * @param statisticsController statistics controller
      */
     void setStatisticController(StatisticsController statisticsController);
 
     /**
-     * sets the type of data to gather
+     * Set the type of data to gather.
      *
      * @param svcType {@link ServiceType}
      */
     void setServiceType(ServiceType svcType);
 
     /**
-     * gets the currently set serviceType
+     * Get the currently set serviceType.
      *
      * @return {@link ServiceType}
      */
     ServiceType getServiceType();
 
     /**
-     * returns data based on the given statistic controller filtered by {@link ServiceType}
+     * Return data based on the given statistic controller filtered by {@link ServiceType}.
      *
      * @return Map of time and usage values
      */
