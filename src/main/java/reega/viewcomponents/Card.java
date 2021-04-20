@@ -6,8 +6,7 @@ package reega.viewcomponents;
 import javafx.scene.layout.VBox;
 
 /**
- * @author Marco
- *
+ * Card component.
  */
 public class Card extends VBox {
 

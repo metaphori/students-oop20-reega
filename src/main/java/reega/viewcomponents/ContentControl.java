@@ -15,26 +15,23 @@ import reega.viewutils.DataTemplate;
 import reega.viewutils.DataTemplateManager;
 
 /**
- * Control for handling a variable control in it
- *
- * @author Marco
- *
+ * Control for handling a variable control in it based on its object property.
  */
 public class ContentControl extends VBox {
 
     private ObjectProperty<Object> objProperty;
 
     /**
-     * Get the current content that is bounded to a view
+     * Get the current content that is bounded to a view.
      *
-     * @return
+     * @return the content of the control
      */
     public Object getContent() {
         return this.objectProperty().get();
     }
 
     /**
-     * Set a new content that is bounded to a view
+     * Set a new content that is bounded to a view.
      *
      * @param value new content
      */
@@ -43,17 +40,16 @@ public class ContentControl extends VBox {
     }
 
     /**
-     * Get the content property
+     * Get the content property.
      *
      * @return the content property
      */
-    @SuppressWarnings("unchecked")
     public ObjectProperty<Object> objectProperty() {
         if (this.objProperty == null) {
             this.objProperty = new SimpleObjectProperty<>();
             this.objectProperty().addListener((observable, oldValue, newValue) -> {
                 // Get the template for the new content
-                final Optional<DataTemplate<?>> template = DataTemplateManager.instance
+                final Optional<DataTemplate<?>> template = DataTemplateManager.getInstance()
                         .getTemplate(newValue.getClass());
                 // Generate the element, or create a VBox if the template manager cannot find a
                 // Control factory associated with the class of the new value
@@ -61,7 +57,7 @@ public class ContentControl extends VBox {
                         .map(dTemplate -> ((DataTemplate<Object>) dTemplate).getControlFactory(newValue).get())
                         .map(control -> {
                             if (control instanceof Parent) {
-                                return (Parent)control;
+                                return (Parent) control;
                             }
                             throw new NoSuchElementException("No JavaFX implementation for the object: " + newValue);
                         })

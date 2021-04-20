@@ -1,19 +1,22 @@
 package reega.viewcomponents;
 
 import javafx.scene.control.Label;
-import javafx.scene.text.TextAlignment;
+import javafx.scene.layout.Region;
 
+/**
+ * Label that wraps text correctly.
+ */
 public class WrappableLabel extends Label {
 
     public WrappableLabel() {
         this("");
     }
 
-    public WrappableLabel(String text) {
+    public WrappableLabel(final String text) {
         super(text);
         /* it should already be set like this but for some reason it works */
-        this.setMinHeight(USE_PREF_SIZE);
-        this.setPrefHeight(USE_COMPUTED_SIZE);
+        this.setMinHeight(Region.USE_PREF_SIZE);
+        this.setPrefHeight(Region.USE_COMPUTED_SIZE);
         this.setWrapText(true);
     }
 }

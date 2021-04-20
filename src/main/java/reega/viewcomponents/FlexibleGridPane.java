@@ -13,12 +13,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 
 /**
- * {@link GridPane} that contains a fixed number of rows or columns and a variable number of columns or rows. <para>If
- * columns are fixed than rows are variable.</para> <para>If rows are fixed than columns are variable.</para> <para>The
- * size of each variable is a percentage equal to the floor of the size of {@link #getChildren()} divided by the number
- * of rows/columns.</para> <para>The children are positioned based on the constraint.</para> <para>If columns are fixed
- * than all the columns needs to be filled before a new row is created.</para> <para>If rows are fixed than all the rows
- * needs to be filled before a new column is created.</para>
+ * {@link GridPane} that contains a fixed number of rows or columns and a variable number of columns or rows. If columns
+ * are fixed than rows are variable. If rows are fixed than columns are variable.The size of each variable is a
+ * percentage equal to the floor of the size of {@link #getChildren()} divided by the number of rows/columns. The
+ * children are positioned based on the constraint. If columns are fixed than all the columns needs to be filled before
+ * a new row is created. If rows are fixed than all the rows needs to be filled before a new column is created.
  */
 public class FlexibleGridPane extends GridPane {
 
@@ -40,7 +39,7 @@ public class FlexibleGridPane extends GridPane {
     }
 
     /**
-     * Set the fixed columns number
+     * Set the fixed columns number.
      *
      * @param newValue new value for the number of columns
      * @throws IllegalStateException if {@link #fixedRowsNumberProperty()} is not equal to 0
@@ -66,7 +65,7 @@ public class FlexibleGridPane extends GridPane {
     }
 
     /**
-     * Set the fixed rows number
+     * Set the fixed rows number.
      *
      * @param newValue new value for the number of rows
      * @throws IllegalStateException if {@link #fixedColumnsNumberProperty()} is not equal to 0
@@ -93,7 +92,7 @@ public class FlexibleGridPane extends GridPane {
     }
 
     /**
-     * Get the fixed columns number
+     * Get the fixed columns number.
      *
      * @return the fixed columns number
      */
@@ -102,7 +101,7 @@ public class FlexibleGridPane extends GridPane {
     }
 
     /**
-     * Get the fixed rows number
+     * Get the fixed rows number.
      *
      * @return the fixed rows number
      */
@@ -111,7 +110,7 @@ public class FlexibleGridPane extends GridPane {
     }
 
     /**
-     * Get the fixed columns number property
+     * Get the fixed columns number property.
      *
      * @return the fixed columns number property
      */
@@ -139,7 +138,7 @@ public class FlexibleGridPane extends GridPane {
     }
 
     /**
-     * Get the fixed rows number property
+     * Get the fixed rows number property.
      *
      * @return the fixed rows number property
      */
@@ -167,7 +166,7 @@ public class FlexibleGridPane extends GridPane {
     }
 
     /**
-     * Reset all the children when the {@link #fixedColumnsNumberProperty()} is set
+     * Reset all the children when the {@link #fixedColumnsNumberProperty()} is set.
      *
      * @param newColNumber new columns number
      */
@@ -175,7 +174,7 @@ public class FlexibleGridPane extends GridPane {
         final ObservableList<Node> children = this.getChildren();
         this.getRowConstraints().clear();
         // Rows needed
-        final int neededRows = (int) Math.ceil(children.size() / (double)newColNumber);
+        final int neededRows = (int) Math.ceil(children.size() / (double) newColNumber);
         // Height percentage for each row
         final double percentHeight = 100.0 / neededRows;
         this.getRowConstraints().addAll(IntStream.range(0, neededRows).mapToObj(elem -> {
@@ -195,7 +194,7 @@ public class FlexibleGridPane extends GridPane {
     }
 
     /**
-     * Reset all the children when the {@link #fixedRowsNumberProperty()} is set
+     * Reset all the children when the {@link #fixedRowsNumberProperty()} is set.
      *
      * @param newRowNumber new columns number
      */
@@ -203,7 +202,7 @@ public class FlexibleGridPane extends GridPane {
         final ObservableList<Node> children = this.getChildren();
         this.getColumnConstraints().clear();
         // Rows needed
-        final int neededRows = (int) Math.ceil(children.size() / (double)newRowNumber);
+        final int neededRows = (int) Math.ceil(children.size() / (double) newRowNumber);
         // Height percentage for each column
         final double percentWidth = 100.0 / neededRows;
         // Add all the column constraints
