@@ -65,7 +65,7 @@ public class OnDemandDataFiller implements DataFiller {
      *
      * @param contracts contracts that needs to be added
      */
-    public void addContracts(final List<Contract> contracts) {
+    public final void addContracts(final List<Contract> contracts) {
         for (final Contract contract : contracts) {
             final List<DataType> dataTypes = contract.getServices()
                     .stream()
