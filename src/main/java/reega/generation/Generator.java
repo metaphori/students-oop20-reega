@@ -1,7 +1,5 @@
 package reega.generation;
 
-import java.util.Random;
-
 public interface Generator {
 
     /**
@@ -9,7 +7,5 @@ public interface Generator {
      *
      * @return a new generated value.
      */
-    default double nextValue() {
-        return new Random().nextDouble();
-    }
+    double nextValue();
 }

@@ -18,7 +18,6 @@ public class GaussianGenerator implements Generator {
     /**
      * {@inheritDoc}
      */
-    @Override
     public double nextValue() {
         return this.mean + this.variance * this.rand.nextDouble();
     }

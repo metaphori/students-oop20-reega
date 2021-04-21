@@ -1,11 +1,10 @@
 package reega.generation;
 
+import org.apache.commons.lang3.tuple.Pair;
+import reega.data.models.DataType;
+
 import java.util.Map;
 import java.util.Random;
-
-import org.apache.commons.lang3.tuple.Pair;
-
-import reega.data.models.DataType;
 
 /**
  * Static Factory used to create personalized Gaussian Generators.
@@ -21,10 +20,10 @@ public final class GaussianGeneratorFactory {
 
     static {
         RANDOMIZER = new Random();
-        RANGES_MAP = Map.ofEntries(Map.entry(DataType.ELECTRICITY, Pair.of(0.0, 0.0)),
-                Map.entry(DataType.GAS, Pair.of(0.0, 0.0)), Map.entry(DataType.WATER, Pair.of(0.0, 0.0)),
-                Map.entry(DataType.PAPER, Pair.of(0.0, 0.0)), Map.entry(DataType.GLASS, Pair.of(0.0, 0.0)),
-                Map.entry(DataType.PLASTIC, Pair.of(0.0, 0.0)), Map.entry(DataType.MIXED, Pair.of(0.0, 0.0)));
+        RANGES_MAP = Map.ofEntries(Map.entry(DataType.ELECTRICITY, Pair.of(0.3, 0.23)),
+                Map.entry(DataType.GAS, Pair.of(0.17, 0.2)), Map.entry(DataType.WATER, Pair.of(18.0, 4.0)),
+                Map.entry(DataType.PAPER, Pair.of(0.2, 0.1)), Map.entry(DataType.GLASS, Pair.of(0.2, 0.09)),
+                Map.entry(DataType.PLASTIC, Pair.of(0.35, 0.1)), Map.entry(DataType.MIXED, Pair.of(0.5, 0.2)));
     }
 
     private GaussianGeneratorFactory() {
@@ -41,9 +40,9 @@ public final class GaussianGeneratorFactory {
         GaussianGenerator generator;
         if (GaussianGeneratorFactory.RANGES_MAP.containsKey(service)) {
             // mean and variance are now randomized
-            final double mean = GaussianGeneratorFactory.RANDOMIZER.nextDouble() * 100
+            final double mean = GaussianGeneratorFactory.RANDOMIZER.nextDouble() * 0.2
                     + GaussianGeneratorFactory.RANGES_MAP.get(service).getLeft();
-            final double variance = GaussianGeneratorFactory.RANDOMIZER.nextDouble() * 10
+            final double variance = GaussianGeneratorFactory.RANDOMIZER.nextDouble() * 0.2
                     + GaussianGeneratorFactory.RANGES_MAP.get(service).getRight();
             generator = new GaussianGenerator(mean, variance) {
                 @Override
