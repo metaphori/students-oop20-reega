@@ -1,22 +1,15 @@
 package reega.util;
 
+import javafx.util.Pair;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+
+import javax.inject.Inject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import javax.inject.Inject;
-
-import org.apache.commons.lang3.exception.ExceptionUtils;
-
-import javafx.util.Pair;
 
 public class ServiceCollection {
 
@@ -72,7 +65,6 @@ public class ServiceCollection {
      *
      * @param <T>  Type of the class
      * @param type Class type
-     * @throws Exception                if there are 0 or more than 1 {@link Inject} annotated constructors
      * @throws IllegalArgumentException if {@code type} is an interface or an abstract class
      */
     public <T> void addSingleton(final Class<T> type) {
@@ -125,8 +117,6 @@ public class ServiceCollection {
      *
      * @param <T>  Type of the class
      * @param type Class type
-     * @throws Exception                if there are 0 or more than 1 {@link Inject} annotated constructors
-     * @throws IllegalArgumentException if {@code type} is an interface or an abstract class
      */
     public <T> void addTransient(final Class<T> type) {
         if (this.isInterfaceOrAbstractClass(type)) {

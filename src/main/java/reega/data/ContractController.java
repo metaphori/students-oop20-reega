@@ -1,13 +1,12 @@
 package reega.data;
 
-import java.io.IOException;
-import java.util.List;
-
 import org.jetbrains.annotations.NotNull;
-
 import reega.data.models.Contract;
 import reega.data.models.MonthlyReport;
 import reega.data.models.gson.NewContract;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * This controller handles all the data-based operations.
@@ -17,7 +16,7 @@ public interface ContractController {
     /**
      * List all contracts for the user.
      *
-     * @return List<Contract>
+     * @return List of {@link Contract}
      * @throws IOException
      */
     List<Contract> getUserContracts() throws IOException;

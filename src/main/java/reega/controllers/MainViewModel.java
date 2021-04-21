@@ -3,19 +3,18 @@
  */
 package reega.controllers;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import org.apache.commons.lang3.tuple.Pair;
-
 import javafx.collections.ObservableList;
+import org.apache.commons.lang3.tuple.Pair;
 import reega.data.models.Contract;
 import reega.data.models.ServiceType;
 import reega.statistics.DataPlotter;
 import reega.viewutils.Command;
 import reega.viewutils.EventHandler;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Interface for a viewModel that is represented by the page after the login.
@@ -55,9 +54,9 @@ public interface MainViewModel extends UserViewModel {
     Set<ServiceType> getAvailableServiceTypes();
 
     /**
-     * Get the selected contracts of the {@link #user()}.
+     * Get the selected contracts of the {@link reega.users.User}.
      *
-     * @return the selected contracts of the {@link #user()}
+     * @return the selected contracts of the User
      */
     ObservableList<Contract> getSelectedContracts();
 

@@ -91,8 +91,9 @@ public class ValueResult<T> {
      * Merge this {@link ValueResult} with a {@link Void} {@link ValueResult} with an AND.
      *
      * @param otherValueResult other {@link ValueResult}
-     * @return an invalid {@link ValueResult} with {@link this#getValue()} as the value and the messages joined if
-     *         <code>otherValueResult</code> is invalid; an invalid {@link ValueResult} with {@link this#getValue()} and
+     * @return an invalid {@link ValueResult} with {@link ValueResult#getValue()} as the value and the messages
+     * joined if
+     *         <code>otherValueResult</code> is invalid; an invalid {@link ValueResult} with {@link ValueResult#getValue()} and
      *         the message of this object if this object is invalid; else return a valid {@link ValueResult}
      */
     public ValueResult<T> merge(final ValueResult<Void> otherValueResult) {

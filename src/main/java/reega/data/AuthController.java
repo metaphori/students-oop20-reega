@@ -1,9 +1,9 @@
 package reega.data;
 
-import java.io.IOException;
-
 import reega.data.models.UserAuth;
 import reega.users.User;
+
+import java.io.IOException;
 
 /**
  * This controller handles all the operations on users and authentication.
@@ -15,7 +15,7 @@ public interface AuthController {
      * @param email
      * @param password the password
      * @return the user if login succeeded or null if email not found or wrong password
-     * @See GenericUser
+     * @see reega.users.GenericUser
      */
     User emailLogin(String email, String password) throws IOException;
 
