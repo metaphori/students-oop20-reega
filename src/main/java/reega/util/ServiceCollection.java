@@ -7,7 +7,12 @@ import javax.inject.Inject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -104,6 +109,7 @@ public class ServiceCollection {
      * @param <T>                    Type of the class
      * @param type                   Class type
      * @param implementationFunction Function that uses {@link ServiceProvider} to build the instance of the transient
+     * @throws IllegalArgumentException if {@code type} is an interface or an abstract class
      */
     public <T> void addTransient(final Class<T> type, final Function<ServiceProvider, T> implementationFunction) {
         Objects.requireNonNull(type);
@@ -117,6 +123,7 @@ public class ServiceCollection {
      *
      * @param <T>  Type of the class
      * @param type Class type
+     * @throws IllegalArgumentException if {@code type} is an interface or an abstract class
      */
     public <T> void addTransient(final Class<T> type) {
         if (this.isInterfaceOrAbstractClass(type)) {
