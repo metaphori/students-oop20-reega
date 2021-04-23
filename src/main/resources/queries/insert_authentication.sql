@@ -1,1 +1,0 @@
-insert into authentication values(%d, '%s', '%s');
