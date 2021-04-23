@@ -1,17 +1,15 @@
 package reega.data.remote;
 
-import java.io.IOException;
-
-import javax.annotation.Nullable;
-
+import okhttp3.OkHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import okhttp3.OkHttpClient;
 import reega.data.models.gson.LoginResponse;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import javax.annotation.Nullable;
+import java.io.IOException;
 
 /**
  * Handle the connection to the server and the http methods authentication.
@@ -21,33 +19,35 @@ public class RemoteConnection {
     private static final int INITIAL_ERROR_CODE = 299;
     private static Retrofit retrofit;
     private static ReegaService service;
-    private static boolean forcedService = false;
-    private String baseUrl;
+    private final String baseUrl;
     private String jwt;
 
+    /**
+     * Get connection instance.
+     *
+     * @param baseUrl          base URL as prefix fot http paths
+     * @param forceNewInstance if set to true, force the creation of a new instance
+     */
     public RemoteConnection(final String baseUrl, final boolean forceNewInstance) {
         this.baseUrl = baseUrl;
         this.buildRetrofit(forceNewInstance, null);
         RemoteConnection.service = RemoteConnection.retrofit.create(ReegaService.class);
     }
 
+    /**
+     * Get connection instance.
+     *
+     * @param baseUrl base URL as prefix fot http paths
+     */
     public RemoteConnection(final String baseUrl) {
         this(baseUrl, false);
     }
 
+    /**
+     * Get connection instance using the default URL.
+     */
     public RemoteConnection() {
         this("http://52.208.47.221:1958/");
-    }
-
-    /**
-     * Initialize the connection with the given service.
-     *
-     * @param s
-     */
-    @Deprecated
-    public RemoteConnection(final ReegaService s) {
-        RemoteConnection.forcedService = true;
-        RemoteConnection.service = s;
     }
 
     /**
@@ -55,7 +55,6 @@ public class RemoteConnection {
      *
      * @param jwt JWT Token
      */
-    @Deprecated
     public void overrideToken(final String jwt) {
         this.jwt = jwt;
         this.setClientAuth();
@@ -66,7 +65,7 @@ public class RemoteConnection {
      *
      * @param loginMethod method of login
      * @return a {@link LoginResponse} containing returned data
-     * @throws IOException
+     * @throws IOException if an error occurred while performing the HTTP call
      */
     public LoginResponse login(final LoginMethod loginMethod) throws IOException {
         RemoteConnection.LOGGER.info("logging-in...");
@@ -84,6 +83,7 @@ public class RemoteConnection {
 
     /**
      * Logout from the REEGA Platform.
+     * This will drop the jwt authenticator middleware and recreate the HTTP client.
      */
     public void logout() {
         this.jwt = null;
@@ -104,10 +104,6 @@ public class RemoteConnection {
     }
 
     private void setClientAuth() {
-        // not touching the service as it's been specified at init time
-        if (RemoteConnection.forcedService) {
-            return;
-        }
         final OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(chain -> chain
                         .proceed(chain.request().newBuilder().addHeader("Authorization", "Bearer " + this.jwt).build()))
@@ -126,6 +122,9 @@ public class RemoteConnection {
         return RemoteConnection.service;
     }
 
+    /**
+     * Basic interface to allow multiple login methods with similar logic.
+     */
     public interface LoginMethod {
         Response<LoginResponse> login() throws IOException;
     }

@@ -1,10 +1,10 @@
 package reega.data;
 
-import java.io.IOException;
-import java.util.List;
-
 import reega.users.NewUser;
 import reega.users.User;
+
+import java.io.IOException;
+import java.util.List;
 
 public interface UserController {
 
@@ -19,7 +19,7 @@ public interface UserController {
      * Remove user from REEGA platform.
      *
      * @param fiscalCode fiscal code of the user that wants to be removed
-     * @throws IOException
+     * @throws IOException if an error occurred while performing the HTTP call
      */
     void removeUser(String fiscalCode) throws IOException;
 
@@ -28,7 +28,7 @@ public interface UserController {
      *
      * @param contractID id of the contract
      * @return the accountholder user
-     * @throws IOException
+     * @throws IOException if an error occurred while performing the HTTP call
      */
     User getUserFromContract(int contractID) throws IOException;
 
@@ -37,7 +37,7 @@ public interface UserController {
      *
      * @param keyword to match, case insensitive
      * @return list of users matching the keyword
-     * @throws IOException
+     * @throws IOException if an error occurred while performing the HTTP call
      */
     List<User> searchUser(String keyword) throws IOException;
 

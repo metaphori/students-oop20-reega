@@ -1,25 +1,12 @@
 package reega.data.remote;
 
+import reega.data.models.gson.*;
+import retrofit2.Call;
+import retrofit2.http.*;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import reega.data.models.gson.ContractModel;
-import reega.data.models.gson.DataModel;
-import reega.data.models.gson.LoginResponse;
-import reega.data.models.gson.MonthlyReportModel;
-import reega.data.models.gson.NewContract;
-import reega.data.models.gson.NewUserBody;
-import reega.data.models.gson.User;
-import reega.data.models.gson.UserAuthToken;
-import retrofit2.Call;
-import retrofit2.http.Body;
-import retrofit2.http.DELETE;
-import retrofit2.http.GET;
-import retrofit2.http.POST;
-import retrofit2.http.Path;
-import retrofit2.http.Query;
-import retrofit2.http.QueryMap;
 
 /**
  * Specify the API layout and request types.
@@ -72,7 +59,6 @@ public interface ReegaService {
     Call<List<ContractModel>> getContracts();
 
     /**
-     * @param fiscalCode
      * @return all the contracts for a specified user (must be admin)
      */
     @GET("data/user/{fiscal_code}/contracts")

@@ -17,7 +17,7 @@ public interface ContractController {
      * List all contracts for the user.
      *
      * @return List of {@link Contract}
-     * @throws IOException
+     * @throws IOException if an error occurred while performing the HTTP call
      */
     List<Contract> getUserContracts() throws IOException;
 
@@ -26,7 +26,7 @@ public interface ContractController {
      *
      * @param fiscalCode fiscal code of the user
      * @return a {@link List} of all the contracts of the user
-     * @throws IOException
+     * @throws IOException if an error occurred while performing the HTTP call
      */
     List<Contract> getContractsForUser(String fiscalCode) throws IOException;
 
@@ -34,7 +34,7 @@ public interface ContractController {
      * Get all the contracts of the Reega platform.
      *
      * @return all the contracts of the Reega platform
-     * @throws IOException
+     * @throws IOException if an error occurred while performing the HTTP call
      */
     List<Contract> getAllContracts() throws IOException;
 
@@ -43,7 +43,7 @@ public interface ContractController {
      *
      * @param contract contract that needs to be added
      * @return the new contract
-     * @throws IOException
+     * @throws IOException if an error occurred while performing the HTTP call
      */
     Contract addContract(NewContract contract) throws IOException;
 
@@ -51,7 +51,7 @@ public interface ContractController {
      * Delete contract with REEGA. It will also delete all the related data
      *
      * @param id contract ID
-     * @throws IOException
+     * @throws IOException if an error occurred while performing the HTTP call
      */
     void removeContract(int id) throws IOException;
 
@@ -61,7 +61,7 @@ public interface ContractController {
      *
      * @param keyword to match, case insensitive
      * @return list of contracts matching the keyword
-     * @throws IOException
+     * @throws IOException if an error occurred while performing the HTTP call
      */
     List<Contract> searchContract(String keyword) throws IOException;
 
@@ -70,7 +70,7 @@ public interface ContractController {
      *
      * @param contractIDs list of contract IDs that needs to get the bills
      * @return a list of {@link MonthlyReport}
-     * @throws IOException
+     * @throws IOException if an error occurred while performing the HTTP call
      */
     List<MonthlyReport> getBillsForContracts(@NotNull List<Integer> contractIDs) throws IOException;
 }

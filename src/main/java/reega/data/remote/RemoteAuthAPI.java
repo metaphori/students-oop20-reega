@@ -1,14 +1,7 @@
 package reega.data.remote;
 
-import java.io.IOException;
-import java.util.Locale;
-import java.util.Objects;
-
-import javax.annotation.Nullable;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import reega.data.AuthController;
 import reega.data.models.UserAuth;
 import reega.data.models.gson.LoginResponse;
@@ -17,6 +10,11 @@ import reega.users.GenericUser;
 import reega.users.Role;
 import reega.users.User;
 import retrofit2.Response;
+
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.util.Locale;
+import java.util.Objects;
 
 /**
  * {@link AuthController} implementation, using remote database via http requests.
@@ -30,16 +28,25 @@ public final class RemoteAuthAPI implements AuthController {
         this.connection = Objects.requireNonNullElseGet(connection, RemoteConnection::new);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public User emailLogin(final String email, final String password) throws IOException {
         return this.genericLogin(() -> this.connection.getService().emailLogin(email, password).execute());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public User fiscalCodeLogin(final String fiscalCode, final String password) throws IOException {
         return this.genericLogin(() -> this.connection.getService().fiscalCodeLogin(fiscalCode, password).execute());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public User tokenLogin(final UserAuth credentials) throws IOException {
         return this.genericLogin(() -> this.connection.getService()
@@ -54,6 +61,9 @@ public final class RemoteAuthAPI implements AuthController {
                         response.email, response.fiscalCode);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void storeUserCredentials(final String selector, final String validator) throws IOException {
         final Response<Void> r = this.connection.getService()
@@ -65,6 +75,9 @@ public final class RemoteAuthAPI implements AuthController {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void userLogout() throws IOException {
         final Response<Void> r = this.connection.getService().logout().execute();

@@ -12,7 +12,7 @@ public interface AuthController {
     /**
      * Login using email and password.
      *
-     * @param email
+     * @param email the email to be used for authentication
      * @param password the password
      * @return the user if login succeeded or null if email not found or wrong password
      * @see reega.users.GenericUser
@@ -39,9 +39,9 @@ public interface AuthController {
     /**
      * Store selector and validator to enable the remind-me functionality.
      *
-     * @param selector  random aphanumerical string up to 12 characters
+     * @param selector  random alphanumerical string up to 12 characters
      * @param validator SHA256 encryption of a random alphanumerical string (64 characters)
-     * @throws IOException
+     * @throws IOException if an error occurred while performing the HTTP call
      */
     void storeUserCredentials(String selector, String validator) throws IOException;
 

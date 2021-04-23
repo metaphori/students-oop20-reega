@@ -1,12 +1,11 @@
 package reega.data;
 
-import java.io.IOException;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import reega.data.models.Data;
 import reega.data.models.DataType;
+
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.util.List;
 
 public interface DataController {
     /**
@@ -30,7 +29,7 @@ public interface DataController {
      *
      * @param contractID contractID that needs to get the monthly data
      * @return a {@link List} of data containing data from the first day of the month until today
-     * @throws IOException
+     * @throws IOException if an error occurred while performing the HTTP call
      */
     List<Data> getMonthlyData(@Nullable Integer contractID) throws IOException;
 }
