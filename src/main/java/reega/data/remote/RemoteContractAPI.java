@@ -1,18 +1,10 @@
 package reega.data.remote;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import reega.data.ContractController;
+import reega.data.models.BaseContract;
 import reega.data.models.Contract;
 import reega.data.models.DataType;
 import reega.data.models.MonthlyReport;
@@ -20,6 +12,13 @@ import reega.data.models.gson.ContractModel;
 import reega.data.models.gson.MonthlyReportModel;
 import reega.data.models.gson.NewContract;
 import retrofit2.Response;
+
+import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * {@link ContractController} implementation, using remote database via http requests.
@@ -122,7 +121,7 @@ public class RemoteContractAPI implements ContractController {
             RemoteContractAPI.LOGGER.info("error: " + r.errorBody());
             return new ArrayList<>();
         }
-        return r.body().stream().map(Contract::new).collect(Collectors.toList());
+        return r.body().stream().map(BaseContract::new).collect(Collectors.toList());
     }
 
     /**
@@ -137,7 +136,7 @@ public class RemoteContractAPI implements ContractController {
             RemoteContractAPI.LOGGER.info("error: " + r.errorBody());
             return null;
         }
-        return new Contract(r.body());
+        return new BaseContract(r.body());
     }
 
     /**

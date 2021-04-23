@@ -1,6 +1,7 @@
 package reega.data;
 
 import org.jetbrains.annotations.NotNull;
+import reega.data.models.BaseContract;
 import reega.data.models.Contract;
 import reega.data.models.MonthlyReport;
 import reega.data.models.gson.NewContract;
@@ -16,7 +17,7 @@ public interface ContractController {
     /**
      * List all contracts for the user.
      *
-     * @return List of {@link Contract}
+     * @return List of {@link BaseContract}
      * @throws IOException if an error occurred while performing the HTTP call
      */
     List<Contract> getUserContracts() throws IOException;
