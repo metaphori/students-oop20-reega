@@ -15,6 +15,8 @@ import reega.util.FiscalCodeValidator;
 import reega.util.ValueResult;
 import reega.viewutils.AbstractViewModel;
 import reega.viewutils.EventHandler;
+import reega.viewutils.ViewModel;
+import reega.viewutils.ViewModelChangedEventHandler;
 
 public class LoginViewModelImpl extends AbstractViewModel implements LoginViewModel {
 
@@ -120,6 +122,14 @@ public class LoginViewModelImpl extends AbstractViewModel implements LoginViewMo
             newViewModel.setUser(user);
             newViewModel.setOnLogout(logoutEvtHandler);
         }, true);
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setViewModelChangedEventHandler(ViewModelChangedEventHandler<ViewModel> viewModelChangedEventHandler) {
+        super.setViewModelChangedEventHandler(viewModelChangedEventHandler);
+        this.tryLogin();
     }
 }

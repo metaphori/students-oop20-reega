@@ -34,14 +34,6 @@ public class LoginView extends GridPane implements ReegaView {
     public LoginView(final LoginViewModel viewModel) {
         ReegaFXMLLoader.loadFXML(this, "views/Login.fxml");
 
-        final ValueResult<Void> tryLoginResult = viewModel.tryLogin();
-        if (tryLoginResult.isInvalid()) {
-            DialogFactory
-                    .buildAlert(AlertType.ERROR, "Error when trying to login with the token",
-                            viewModel.tryLogin().getMessage(), ButtonType.CLOSE)
-                    .showAndWait();
-        }
-
         // Change email or fiscal code on lost focus
         this.emailOrFiscalCodeField.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
